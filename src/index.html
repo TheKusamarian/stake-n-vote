@@ -3,15 +3,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Stake'n'Vote</title>
     <style>
         @import "/src/styles.css";
     </style>
 </head>
 <body>
-    <div id="app">
-        <h1 class="text-blue-500">Stake'n'Vote</h1>
-    </div>
+    <!-- Simple Hero callout using Bulma CSS -->
+    <section class="hero is-primary is-bold">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Stake'n'Vote
+                </h1>
+                <h2 class="subtitle">
+                    A simple voting app
+                </h2>
+            </div>
+        </div>
+    </section>
     <script type="module">
         import '/src/app.js';
     </script>
