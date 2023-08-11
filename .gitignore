@@ -1,0 +1,4 @@
+# This is a `.gitignore` file for a Parcel-based HTML webapp. It ignores the following:  
+.parcel-cache
+dist
+node_modules
