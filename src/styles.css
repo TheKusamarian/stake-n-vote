@@ -1,2 +1,4 @@
-/* Bulma CSS */
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+@import "https://cdn.jsdelivr.net/npm/bulma-list@1.2/css/bulma-list.min.css";
+@import "https://cdn.jsdelivr.net/npm/bulma-switch@2.0/dist/css/bulma-switch.min.css";
+@import "https://cdn.jsdelivr.net/npm/bulma-divider@0.2/dist/css/bulma-divider.min.css";
