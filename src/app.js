@@ -1,1 +1,1 @@
-console.log("Hello from the JavaScript console!");
+console.log("Hello from a single-file app!");
