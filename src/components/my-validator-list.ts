@@ -7,16 +7,20 @@ class MyValidatorList extends LitElement {
     suggestedValidators = [];
     @property({type: Array})
     currentValidators = [];
+    @property({type: Boolean})
+    initialized = false;
 
     render() {
-        return html`<div class="list">
+        return this.initialized
+        ? html`<div class="list">
             ${this.suggestedValidators.map((validator) => html`
                 <my-validator class="list-item has-background-success-light" name="${validator.name}" address="${validator.address}"></my-validator>
             `)}
             ${this.currentValidators.map((validator) => html`
                 <my-validator class="list-item" name="${validator.name}" address="${validator.address}" existing="true"></my-validator>
             `)}
-        </div>`;
+        </div>`
+        : html`<div class="list"><my-spinner></my-spinner></div>`;
     }
 
     // Opting out of ShadowDOM in favor of LightDOM to allow for Bulma CSS to work

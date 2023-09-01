@@ -1,6 +1,7 @@
 console.log("Hello from a single-file app!");
 
 import './components/my-validator';
+import './components/my-spinner';
 import './components/my-validator-list';
 
 var suggestedValidators = [
@@ -15,5 +16,10 @@ var currentValidators = [
 ];
 
 var validatorList = document.getElementById('validator-list');
-validatorList.suggestedValidators = suggestedValidators;
-validatorList.currentValidators = currentValidators;
+
+//Wait for 5 seconds before initializing the list
+new Promise(resolve => setTimeout(resolve, 5000)).then(() => {
+    validatorList.suggestedValidators = suggestedValidators;
+    validatorList.currentValidators = currentValidators;
+    validatorList.initialized = true;
+})
