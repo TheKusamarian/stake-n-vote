@@ -8,11 +8,6 @@ class MyValidatorList extends LitElement {
     @property({type: Array})
     currentValidators = [];
 
-    // Opting out of ShadowDOM in favor of LightDOM to allow for Bulma CSS to work
-    createRenderRoot() {
-        return this;
-    }
-
     render() {
         return html`<div class="list">
             ${this.suggestedValidators.map((validator) => html`
@@ -22,5 +17,10 @@ class MyValidatorList extends LitElement {
                 <my-validator class="list-item" name="${validator.name}" address="${validator.address}" existing="true"></my-validator>
             `)}
         </div>`;
+    }
+
+    // Opting out of ShadowDOM in favor of LightDOM to allow for Bulma CSS to work
+    protected createRenderRoot() {
+        return this;
     }
 }
