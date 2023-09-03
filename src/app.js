@@ -65,6 +65,8 @@ async function getIdentity(address) {
         }
     }
     identity = identity.unwrap();
+
+    // TODO: only show identities which have a "Reasonable" or "KnownGood" judgement.
     // let judgements = await rpc_api?.query.identity.judgements(identity);
     // if (!judgements || !judgements.isSome) {
     //     return;
@@ -83,8 +85,16 @@ async function getIdentity(address) {
 }
 
 async function getNominations(address) {
-    let nominators = await rpc_api?.query.staking.nominators(address);
+    let nominators = await rpc_api.query.staking.nominators(address);
     if (!nominators || !nominators.isSome) {
+        var currentBalance = await rpc_api.query.system.account(address).then((account) => account.data.free);
+        var chainDecimals = rpc_api.registry.chainDecimals;
+        validatorList.validationOptions = {
+            totalAmount: currentBalance,
+            amountToStake: Math.max(currentBalance*0.9, currentBalance - 10*Math.pow(10, chainDecimals)),
+            chainDecimals: chainDecimals
+        };
+        validatorList.noStakingYet = true;
         return;
     }
     nominators = nominators.unwrap();
