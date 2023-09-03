@@ -87,26 +87,38 @@ async function getIdentity(address) {
 async function getNominations(address) {
     let nominators = await rpc_api.query.staking.nominators(address);
     if (!nominators || !nominators.isSome) {
-        var currentBalance = await rpc_api.query.system.account(address).then((account) => account.data.free);
-        var chainDecimals = rpc_api.registry.chainDecimals;
-        validatorList.validationOptions = {
-            totalAmount: currentBalance,
-            amountToStake: Math.max(currentBalance*0.9, currentBalance - 10*Math.pow(10, chainDecimals)),
-            chainDecimals: chainDecimals
+        const currentBalance = await rpc_api.query.system.account(address).then((account) => account.data.free);
+        const chainDecimals = rpc_api.registry.chainDecimals;
+        const amountToStake = Math.max(currentBalance * 0.9, currentBalance - 10 * Math.pow(10, chainDecimals));
+        const requiredToStake = await rpc_api.query.staking.minNominatorBond();
+        if (amountToStake < requiredToStake) {
+            validatorList.validationOptions = {
+                type: 'not-enough-to-stake',
+                totalAmount: currentBalance,
+                requiredToStake: requiredToStake,
+                chainDecimals: chainDecimals
+            };
+        } else {
+            validatorList.validationOptions = {
+                type: 'no-staking-yet',
+                totalAmount: currentBalance,
+                amountToStake: amountToStake,
+                chainDecimals: chainDecimals
+            };
         };
-        validatorList.noStakingYet = true;
         return;
-    } else {
-        validatorList.noStakingYet = false;
     }
+
     nominators = nominators.unwrap();
     let targets = nominators.targets.map((target) => keyring.encodeAddress(target, 0)); // 0 is Polkadot SS58 format; don't forget to change it if you're using Kusama
     targets = targets.map(async (target) => {
         return await getIdentity(target);
     });
     targets = await Promise.all(targets);
-    validatorList.currentValidators = targets.filter((target) => target !== undefined);
-    validatorList.initialized = true;
+    validatorList.validationOptions = {
+        type: 'staking',
+        currentValidators: targets.filter((target) => target !== undefined),
+    };
 }
 
 async function initBlockchain() {
