@@ -96,6 +96,8 @@ async function getNominations(address) {
         };
         validatorList.noStakingYet = true;
         return;
+    } else {
+        validatorList.noStakingYet = false;
     }
     nominators = nominators.unwrap();
     let targets = nominators.targets.map((target) => keyring.encodeAddress(target, 0)); // 0 is Polkadot SS58 format; don't forget to change it if you're using Kusama
