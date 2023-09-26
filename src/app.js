@@ -18,6 +18,7 @@ let suggestedValidators = [
 
 const validatorList = document.getElementById('validator-list');
 validatorList.suggestedValidators = suggestedValidators;
+const stakingSwitch = document.getElementById('staking-switch');
 
 const addressChooser = document.getElementById('address-chooser');
 
@@ -98,6 +99,7 @@ async function getNominations(address) {
                 requiredToStake: requiredToStake,
                 chainDecimals: chainDecimals
             };
+            stakingSwitch.disabled = true;
         } else {
             validatorList.validationOptions = {
                 type: 'no-staking-yet',
@@ -105,6 +107,7 @@ async function getNominations(address) {
                 amountToStake: amountToStake,
                 chainDecimals: chainDecimals
             };
+            stakingSwitch.disabled = false;
         };
         return;
     }
@@ -119,6 +122,7 @@ async function getNominations(address) {
         type: 'staking',
         currentValidators: targets.filter((target) => target !== undefined),
     };
+    stakingSwitch.disabled = false;
 }
 
 async function initBlockchain() {
