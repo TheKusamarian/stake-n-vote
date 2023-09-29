@@ -1,5 +1,5 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 const RPC_URL = 'wss://rpc.polkadot.io';
 const keyring = new Keyring();
 
@@ -9,18 +9,21 @@ import './components/my-address-chooser';
 import './components/my-validator-list';
 
 let suggestedValidators = [
-    {name: 'Green Cloud', address: '1HtWJy6zTTc6Y1hyRTVpM6MDCpiWknsjDssUPC3FTKjfAGs'},
-    {name: 'DRAGONSTAKE 🐲', address: '1dGsgLgFez7gt5WjX2FYzNCJtaCjGG6W9dA42d9cHngDYGg'},
-    {name: 'Polkadot.pro - Realgar', address: '1REAJ1k691g5Eqqg9gL7vvZCBG7FCCZ8zgQkZWd4va5ESih'},
-    {name: 'Ryabina', address: '14xKzzU1ZYDnzFj7FgdtDAYSMJNARjDc2gNw4XAFDgr4uXgp'},
-    {name: 'General-Beck', address: '15MUBwP6dyVw5CXF9PjSSv7SdXQuDSwjX86v1kBodCSWVR7c'}
+    { name: 'Green Cloud', address: '1HtWJy6zTTc6Y1hyRTVpM6MDCpiWknsjDssUPC3FTKjfAGs' },
+    { name: 'DRAGONSTAKE 🐲', address: '1dGsgLgFez7gt5WjX2FYzNCJtaCjGG6W9dA42d9cHngDYGg' },
+    { name: 'Polkadot.pro - Realgar', address: '1REAJ1k691g5Eqqg9gL7vvZCBG7FCCZ8zgQkZWd4va5ESih' },
+    { name: 'Ryabina', address: '14xKzzU1ZYDnzFj7FgdtDAYSMJNARjDc2gNw4XAFDgr4uXgp' },
+    { name: 'General-Beck', address: '15MUBwP6dyVw5CXF9PjSSv7SdXQuDSwjX86v1kBodCSWVR7c' }
 ];
 
 const validatorList = document.getElementById('validator-list');
 validatorList.suggestedValidators = suggestedValidators;
 const stakingSwitch = document.getElementById('staking-switch');
+const delegationSwitch = document.getElementById('delegation-switch');
 
 const addressChooser = document.getElementById('address-chooser');
+
+const submitTransaction = document.getElementById('submit-transaction');
 
 const TD = new TextDecoder();
 
@@ -43,9 +46,10 @@ async function initWallets() {
             getNominations(account.address);
             console.log(selectedAccount.meta.name);
         }
+        addressChooser.onAccountChange(allAccounts[0]);
         getNominations(allAccounts[0].address);
     };
-    
+
     addressChooser.initialized = true;
 }
 
@@ -113,6 +117,7 @@ async function getNominations(address) {
     }
 
     nominators = nominators.unwrap();
+    // TODO: exclude the existing nominations from the suggested validators
     let targets = nominators.targets.map((target) => keyring.encodeAddress(target, 0)); // 0 is Polkadot SS58 format; don't forget to change it if you're using Kusama
     targets = targets.map(async (target) => {
         return await getIdentity(target);
@@ -131,3 +136,37 @@ async function initBlockchain() {
     await initWallets();
 }
 initBlockchain();
+
+submitTransaction.addEventListener('click', async () => {
+    const currentBalance = await rpc_api?.query.system.account(selectedAccount.address).then((account) => account.data.free);
+    const chainDecimals = rpc_api.registry.chainDecimals;
+    const amountToStake = Math.round(Math.max(currentBalance * 0.9, currentBalance - 10 * Math.pow(10, chainDecimals)));
+
+    let transactions = [];
+    if (stakingSwitch.checked) {
+        transactions.push(rpc_api?.tx.staking.bond(amountToStake, 'Staked'));
+        let newNominations = suggestedValidators.map((validator) => validator.address);
+        if (validatorList.validationOptions.type === 'staking') {
+            newNominations = newNominations.concat(validatorList.validationOptions.currentValidators.map((validator) => validator.address));
+        };
+        transactions.push(rpc_api?.tx.staking.nominate(newNominations));
+    };
+    if (delegationSwitch.checked) {
+        // TODO: replace with the actual Kusamarian delegation address
+        // TODO: do we want a switch for the conviction level?
+        transactions.push(rpc_api?.tx.democracy.delegate(selectedAccount.address, "Locked6x", amountToStake));
+    };
+    if (stakingSwitch.checked || delegationSwitch.checked) {
+        transactions.push(rpc_api?.tx.system.remarkWithEvent('Stake\'n\'Vote by The Kusamarian'));
+    } else {
+        // No switches are checked, so we don't need to submit any transactions.
+        return;
+    }
+
+    const transaction = rpc_api?.tx.utility.batch(transactions);
+    const injector = await web3FromSource(selectedAccount.meta.source);
+    transaction?.signAndSend(selectedAccount.address, { signer: injector.signer }, ({ status }) => console.log(status))
+        .catch((error) => {
+            console.log(':( transaction failed', error);
+        });
+});
