@@ -18,6 +18,7 @@
 }
 
 body {
+    height: 100vh;
     padding: 10px;
     background: rgb(16,91,93);
 background: -moz-linear-gradient(90deg, rgba(16,91,93,1) 20%, rgba(154,28,84,1) 100%);

@@ -18,42 +18,186 @@
             <my-address-chooser id="address-chooser"></my-address-chooser>
         </div>
     </nav>
-    <section>
-        <div class="container">
-            <div class="columns is-vcentered">
-                <div class="column">
-                    <div class="field">
-                        <input id="stakingSwitch" type="checkbox" name="switchLarge" class="switch is-large is-rtl">
-                        <label for="stakingSwitch">I want tsssssso stake with you!</label>
-                      </div>
-                </div>
-                <div class="column">
-                    <my-validator-list id="validator-list"></my-validator-list>
-                </div>
+
+    <!-- -------------- justadev ------------------------- -->
+
+
+<div class="buttons-container">
+    <p class="title">SELECT NETWORK</p>
+
+    <div class="wrapper">
+      i
+      <div class="tooltip-part">
+        <p>Partners with:</p>
+        <img style="max-width: 75px;" src="logos/sik.png" alt="">
+      </div>
+    </div>
+
+    <label class="radio-img">
+      <input type="radio" name="layout" value="L" />
+      <div class="image dot"></div>
+    </label>
+
+    <div class="wrapper" style="position: absolute; width: 100%; top: 117px; right: -27px;">
+      i
+      <div class="tooltip-part">
+        <p>Partners with:</p>
+        <img style="max-width: 75px;" src="logos/lucky.png" alt="">
+      </div>
+    </div>
+
+
+    <label class=" radio-img">
+      <input type="radio" name="layout" value="S|S|S" />
+      <div class="image ksm"></div>
+    </label>
+   
+  </div>
+
+  <div>
+    <p class="title" style="top: 407px; position: relative;left: -55px;">SELECT ACTION</p>
+    <button id="myBtnN" class="centered btn-d">Stake</button>
+    <button id="myBtnD" class="centered btn-n">Vote</button>
+  </div>
+  <!-- The Modal -->
+  <div id="myModalN" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2>Stake</h2>
+      </div>
+      <div class="modal-body">
+
+        <div class="columns is-vcentered">
+            <div class="column">
+                <div class="field">
+                    <input id="stakingSwitch" type="checkbox" name="switchLarge" class="switch is-large is-rtl">
+                    <label for="stakingSwitch">I want tsssssso stake with you!</label>
+                  </div>
+            </div>
+            <div class="column">
+                <my-validator-list id="validator-list"></my-validator-list>
             </div>
         </div>
-    </section>
-    <div class="is-divider"></div>
-    <section>
-        <div class="container">
-            <div class="columns is-vcentered">
-                <div class="column">
-                    <div class="field">
-                        <input id="delegationSwitch" type="checkbox" name="switchLarge" class="switch is-large is-rtl">
-                        <label for="delegationSwitch">I want to delegate my votes to you!</label>
-                    </div>
-                </div>
-                <div class="column">
-                    <!-- Callout explaining the rules we're following when voting on your behalf -->
-                    <div class="notification is-warning is-light">
-                        Delegate votes to the Kusamarian voting collective
+
+            <div class="input-group">
+            <input value="" class="form-control" type="text" name="text-1542372332072" id="text-1542372332072"
+                required="required" placeholder="DOT Amount">
+            <label for="text-1542372332072">DOT Amount</label>
+            <!-- <div class="req-mark">!</div> -->
+            </div>
+
+            <br><br><br>
+            <p>Validator Selection</p>
+
+
+
+
+            <button id="boton" class="pool">
+            <p class="pool-name">Just The Kus</p>
+            
+            </button>
+
+            <div class="tooltip" id="tooltip">
+            If you are not already staking with this account, we recommend the full set to
+            ensure that you get the top rewards.
+            </div>
+
+
+            <button class="pool">
+            <p class="pool-name">The Kus Partner Set</p>
+            
+            </button>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="myModalD" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close">&times;</span>
+        <h2>Vote</h2>
+        <ul>
+          <li>
+            <input type="radio" id="f-option" name="selector">
+            <label for="f-option">Vote</label>
+            <div class="check"></div>
+          </li>
+
+          <li>
+            <input type="radio" id="s-option" name="selector">
+            <label for="s-option">UnVote</label>
+            <div class="check">
+              <div class="inside"></div>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+      <div class="modal-body">
+
+        <div class="columns is-vcentered">
+            <div class="column">
+                <div class="field">
+                    <input id="delegationSwitch" type="checkbox" name="switchLarge" class="switch is-large is-rtl">
+                    <label for="delegationSwitch">I want to delegate my votes to you!</label>
                 </div>
             </div>
+            <div class="column">
+                <!-- Callout explaining the rules we're following when voting on your behalf -->
+                <div class="notification is-warning is-light">
+                    Delegate votes to the Kusamarian voting collective
+            </div>
         </div>
+    </div>
+        <div class="input-group">
+          <input value="" class="form-control" type="text" name="text-1542372332072" id="text-1542372332072"
+            required="required" placeholder="DOT Amount">
+          <label for="text-1542372332072">DOT Amount</label>
         </div>
-    </section>
-    <div class="is-divider"></div>
-    <section>
+
+        <div class="filters">
+          <select id="main_select_services" class="select-club-services" name="club-services">
+            <option value=".abrikosovaya" selected>7 Days <br> x1</option>
+            <option value=".bratskaya">14 Days <br> x2</option>
+            <option value=".lesi-ukrainki">28 Days<br> x3</option>
+            <option value=".lesi-ukrainki">56 Days <br> x4</option>
+            <option value=".lesi-ukrainki">112 Days <br> x5</option>
+            <option value=".lesi-ukrainki">224 Days <br> x6</option>
+          </select>
+        </div>
+        <div style="width: 100%; text-align: center;">
+          <button class="delegate-button">Vote</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  
+
+  </div>
+
+
+
+
+
+
+
+
+    <!-- <section>
+        <div class="container">
+          
+        </div>
+    </section> -->
+    
+
+    <!-- <section>
         <div class="container">
             <div class="columns is-centered">
                 <div class="column is-narrow">
@@ -61,9 +205,170 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script type="module">
         import '/src/app.js';
+
+
+// Get the modal
+var modalN = document.getElementById("myModalN");
+var modalD = document.getElementById("myModalD");
+var modalW = document.getElementById("myModalW");
+
+// Get the button that opens the modal
+var btnN = document.getElementById("myBtnN");
+var btnD = document.getElementById("myBtnD");
+var btnW = document.getElementById("myBtnW");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+// When the user clicks the button, open the modal 
+btnN.onclick = function () {
+  modalN.style.display = "block";
+}
+
+btnD.onclick = function () {
+  modalD.style.display = "block";
+}
+
+btnW.onclick = function () {
+  modalW.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+  modalN.style.display = "none";
+  modalD.style.display = "none";
+  modalW.style.display = "none";
+}
+
+// span.onclick = function() {
+
+// }
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == modalN) {
+    modalN.style.display = "none";
+  } else if (event.target == modalD) {
+    modalD.style.display = "none";
+  } else if (event.target == modalW) {
+    modalW.style.display = "none";
+  }
+}
+
+// window.onclick = function(event) {
+//   if (event.target == modalD) {
+//     modalD.style.display = "none";
+//   }
+// }
+
+
+
+
+
+$('select.select-club-services').each(function () {
+
+  var dropdown = $('<div />').addClass('select-club-services selectDropdown');
+
+  $(this).wrap(dropdown);
+
+  var label = $('<span />').text($(this).attr('placeholder')).insertAfter($(this));
+  var list = $('<ul />');
+
+  $(this).find('option').each(function () {
+    list.append($('<li />').append($('<a />').text($(this).text())));
+  });
+
+  list.insertAfter($(this));
+
+  if ($(this).find('option:selected').length) {
+    label.text($(this).find('option:selected').text());
+    list.find('li:contains(' + $(this).find('option:selected').text() + ')').addClass('active');
+    $(this).parent().addClass('filled');
+  }
+
+});
+
+$(document).on('click touch', '.selectDropdown ul li a', function (e) {
+  e.preventDefault();
+  var dropdown = $(this).parent().parent().parent();
+  var active = $(this).parent().hasClass('active');
+  var label = active ? dropdown.find('select').attr('placeholder') : $(this).text();
+
+  dropdown.find('option').prop('selected', false);
+  dropdown.find('ul li').removeClass('active');
+
+  dropdown.toggleClass('filled', !active);
+  dropdown.children('span').text(label);
+
+  if (!active) {
+    dropdown.find('option:contains(' + $(this).text() + ')').prop('selected', true);
+    $(this).parent().addClass('active');
+  }
+
+  dropdown.removeClass('open');
+});
+
+$('.select-club-services > span').on('click touch', function (e) {
+  var self = $(this).parent();
+  self.toggleClass('open');
+});
+
+$(document).on('click touch', function (e) {
+  var dropdown = $('.select-club-services');
+  if (dropdown !== e.target && !dropdown.has(e.target).length) {
+    dropdown.removeClass('open');
+  }
+});
+
+
+
+function tooltip(btn, tool) {
+  var btn = document.getElementById(btn);
+  var tool = document.getElementById(tool);
+  var open = false;
+
+  tool.addEventListener('click', function (event) {
+    event.stopPropagation();
+  });
+
+  btn.addEventListener('click', function (event) {
+    event.stopPropagation();
+    if (!open) {
+      tool.classList.add('abierto');
+      open = true;
+      document.addEventListener('click', ocultar);
+
+    } else {
+      // Oculto el tooltip.
+      tool.classList.remove('abierto');
+      open = false;
+      document.removeEventListener('click', ocultar);
+    }
+  });
+  function ocultar() {
+
+    tool.classList.remove('abierto');
+    open = false;
+    document.removeEventListener('click', ocultar);
+
+
+  }
+
+}
+
+tooltip('boton', 'tooltip');
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
