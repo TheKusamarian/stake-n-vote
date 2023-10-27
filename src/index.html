@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Stake'n'Vote</title>
+    <title>Kusamarian Stake'n'Vote</title>
     <style>
         @import "/src/styles.css";
     </style>
@@ -21,7 +21,9 @@
 
     <!-- -------------- justadev ------------------------- -->
 
-
+    <section>
+        <div class="container">
+      
 <div class="buttons-container">
     <p class="title">SELECT NETWORK</p>
 
@@ -53,12 +55,19 @@
     </label>
    
   </div>
-
-  <div>
-    <p class="title" style="top: 407px; position: relative;left: -55px;">SELECT ACTION</p>
-    <button id="myBtnN" class="centered btn-d">Stake</button>
-    <button id="myBtnD" class="centered btn-n">Vote</button>
+      
+</div>
+</section> 
+<section>
+    <div class="container">
+  
+    <p class="title">SELECT ACTION</p>
+    <div class="container">
+        <button id="myBtnN" class="centered btn-d">Stake</button>
+        <button id="myBtnD" class="centered btn-n">Vote</button>
+    </div>
   </div>
+  </section>
   <!-- The Modal -->
   <div id="myModalN" class="modal">
 
@@ -172,7 +181,8 @@
           </select>
         </div>
         <div style="width: 100%; text-align: center;">
-          <button class="delegate-button">Vote</button>
+          <!-- <button class="delegate-button">Vote</button> -->
+          <button id="myBtnW" class="delegate-button">Connect Wallet</button>
         </div>
       </div>
     </div>
@@ -190,11 +200,7 @@
 
 
 
-    <!-- <section>
-        <div class="container">
-          
-        </div>
-    </section> -->
+ 
     
 
     <!-- <section>
