@@ -114,7 +114,7 @@ background: linear-gradient(90deg, rgba(16,91,93,1) 20%, rgba(154,28,84,1) 100%)
 
 .centered {
     position: fixed;
-    top: 66%;
+    top: 53%;
     left: 49%;
     /* bring your own prefixes */
     transform: translate(-143%, -50%);
@@ -209,6 +209,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
     float: right;
     font-size: 28px;
     font-weight: bold;
+    display: none;
 }
 
 .close:hover,
@@ -219,7 +220,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
 }
 
 .modal-header {
-    padding: 2px 16px;
+    padding: 15px;
     background-color: #361C28;
     color: white;
     border-radius: 10px 10px 0 0;
@@ -227,6 +228,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
 
 .modal-body {
     padding: 2px 16px;
+    text-align: center;
 }
 
 .modal-footer {
@@ -408,8 +410,8 @@ ul li{
     border-radius: 100%;
     height: 15px;
     width: 15px;
-    top: 5px;
-      left: 5px;
+    /* top: 5px; */
+      /* left: 5px; */
     margin: auto;
       transition: background 0.25s linear;
       -webkit-transition: background 0.25s linear;
@@ -464,7 +466,7 @@ ul li{
     box-shadow: 0 17px 40px 0 rgba(75, 128, 182, 0.07);
     margin-bottom: 22px;
     position: relative;
-    margin-top: 150px;
+    margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
     font-size: 17px;
@@ -926,4 +928,9 @@ select.select-club-services {
     
     .lte8 .wrapper:hover .tooltip-part {
     display: block;
+    }
+
+    .dot-check my-validator-list{
+        margin-top: 80px;
+        display: block;
     }
