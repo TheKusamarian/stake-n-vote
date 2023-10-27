@@ -46,7 +46,7 @@ class MyAddressChooser extends LitElement {
                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
                         <span>${this.accounts[this.selectedAccount].meta.name}</span>
                         <span class="icon is-small">
-                            🔻
+                        ▼
                         </span>
                     </button>
                 </div>

@@ -27,6 +27,14 @@ background: linear-gradient(90deg, rgba(16,91,93,1) 20%, rgba(154,28,84,1) 100%)
 /* filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#105b5d",endColorstr="#9a1c54",GradientType=1); */
 }
 
+.dropdown-trigger .button {
+    border-radius: 10px;
+    background: transparent;
+    border: 2px solid white;
+    color: white;
+    font-family: 'kus';
+}
+
 .navbar{
     background-color: transparent;
 }
@@ -139,7 +147,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
     display: none;
     position: fixed;
     z-index: 1;
-    padding-top: 20px;
+    padding-top: 8em;
     left: 0;
     top: 0;
     width: 100%;
@@ -166,7 +174,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
     animation-name: animatetop;
     animation-duration: 0.4s;
     border-radius: 10px;
-    min-height: 500px;
+    min-height: 680px;
     color: #fff;
 }
 
@@ -266,7 +274,7 @@ box-shadow: 0px 3px 19px 1px rgba(0, 0, 0, 0.75);
     margin: 10px;
     display: inline-block;
     font-size: 14px;
-    padding: 5px;
+    padding: 20px 0;
     font-weight: 100;
     font-family: kusthin;
     background-color: rgba(rgb(65, 65, 65), 0.3);
@@ -815,7 +823,7 @@ select.select-club-services {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: 536px;
+    margin-top: 80px;
     left: 24px;
     background: #7f7f7f;
     border-radius: 10px;
