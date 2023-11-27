@@ -4,13 +4,11 @@ import { useState } from "react";
 import { ChainSwitch } from "./chain-switch";
 import { DelegateStakeButtons } from "./buttons";
 
-export function DelegateAndStake({ chain }: { chain: string }) {
-  const [activeChain, setActiveChain] = useState(chain);
-
+export function DelegateAndStake() {
   return (
     <div className="max-w-xl">
       <ChainSwitch />
-      <DelegateStakeButtons active={activeChain} />
+      <DelegateStakeButtons />
     </div>
   );
 }

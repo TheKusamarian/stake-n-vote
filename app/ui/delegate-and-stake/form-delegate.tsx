@@ -1,13 +1,13 @@
 "use client";
 
-import { Select, SelectSection, SelectItem } from "@nextui-org/select";
+import { Select, SelectItem } from "@nextui-org/select";
 import { Input } from "@nextui-org/input";
 import { Slider } from "@nextui-org/slider";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@nextui-org/button";
-import { useEffect, useState } from "react";
-import { delegateToTheKus, sendDelegateTx, useTx } from "@/app/txs/txs";
-import { formatBalance, bnToBn, BN_ZERO } from "@polkadot/util";
+import { useState } from "react";
+import { sendDelegateTx } from "@/app/txs/txs";
+import { bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
@@ -165,8 +165,10 @@ export default function FormDelegate() {
           marks={marks}
           //   defaultValue={1}
           value={conviction}
-          onChange={(value) => setConviction(value)}
-          getValue={(conviction) => `${marks[conviction].description}`}
+          onChange={(value) => setConviction(value as number)}
+          getValue={(conviction) =>
+            `${marks[conviction as number].description}`
+          }
           className="max-w-full"
           classNames={{ track: "bg-default-100" }}
         />
