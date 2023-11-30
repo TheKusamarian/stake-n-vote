@@ -179,8 +179,7 @@ export default function FormDelegate() {
           className="primary w-full text-lg border-3 border-white h-24 bg-[#105b5d] hover:bg-[#9a1c54]"
           onClick={delegateToTheKus}
         >
-          Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"} to
-          the Kusamarian
+          Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
         </Button>
       </div>
     </form>

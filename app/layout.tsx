@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 
 import { NextUIProvider } from "@nextui-org/system";
 import { Providers } from "./providers";
 import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
-
-const inter = Inter({ subsets: ["latin"] });
+import { inter, pt_mono } from "./fonts";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} `}>
+      <body className={`${pt_mono.className} `}>
         <Providers>
           <div className="relative flex flex-col h-screen">
             <header className="h-24">

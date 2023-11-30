@@ -29,22 +29,22 @@ export default function ModalDelegate(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Delegate Your Votes to The Kusamarian
+              Delegate Votes to The Kus Delegate
             </ModalHeader>
-            <ModalBody>
+            <ModalBody className="text-sm">
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
                 pulvinar risus non risus hendrerit venenatis. Pellentesque sit
                 amet hendrerit risus, sed porttitor quam.
               </p>
               <FormDelegate />
-              <p>
-                Magna exercitation reprehenderit magna aute tempor cupidatat
-                consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                aliqua enim laboris do dolor eiusmod. Et mollit incididunt nisi
-                consectetur esse laborum eiusmod pariatur proident Lorem eiusmod
-                et. Culpa deserunt nostrud ad veniam.
+              <p className="my-2 text-center">
+                The Kus Delegate is directed by verified humans from The
+                Kusamarian community -{" "}
+                <a className="underline" href="https://discord.gg/eauz25UP">
+                  Join our Discord
+                </a>{" "}
+                after you delegate!
               </p>
             </ModalBody>
           </>

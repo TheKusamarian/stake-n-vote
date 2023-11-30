@@ -98,7 +98,7 @@ export const WalletConnect = () => {
             size="lg"
             className="p-7 bg-transparent max-w-[300px]"
           >
-            <span className="truncate">
+            <span className="truncate text-sm sm:flex hidden">
               {selectedAccount?.meta?.name ||
                 trimAddress(selectedAccount?.address)}
             </span>
@@ -141,8 +141,9 @@ export const WalletConnect = () => {
                   />
                 }
                 aria-label={account.address}
+                className="hover:bg-default-100"
               >
-                <span className="truncate">
+                <span className="truncate text-xs">
                   {account.meta?.name || trimAddress(account.address)}
                 </span>
               </DropdownItem>
@@ -157,8 +158,9 @@ export const WalletConnect = () => {
               value={"logout"}
               aria-label={"logout"}
               onClick={disconnect}
+              className="hover:bg-default-100"
             >
-              Logout {selectedAccount?.meta?.name}
+              Logout
             </DropdownItem>
           </DropdownSection>
         </DropdownMenu>
