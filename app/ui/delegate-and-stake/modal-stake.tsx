@@ -118,7 +118,7 @@ function Success({
 
   return (
     <>
-      <p>Looks like you're already staking with The Kus!</p>
+      <p>Looks like you&apos;re already staking with The Kus!</p>
       <Button color="danger" onClick={goDelegate}>
         Delegate voting power
       </Button>
