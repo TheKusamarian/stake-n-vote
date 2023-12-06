@@ -174,11 +174,7 @@ export default function FormDelegate() {
         />
       </div>
       <div className="w-full flex gap-2 items-end">
-        <Button
-          variant="bordered"
-          className="primary w-full text-lg border-3 border-white h-24 bg-[#105b5d] hover:bg-[#9a1c54]"
-          onClick={delegateToTheKus}
-        >
+        <Button color="danger" className="w-full" onClick={delegateToTheKus}>
           Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
         </Button>
       </div>

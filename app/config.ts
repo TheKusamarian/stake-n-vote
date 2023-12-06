@@ -40,21 +40,37 @@ export const POLKADOT_DELEGATOR =
 export const KUSAMA_DELEGATOR =
   "JHTfbt39EL1CcbKteN6hG5L5pWo9XWi9XFiyuS9q24cAc8u";
 
+// Kusamarian Validators
+export const POLKADOT_VALIDATOR =
+  "13zRKESAgaKG4xyYrZnAA4Qdu1iVVMsrdiAnhnnnd4CB6TpU";
+
+export const KUSAMA_VALIDATOR =
+  "FZjqDWyTA4iP5nUfdYCurwVBz15bj8u1bH3wA5PYmP9fE3j";
+
 export const CHAIN_CONFIG: {
   [key: string]: {
     ss58Format: number;
     tokenDecimals: number;
     tokenSymbol: string;
+    maxNominators: number;
+    delegator: string;
+    validator: string;
   };
 } = {
   Polkadot: {
     ss58Format: 0,
     tokenDecimals: 10,
     tokenSymbol: "DOT",
+    maxNominators: 16,
+    delegator: POLKADOT_DELEGATOR,
+    validator: POLKADOT_VALIDATOR,
   },
   Kusama: {
     ss58Format: 2,
     tokenDecimals: 12,
     tokenSymbol: "KSM",
+    maxNominators: 24,
+    delegator: KUSAMA_DELEGATOR,
+    validator: KUSAMA_VALIDATOR,
   },
 };

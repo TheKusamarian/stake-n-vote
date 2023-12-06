@@ -20,6 +20,16 @@ export async function sendDelegateTx(
     value
   );
   const res = await sendAndFinalize(api, tx, signer, address);
+  return res;
+}
 
+export async function nominateTx(
+  api: ApiPromise | undefined,
+  signer: Signer | undefined,
+  address: string | undefined,
+  targets: string[]
+) {
+  const tx = api?.tx.staking.nominate(targets);
+  const res = await sendAndFinalize(api, tx, signer, address);
   return res;
 }

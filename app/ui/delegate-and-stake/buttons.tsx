@@ -45,7 +45,11 @@ export function DelegateStakeButtons() {
         isOpen={isDelegatingOpen}
         onOpenChange={onDelegatingOpenChange}
       />
-      <ModalStake isOpen={isStakingOpen} onOpenChange={onStakingOpenChange} />
+      <ModalStake
+        isOpen={isStakingOpen}
+        onOpenChange={onStakingOpenChange}
+        onDelegatingOpenChange={onDelegatingOpenChange}
+      />
     </div>
   );
 }

@@ -13,6 +13,7 @@
     "@nextui-org/dropdown": "^2.1.16",
     "@nextui-org/input": "^2.1.16",
     "@nextui-org/modal": "^2.0.28",
+    "@nextui-org/radio": "^2.0.25",
     "@nextui-org/select": "^2.1.20",
     "@nextui-org/slider": "^2.2.5",
     "@nextui-org/system": "^2.0.15",
