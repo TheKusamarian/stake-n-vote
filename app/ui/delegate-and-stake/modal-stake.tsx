@@ -58,10 +58,14 @@ export default function ModalStake(props: ModalPropType) {
             <ModalBody className="text-sm">
               {isAccountBalanceLoading || isNominatorsLoading ? (
                 <>Loading</>
-              ) : freeBalance === "0" ? (
-                <NoFunds tokenSymbol={tokenSymbol} />
               ) : nominators?.length === 0 ? (
-                <StakeToRecommendedSet />
+                <>
+                  {freeBalance === "0" ? (
+                    <NoFunds tokenSymbol={tokenSymbol} />
+                  ) : (
+                    <StakeToRecommendedSet />
+                  )}
+                </>
               ) : nominators?.includes(kusValidator) ? (
                 <Success
                   onClose={onClose}
@@ -129,7 +133,7 @@ function Success({
 function NoFunds({ tokenSymbol }: { tokenSymbol: string }) {
   return (
     <p>
-      Without funds, you cannot stake, buy {tokenSymbol} <a href="#">here</a>
+      Balance 0 - Deposit {tokenSymbol} or Buy {tokenSymbol} Here
     </p>
   );
 }
