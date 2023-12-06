@@ -8,15 +8,17 @@ import React, {
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { CHAIN_CONFIG } from "../config";
 
+export type ChainConfigType = {
+  ss58Format: number;
+  tokenDecimals: number;
+  tokenSymbol: string;
+};
+
 interface ChainContextType {
   api: ApiPromise | undefined;
   activeChain: string;
   setActiveChain: (chain: string) => void;
-  chainConfig: {
-    ss58Format: number;
-    tokenDecimals: number;
-    tokenSymbol: string;
-  };
+  chainConfig: ChainConfigType;
 }
 
 export const ChainContext = createContext<ChainContextType | undefined>(
@@ -30,10 +32,14 @@ interface ChainProviderProps {
 const ChainProvider = ({ children }: ChainProviderProps) => {
   const [api, setApi] = useState<ApiPromise | undefined>(undefined);
   const [activeChain, setActiveChain] = useState<string>("Kusama"); // Default to Kusama
-
-  const chainConfig = CHAIN_CONFIG[activeChain];
+  const [chainConfig, setChainConfig] = useState<ChainConfigType>({
+    ss58Format: 2,
+    tokenDecimals: 12,
+    tokenSymbol: "KSM",
+  });
 
   useEffect(() => {
+    console.log("activeChain changed", activeChain, chainConfig);
     const initApi = async () => {
       const wsProvider = new WsProvider(
         activeChain === "Polkadot"
@@ -45,6 +51,7 @@ const ChainProvider = ({ children }: ChainProviderProps) => {
     };
 
     initApi();
+    setChainConfig(CHAIN_CONFIG[activeChain]);
 
     return () => {
       api?.disconnect();

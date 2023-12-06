@@ -4,6 +4,7 @@ import "./globals.css";
 import Image from "next/image";
 
 import { NextUIProvider } from "@nextui-org/system";
+import "@polkadot/api-augment";
 import { Providers } from "./providers";
 import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
 import { inter, pt_mono } from "./fonts";

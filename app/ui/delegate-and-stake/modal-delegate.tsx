@@ -11,11 +11,20 @@ import {
 import styles from "./modal.module.scss";
 import FormDelegate from "./form-delegate";
 import { sendDelegateTx } from "@/app/txs/txs";
+import { usePolkadotExtension } from "@/app/providers/extension-provider";
+import useAccountBalances from "@/app/hooks/use-account-balance";
+import { useChain } from "@/app/providers/chain-provider";
 
 type ModalPropType = Omit<ModalProps, "children">;
 
 export default function ModalDelegate(props: ModalPropType) {
   const { isOpen, onOpenChange } = props;
+  const { activeChain, chainConfig } = useChain();
+  const { tokenSymbol } = chainConfig;
+  const { data: accountBalance, isLoading } = useAccountBalances();
+  const { stakedBalance } = accountBalance || {};
+
+  console.log("modalDelegate", accountBalance);
 
   return (
     <Modal
@@ -29,14 +38,15 @@ export default function ModalDelegate(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Delegate Votes to The Kus Delegate
+              Delegate Votes to The Kus Delegate {activeChain}
             </ModalHeader>
             <ModalBody className="text-sm">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-                pulvinar risus non risus hendrerit venenatis. Pellentesque sit
-                amet hendrerit risus, sed porttitor quam.
-              </p>
+              {!isLoading && accountBalance && stakedBalance !== "0" && (
+                <p>
+                  Your staked {stakedBalance} is already locked for 28 days -
+                  put it to work directing the network!
+                </p>
+              )}
               <FormDelegate />
               <p className="my-2 text-center">
                 The Kus Delegate is directed by verified humans from The
