@@ -61,7 +61,10 @@ export default function ModalStake(props: ModalPropType) {
               ) : nominators?.length === 0 ? (
                 <>
                   {freeBalance === "0" ? (
-                    <NoFunds tokenSymbol={tokenSymbol} />
+                    <NoFunds
+                      tokenSymbol={tokenSymbol}
+                      accountBalance={accountBalance}
+                    />
                   ) : (
                     <StakeToRecommendedSet />
                   )}
@@ -130,36 +133,38 @@ function Success({
   );
 }
 
-function NoFunds({ tokenSymbol }: { tokenSymbol: string }) {
+function NoFunds({
+  tokenSymbol,
+  accountBalance,
+}: {
+  tokenSymbol: string;
+  accountBalance: any;
+}) {
   return (
-    <p>
-      Balance 0 - Deposit {tokenSymbol} or Buy {tokenSymbol} Here
-    </p>
+    <>
+      <p>
+        Balance 0 - Deposit {tokenSymbol} or Buy {tokenSymbol} Here
+      </p>
+      <pre className="text-xs">{JSON.stringify(accountBalance, null, 2)}</pre>
+    </>
   );
 }
 
 function AddToPool({ tokenSymbol }: { tokenSymbol: string }) {
   return (
     <p>
-      You must add {tokenSymbol} to the pool <a href="#">here</a>
+      Stake with nomination Pool partners Talisman (Stakes under minimum stake
+      do not have voting power while in nomination pools)
     </p>
   );
 }
 
 function StakeToRecommendedSet() {
-  return (
-    <p>
-      Stake to the recommended set of validators <a href="#">here</a>
-    </p>
-  );
+  return <p>Stake with Kus Validation and friends</p>;
 }
 
 function AddKusToSet() {
-  return (
-    <p>
-      Add Kus to the recommended set of validators <a href="#">here</a>
-    </p>
-  );
+  return <p>Add Kus Validation to your existing nominator set</p>;
 }
 
 function ReplaceOneWithKus({
