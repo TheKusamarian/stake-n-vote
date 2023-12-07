@@ -14,9 +14,14 @@ interface Balances {
 async function fetchBalances(
   api: ApiPromise | undefined,
   chainConfig: ChainConfigType | undefined,
-  address: string
+  address: string | undefined
 ): Promise<Balances> {
-  console.log("fetchBalances", chainConfig, address);
+  if (!api || !chainConfig || !address) {
+    return {
+      freeBalance: "0",
+      stakedBalance: "0",
+    };
+  }
 
   const account = await api?.query.system.account(address);
   const freeBalance = account ? account.data.free.toString() : "0";
@@ -30,12 +35,12 @@ async function fetchBalances(
     freeBalance: formatBalance(freeBalance, {
       decimals: chainConfig?.tokenDecimals,
       withUnit: chainConfig?.tokenSymbol,
-      forceUnit: "-",
+      // forceUnit: "-",
     }),
     stakedBalance: formatBalance(stakedBalance, {
       decimals: chainConfig?.tokenDecimals,
       withUnit: chainConfig?.tokenSymbol,
-      forceUnit: "-",
+      // forceUnit: "-",
     }),
   };
 }
@@ -48,13 +53,13 @@ function useAccountBalances() {
   const userAddress =
     selectedAccount?.address && ss58Format !== undefined
       ? encodeAddress(selectedAccount.address, ss58Format)
-      : "";
+      : undefined;
 
   return useQuery<Balances, Error>(
-    ["accountBalances", activeChain, userAddress],
+    ["accountBalances", activeChain],
     () => fetchBalances(api, chainConfig, userAddress),
     {
-      enabled: !!userAddress, // Only run if an address is provided
+      enabled: !!api && !!userAddress, // Only run if an address is provided
     }
   );
 }

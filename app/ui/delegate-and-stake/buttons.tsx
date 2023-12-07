@@ -41,15 +41,19 @@ export function DelegateStakeButtons() {
         Delegate {chainConfig.tokenSymbol} Votes
       </Button>
 
-      <ModalDelegate
-        isOpen={isDelegatingOpen}
-        onOpenChange={onDelegatingOpenChange}
-      />
-      <ModalStake
-        isOpen={isStakingOpen}
-        onOpenChange={onStakingOpenChange}
-        onDelegatingOpenChange={onDelegatingOpenChange}
-      />
+      {isDelegatingOpen && (
+        <ModalDelegate
+          isOpen={isDelegatingOpen}
+          onOpenChange={onDelegatingOpenChange}
+        />
+      )}
+      {isStakingOpen && (
+        <ModalStake
+          isOpen={isStakingOpen}
+          onOpenChange={onStakingOpenChange}
+          onDelegatingOpenChange={onDelegatingOpenChange}
+        />
+      )}
     </div>
   );
 }

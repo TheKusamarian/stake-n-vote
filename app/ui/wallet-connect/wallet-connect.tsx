@@ -82,8 +82,6 @@ export const WalletConnect = () => {
 
   if (accounts.length === 0) return <p>No account found</p>;
 
-  console.log("selectedAccount", selectedAccount?.address);
-
   return (
     <div className="max-w-xs">
       <Dropdown

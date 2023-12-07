@@ -27,7 +27,15 @@ export function useAccountNominators() {
 
       // Extracting the addresses from staking info
       const { targets } = stakingInfo.unwrap();
+
+      console.log(
+        "useAccountNominators",
+        targets.map((target) => target.toString())
+      );
       return targets.map((target) => target.toString());
+    },
+    {
+      enabled: !!api && !!userAddress,
     }
   );
 }

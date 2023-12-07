@@ -12,15 +12,10 @@ import { RadioGroup, Radio } from "@nextui-org/radio";
 import styles from "./modal.module.scss";
 import { useAccountNominators } from "@/app/hooks/use-account-nominations";
 import { useChain } from "@/app/providers/chain-provider";
-import {
-  CHAIN_CONFIG,
-  KUSAMA_VALIDATOR,
-  POLKADOT_VALIDATOR,
-} from "@/app/config";
+import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
-import { Signer } from "@polkadot/api/types";
 import { nominateTx } from "@/app/txs/txs";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
@@ -85,6 +80,7 @@ export default function ModalStake(props: ModalPropType) {
                 <>
                   <p>Something went wrong, try refreshing the page.</p>
                   <pre className="text-xs">
+                    {nominators?.length} / {maxNominators}
                     {JSON.stringify(nominators, null, 2)}
                   </pre>
                 </>

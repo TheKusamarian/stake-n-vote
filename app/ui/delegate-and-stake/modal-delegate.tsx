@@ -24,8 +24,6 @@ export default function ModalDelegate(props: ModalPropType) {
   const { data: accountBalance, isLoading } = useAccountBalances();
   const { stakedBalance } = accountBalance || {};
 
-  console.log("modalDelegate", accountBalance);
-
   return (
     <Modal
       isOpen={isOpen}

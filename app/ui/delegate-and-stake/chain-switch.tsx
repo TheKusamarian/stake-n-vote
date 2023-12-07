@@ -1,9 +1,16 @@
 import Image from "next/image";
 import { clsx } from "clsx";
 import { useChain } from "@/app/providers/chain-provider";
+import { useQueryClient } from "react-query";
 
 export function ChainSwitch() {
   const { api, activeChain, setActiveChain } = useChain();
+  const queryClient = useQueryClient();
+
+  function handleChainChange(chain: string) {
+    setActiveChain(chain);
+  }
+
   return (
     <div className="flex gap-4 justify-center">
       <button
@@ -14,7 +21,7 @@ export function ChainSwitch() {
             "opacity-50": activeChain !== "Kusama",
           }
         )}
-        onClick={() => setActiveChain("Kusama")}
+        onClick={() => handleChainChange("Kusama")}
       >
         <Image
           src="/kusama.png"
@@ -32,7 +39,7 @@ export function ChainSwitch() {
             "opacity-50": activeChain !== "Polkadot",
           }
         )}
-        onClick={() => setActiveChain("Polkadot")}
+        onClick={() => handleChainChange("Polkadot")}
       >
         <Image
           src="/polkadot.svg"

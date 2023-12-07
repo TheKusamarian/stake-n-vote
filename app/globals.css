@@ -20,3 +20,18 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(90deg,#105b5d 20%,#9a1c54 100%)
 }
+
+section[role="dialog"] button {
+  color: #fff;
+  border: 2px solid transparent;
+
+  &:hover {
+    background: transparent;
+    border: 2px solid white;
+  }
+
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+}
