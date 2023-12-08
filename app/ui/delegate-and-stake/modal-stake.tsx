@@ -16,9 +16,12 @@ import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
-import { nominateTx } from "@/app/txs/txs";
+import { joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
+import { BN_MAX_INTEGER, bnToBn, formatBalance } from "@polkadot/util";
+import { Input } from "@nextui-org/input";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -34,11 +37,17 @@ export default function ModalStake(props: ModalPropType) {
     useAccountNominators();
   const { data: accountBalance, isLoading: isAccountBalanceLoading } =
     useAccountBalances();
-  const { freeBalance } = accountBalance || {};
+
+  const { data: minNominatorBond, isLoading: isMinNominatorBondLoading } =
+    useMinNominatorBond() || { data: "0" };
+
+  const { freeBalance } = accountBalance || { freeBalance: "0" };
+
   const {
     maxNominators,
     validator: kusValidator,
     tokenSymbol,
+    tokenDecimals,
   } = CHAIN_CONFIG[activeChain];
 
   return (
@@ -55,8 +64,10 @@ export default function ModalStake(props: ModalPropType) {
             <ModalHeader className="flex flex-col gap-1">
               Stake {tokenSymbol} with Kus Validation
             </ModalHeader>
-            <ModalBody className="text-sm">
-              {isAccountBalanceLoading || isNominatorsLoading ? (
+            <ModalBody className="text-sm mb-4">
+              {isAccountBalanceLoading ||
+              isNominatorsLoading ||
+              isMinNominatorBondLoading ? (
                 <>Loading</>
               ) : nominators?.length === 0 ? (
                 <>
@@ -64,6 +75,18 @@ export default function ModalStake(props: ModalPropType) {
                     <NoFunds
                       tokenSymbol={tokenSymbol}
                       accountBalance={accountBalance}
+                    />
+                  ) : minNominatorBond &&
+                    bnToBn(freeBalance).lt(bnToBn(minNominatorBond)) ? (
+                    <MaybeAddToPool
+                      tokenSymbol={tokenSymbol}
+                      tokenDecimals={tokenDecimals}
+                      api={api}
+                      getSigner={getSigner}
+                      activeChain={activeChain}
+                      accountBalance={accountBalance}
+                      selectedAccount={selectedAccount}
+                      minNominatorBond={minNominatorBond}
                     />
                   ) : (
                     <StakeToRecommendedSet
@@ -99,7 +122,7 @@ export default function ModalStake(props: ModalPropType) {
               )}
               {/* <p>{JSON.stringify(nominators, null, 2)}</p> */}
               {/* <FormStake /> */}
-              <div className="my-2 text-xs">
+              {/* <div className="my-2 text-xs">
                 <p>
                   The Kus Delegate is directed by verified humans from The
                   Kusamarian community{" "}
@@ -110,7 +133,7 @@ export default function ModalStake(props: ModalPropType) {
                   </a>{" "}
                   after you delegate!
                 </p>
-              </div>
+              </div> */}
             </ModalBody>
           </>
         )}
@@ -158,12 +181,95 @@ function NoFunds({
   );
 }
 
-function AddToPool({ tokenSymbol }: { tokenSymbol: string }) {
+function MaybeAddToPool({
+  api,
+  getSigner,
+  tokenSymbol,
+  tokenDecimals,
+  activeChain,
+  accountBalance,
+  selectedAccount,
+  minNominatorBond,
+}: {
+  api: ApiPromise | undefined;
+  getSigner: any;
+  activeChain: string;
+  tokenSymbol: string;
+  tokenDecimals: number;
+  accountBalance: any;
+  selectedAccount: InjectedAccountWithMeta | null;
+  minNominatorBond: any;
+}) {
+  const [amount, setAmount] = useState<string>("");
+
+  const joinNominationPool = async () => {
+    const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
+
+    if (!poolToJoin) {
+      throw new Error("No pool to join");
+    }
+
+    const signer = await getSigner();
+    const tx = await joinPool(
+      api,
+      signer,
+      selectedAccount?.address,
+      bnToBn(amount).mul(bnToBn(10).pow(bnToBn(tokenDecimals))),
+      poolToJoin
+    );
+  };
+
+  const stakeMax = () => {
+    console.log(" you have ", accountBalance.freeBalance?.toString());
+    setAmount(
+      bnToBn(accountBalance.freeBalance)
+        .div(bnToBn(10).pow(bnToBn(tokenDecimals)))
+        .toString()
+    );
+  };
+
+  const humanReadableMinNominatorBond = formatBalance(
+    bnToBn(minNominatorBond),
+    {
+      decimals: tokenDecimals,
+      withUnit: tokenSymbol,
+      withSi: true,
+    }
+  );
+
   return (
-    <p>
-      Stake with nomination Pool partners Talisman (Stakes under minimum stake
-      do not have voting power while in nomination pools)
-    </p>
+    <>
+      <p className="text-xs">
+        Your balance is below the threshold of staking alone (
+        {humanReadableMinNominatorBond}), but you can join a Nomination Pool
+        instead.
+      </p>
+      <p className="text-xs">
+        Stake with nomination Pool partners Talisman (Stakes under minimum stake
+        do not have voting power while in nomination pools)
+      </p>
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          endContent={tokenSymbol}
+          onValueChange={setAmount}
+          size="sm"
+          defaultValue="0"
+          max={accountBalance.freeBalance}
+          value={amount}
+        />
+        <Button
+          onClick={stakeMax}
+          variant="bordered"
+          className="border-white h-12"
+        >
+          Stake Max
+        </Button>
+      </div>
+      <Button onClick={joinNominationPool} color="danger">
+        Stake with Nomination Pool
+      </Button>
+    </>
   );
 }
 
@@ -229,7 +335,6 @@ function ReplaceOneWithKus({
 
   return (
     <div className="flex flex-col gap-3">
-      <p>TODO: some message that user is already staking?</p>
       <p>
         Your nominator set is full! Select one nomination to replace with Kus
         Validation

@@ -2,13 +2,13 @@ import { useQuery } from "react-query";
 import { ApiPromise } from "@polkadot/api";
 import { ChainConfigType, useChain } from "../providers/chain-provider";
 import { format } from "path";
-import { formatBalance } from "@polkadot/util";
+import { BN, BN_ZERO, formatBalance, bnToBn } from "@polkadot/util";
 import { usePolkadotExtension } from "../providers/extension-provider";
 import { encodeAddress } from "@polkadot/keyring";
 
 interface Balances {
-  freeBalance: string;
-  stakedBalance: string;
+  freeBalance: BN;
+  stakedBalance: BN;
 }
 
 async function fetchBalances(
@@ -18,8 +18,8 @@ async function fetchBalances(
 ): Promise<Balances> {
   if (!api || !chainConfig || !address) {
     return {
-      freeBalance: "0",
-      stakedBalance: "0",
+      freeBalance: BN_ZERO,
+      stakedBalance: BN_ZERO,
     };
   }
 
@@ -27,21 +27,11 @@ async function fetchBalances(
   const freeBalance = account ? account.data.free.toString() : "0";
 
   const staking = await api?.query.staking.ledger(address);
-  const stakedBalance = staking?.isSome
-    ? staking.unwrap().active.toString()
-    : "0";
+  const stakedBalance = staking?.isSome ? staking.unwrap().active : "0";
 
   return {
-    freeBalance: formatBalance(freeBalance, {
-      decimals: chainConfig?.tokenDecimals,
-      withUnit: chainConfig?.tokenSymbol,
-      // forceUnit: "-",
-    }),
-    stakedBalance: formatBalance(stakedBalance, {
-      decimals: chainConfig?.tokenDecimals,
-      withUnit: chainConfig?.tokenSymbol,
-      // forceUnit: "-",
-    }),
+    freeBalance: bnToBn(freeBalance),
+    stakedBalance: bnToBn(stakedBalance),
   };
 }
 

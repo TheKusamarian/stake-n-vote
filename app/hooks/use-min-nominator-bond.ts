@@ -3,9 +3,10 @@ import { ApiPromise, WsProvider } from "@polkadot/api";
 import { useChain } from "../providers/chain-provider";
 import { usePolkadotExtension } from "../providers/extension-provider";
 import { encodeAddress } from "@polkadot/keyring";
+import { BN } from "@polkadot/util";
 
 // Custom hook
-export function useAccountNominators() {
+export function useMinNominatorBond() {
   const { api, chainConfig, activeChain } = useChain();
   const { selectedAccount } = usePolkadotExtension();
   const { ss58Format } = chainConfig || {};
@@ -16,18 +17,12 @@ export function useAccountNominators() {
       : "";
 
   return useQuery(
-    ["nominatedAddresses", userAddress, activeChain],
+    ["minNominatorBond", userAddress, activeChain],
     async () => {
       // Fetch staking information
-      const stakingInfo = await api?.query.staking.nominators(userAddress);
-
-      if (!stakingInfo || stakingInfo.isNone) {
-        return [];
-      }
-
-      // Extracting the addresses from staking info
-      const { targets } = stakingInfo.unwrap();
-      return targets.map((target) => target.toString());
+      const minNominatorBond = await api?.query.staking?.minNominatorBond();
+      console.log("minNominatorBond", minNominatorBond?.toHuman());
+      return minNominatorBond;
     },
     {
       enabled: !!api && !!userAddress,

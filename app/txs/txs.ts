@@ -33,3 +33,15 @@ export async function nominateTx(
   const res = await sendAndFinalize(api, tx, signer, address);
   return res;
 }
+
+export async function joinPool(
+  api: ApiPromise | undefined,
+  signer: Signer | undefined,
+  address: string | undefined,
+  amount: BN,
+  poolId: number
+) {
+  const tx = api?.tx.nominationPools.join(amount, poolId);
+  const res = await sendAndFinalize(api, tx, signer, address);
+  return res;
+}

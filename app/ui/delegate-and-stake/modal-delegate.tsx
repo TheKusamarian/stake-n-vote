@@ -14,6 +14,8 @@ import { sendDelegateTx } from "@/app/txs/txs";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { useChain } from "@/app/providers/chain-provider";
+import { format } from "path";
+import { BN_ZERO, formatBalance } from "@polkadot/util";
 
 type ModalPropType = Omit<ModalProps, "children">;
 
@@ -23,6 +25,13 @@ export default function ModalDelegate(props: ModalPropType) {
   const { tokenSymbol } = chainConfig;
   const { data: accountBalance, isLoading } = useAccountBalances();
   const { stakedBalance } = accountBalance || {};
+
+  const humanStakedBalance = formatBalance(stakedBalance, {
+    withSi: true,
+    withUnit: tokenSymbol,
+    decimals: 2,
+    forceUnit: "-",
+  });
 
   return (
     <Modal
@@ -39,10 +48,10 @@ export default function ModalDelegate(props: ModalPropType) {
               Delegate Votes to The Kus Delegate {activeChain}
             </ModalHeader>
             <ModalBody className="text-sm">
-              {!isLoading && accountBalance && stakedBalance !== "0" && (
+              {!isLoading && accountBalance && stakedBalance?.eq(BN_ZERO) && (
                 <p>
-                  Your staked {stakedBalance} is already locked for 28 days -
-                  put it to work directing the network!
+                  Your staked {humanStakedBalance} is already locked for 28 days
+                  - put it to work directing the network!
                 </p>
               )}
               <FormDelegate />

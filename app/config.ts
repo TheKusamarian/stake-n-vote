@@ -23,6 +23,7 @@ export const CHAIN_CONFIG: {
     delegator: string;
     validator: string;
     validator_set: string[];
+    poolId?: number;
   };
 } = {
   Polkadot: {
@@ -32,6 +33,7 @@ export const CHAIN_CONFIG: {
     maxNominators: 16,
     delegator: POLKADOT_DELEGATOR,
     validator: POLKADOT_VALIDATOR,
+    poolId: 12, //talisman pool,
     validator_set: [
       "13zRKESAgaKG4xyYrZnAA4Qdu1iVVMsrdiAnhnnnd4CB6TpU",
       "15wepZh1jWNqxBjsgErm8HmYiE21n79c5krQJeTsYAjHddeM",
