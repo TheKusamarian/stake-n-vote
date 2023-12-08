@@ -8,6 +8,7 @@ import {
   ModalProps,
 } from "@nextui-org/modal";
 import { RadioGroup, Radio } from "@nextui-org/radio";
+import { Skeleton } from "@nextui-org/skeleton";
 
 import styles from "./modal.module.scss";
 import { useAccountNominators } from "@/app/hooks/use-account-nominations";
@@ -69,7 +70,15 @@ export default function ModalStake(props: ModalPropType) {
               {isAccountBalanceLoading ||
               isNominatorsLoading ||
               isMinNominatorBondLoading ? (
-                <>Loading</>
+                <>
+                  <Skeleton className="rounded-lg w-full h-3" />
+                  <Skeleton className="rounded-lg w-full h-3 mb-2" />
+                  <Skeleton className="rounded-lg w-full h-3" />
+                  <Skeleton className="rounded-lg w-full h-3 mb-2" />
+                  <Skeleton className="rounded-lg">
+                    <Button></Button>
+                  </Skeleton>
+                </>
               ) : nominators?.length === 0 ? (
                 <>
                   {freeBalance === "0" ? (
@@ -103,7 +112,14 @@ export default function ModalStake(props: ModalPropType) {
                   onDelegationOpenChange={onDelegatingOpenChange}
                 />
               ) : nominators?.length && nominators.length < maxNominators ? (
-                <AddKusToSet />
+                <AddKusToSet
+                  nominators={nominators}
+                  validator={kusValidator}
+                  api={api}
+                  getSigner={getSigner}
+                  selectedAccount={selectedAccount}
+                  tokenSymbol={tokenSymbol}
+                />
               ) : nominators?.length === maxNominators ? (
                 <ReplaceOneWithKus
                   nominators={nominators}
@@ -313,8 +329,41 @@ function StakeToRecommendedSet({
   );
 }
 
-function AddKusToSet() {
-  return <p>Add Kus Validation to your existing nominator set</p>;
+function AddKusToSet({
+  nominators,
+  validator,
+  api,
+  getSigner,
+  selectedAccount,
+  tokenSymbol,
+}: {
+  nominators: string[];
+  validator: string;
+  api: ApiPromise | undefined;
+  getSigner: any;
+  selectedAccount: InjectedAccountWithMeta | null;
+  tokenSymbol: string;
+}) {
+  return (
+    <>
+      <p>Great! You are already staking your {tokenSymbol}</p>
+      <p>Would you like to add The Kus to your nominator set?</p>
+      <Button
+        onClick={async () => {
+          const signer = await getSigner();
+          const tx = await nominateTx(
+            api,
+            signer,
+            selectedAccount?.address,
+            nominators.concat(validator)
+          );
+        }}
+        color="danger"
+      >
+        Add Kus to nominator set
+      </Button>
+    </>
+  );
 }
 
 function ReplaceOneWithKus({

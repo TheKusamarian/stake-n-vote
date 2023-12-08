@@ -15,7 +15,7 @@ export function ChainSwitch() {
     <div className="flex gap-4 justify-center">
       <button
         className={clsx(
-          "rounded-full hover:outline-2 border-3 border-transparent w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 p-2 md:p-3",
+          "rounded-full shadow-xl hover:outline-2 border-3 border-transparent w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 p-2 md:p-3 hover:rotate-6 hover:scale-105 transition-all",
           {
             "border-white": activeChain === "Kusama",
             "opacity-50": activeChain !== "Kusama",
@@ -33,7 +33,7 @@ export function ChainSwitch() {
       </button>
       <button
         className={clsx(
-          "rounded-full hover:outline-2 border-3 border-transparent w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 p-2 md:p-3",
+          "rounded-full shadow-xl hover:outline-2 border-3 border-transparent w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 p-2 md:p-3 hover:rotate-6 hover:scale-105 transition-all",
           {
             "border-white": activeChain === "Polkadot",
             "opacity-50": activeChain !== "Polkadot",

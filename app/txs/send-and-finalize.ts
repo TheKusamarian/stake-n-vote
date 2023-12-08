@@ -31,7 +31,7 @@ export const DEFAULT_TOAST = {
     entering: "2/3 Waiting for transaction to enter block",
     finalizing: "3/3 Waiting for block finalization",
     success: "Transaction successful",
-    error: "Transaction failed",
+    error: "Oh no!",
   },
 };
 
@@ -127,14 +127,17 @@ export async function sendAndFinalize(
                   // @ts-ignore
                   title: toast.title,
                   className: "toaster",
+                  id: toastId,
                 });
               }
 
-              toast.error(`${messages.error}: ${res.message}`, {
+              toast.error(`${res.message}`, {
                 // @ts-ignore
                 title: toast.title,
                 className: "toaster",
               });
+
+              console.error(`${messages.error}: ${res.message}`);
 
               return;
             } else {
@@ -150,6 +153,7 @@ export async function sendAndFinalize(
                 toast.success(messages.success, {
                   id: toastId,
                   duration: 4000,
+                  id: toastId,
                 });
               }
             }
@@ -161,13 +165,15 @@ export async function sendAndFinalize(
       );
     }
   } catch (error) {
-    if (toastId) {
-      toast.error(`${messages.error}: ${error}`, {
-        // @ts-ignore
-        title: toast.title,
-        className: "toaster",
-      });
-    }
+    console.log(error);
+    toast.error(`${error}`, {
+      // @ts-ignore
+      title: toast.title,
+      className: "toaster",
+      id: toastId,
+    });
+
+    console.error(`${messages.error}: ${res.message}`);
 
     res = {
       status: "error",

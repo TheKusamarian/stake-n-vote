@@ -25,7 +25,7 @@ export function DelegateStakeButtons() {
       <Button
         variant="bordered"
         className={
-          "text-foreground-50 border-3 border-white text-white w-full  "
+          "text-foreground-50 border-3 border-white text-white w-full  shadow-xl"
         }
         size="lg"
         onClick={onStakingOpenChange}
@@ -34,7 +34,7 @@ export function DelegateStakeButtons() {
       </Button>
       <Button
         variant="bordered"
-        className="text-foreground-50 border-3 border-white text-white w-full "
+        className="text-foreground-50 border-3 border-white text-white w-full shadow-xl"
         size="lg"
         onClick={onDelegatingOpenChange}
       >
