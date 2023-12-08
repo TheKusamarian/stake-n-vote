@@ -17,6 +17,8 @@ import useAccountBalances from "@/app/hooks/use-account-balance";
 import { useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { nominateTx } from "@/app/txs/txs";
+import { ApiPromise } from "@polkadot/api";
+import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -24,7 +26,10 @@ type ModalPropType = Omit<ModalProps, "children"> & {
 
 export default function ModalStake(props: ModalPropType) {
   const { isOpen, onOpenChange, onDelegatingOpenChange } = props;
-  const { activeChain } = useChain();
+
+  const { api, activeChain } = useChain(); // Using useChain hook
+  const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
+
   const { data: nominators, isLoading: isNominatorsLoading } =
     useAccountNominators();
   const { data: accountBalance, isLoading: isAccountBalanceLoading } =
@@ -61,7 +66,11 @@ export default function ModalStake(props: ModalPropType) {
                       accountBalance={accountBalance}
                     />
                   ) : (
-                    <StakeToRecommendedSet />
+                    <StakeToRecommendedSet
+                      api={api}
+                      getSigner={getSigner}
+                      selectedAccount={selectedAccount}
+                    />
                   )}
                 </>
               ) : nominators?.includes(kusValidator) ? (
@@ -75,6 +84,9 @@ export default function ModalStake(props: ModalPropType) {
                 <ReplaceOneWithKus
                   nominators={nominators}
                   validator={kusValidator}
+                  api={api}
+                  getSigner={getSigner}
+                  selectedAccount={selectedAccount}
                 />
               ) : (
                 <>
@@ -139,7 +151,7 @@ function NoFunds({
   return (
     <>
       <p>
-        Balance 0 - Deposit {tokenSymbol} or Buy {tokenSymbol} Here
+        Balance 0 - Deposit {tokenSymbol} or buy {tokenSymbol} here.
       </p>
       <pre className="text-xs">{JSON.stringify(accountBalance, null, 2)}</pre>
     </>
@@ -155,8 +167,31 @@ function AddToPool({ tokenSymbol }: { tokenSymbol: string }) {
   );
 }
 
-function StakeToRecommendedSet() {
-  return <p>Stake with Kus Validation and friends</p>;
+function StakeToRecommendedSet({
+  api,
+  getSigner,
+  selectedAccount,
+}: {
+  api: ApiPromise | undefined;
+  getSigner: any;
+  selectedAccount: InjectedAccountWithMeta | null;
+}) {
+  const { activeChain } = useChain();
+
+  const nominate = async () => {
+    const targets = CHAIN_CONFIG[activeChain].validator_set;
+
+    const signer = await getSigner();
+    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
+  };
+
+  return (
+    <>
+      <Button onClick={nominate} color="danger">
+        Stake with Kus Validation and friends
+      </Button>
+    </>
+  );
 }
 
 function AddKusToSet() {
@@ -166,22 +201,21 @@ function AddKusToSet() {
 function ReplaceOneWithKus({
   nominators,
   validator,
+  api,
+  getSigner,
+  selectedAccount,
 }: {
   nominators: string[];
   validator: string;
+  api: ApiPromise | undefined;
+  getSigner: any;
+  selectedAccount: InjectedAccountWithMeta | null;
 }) {
   const [selected, setSelected] = useState<string | undefined>();
-  const [modifiedArray, setModifiedArray] = useState<string[]>([]);
-
-  const { api, activeChain } = useChain(); // Using useChain hook
-  const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
 
   const nominate = async (targets: string[]) => {
     const signer = await getSigner();
-
     const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
-
-    console.log(tx);
   };
 
   const handleReplace = () => {
@@ -189,7 +223,6 @@ function ReplaceOneWithKus({
       const newTargets = nominators.map((item) =>
         item === selected ? validator : item
       );
-      setModifiedArray(newTargets);
       nominate(newTargets);
     }
   };

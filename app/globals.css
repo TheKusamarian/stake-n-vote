@@ -35,3 +35,7 @@ section[role="dialog"] button {
     height: 30px;
   }
 }
+
+label.group > span {
+  border-color: white;
+}
