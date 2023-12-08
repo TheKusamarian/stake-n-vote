@@ -11,6 +11,11 @@ import { bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
+import { on } from "events";
+import { findChangedItem } from "@/app/util";
+import { useTracks } from "@/app/hooks/use-tracks";
+
+const ALL_TRACKS_ID = 9999;
 
 export type State = {
   errors?: {
@@ -44,6 +49,8 @@ export default function FormDelegate() {
   const [conviction, setConviction] = useState<number>(1);
   const [amount, setAmount] = useState(1);
 
+  const [tracks, setTracks] = useState(new Set<string>(["9999"]));
+
   const delegateBalance = bnToBn(amount.toString()).mul(
     bnToBn(10).pow(bnToBn(tokenDecimals))
   );
@@ -69,21 +76,7 @@ export default function FormDelegate() {
 
   const effectiveVotes = conviction !== 0 ? amount * conviction : amount * 0.1;
 
-  const tracks = [
-    { id: "all", name: "All" },
-    {
-      id: 0,
-      name: "Root",
-    },
-    {
-      id: 1,
-      name: "Small Spender",
-    },
-    {
-      id: 2,
-      name: "Big Spender",
-    },
-  ];
+  const { data: trackOptions } = useTracks() || [];
 
   const marks = [
     {
@@ -123,25 +116,59 @@ export default function FormDelegate() {
     },
   ];
 
+  const handleSelectionChange = (selectedTracks: Set<string>) => {
+    console.log(selectedTracks, "eeee");
+
+    const changedItem = findChangedItem(tracks, selectedTracks);
+
+    if (changedItem.includes(ALL_TRACKS_ID.toString())) {
+      if (selectedTracks.has(ALL_TRACKS_ID.toString())) {
+        // If ALL_TRACKS_ID was selected, set tracks to only contain ALL_TRACKS_ID
+        setTracks(new Set([ALL_TRACKS_ID.toString()]));
+      } else {
+        // If ALL_TRACKS_ID was deselected, remove it and keep the other tracks
+        selectedTracks.delete(ALL_TRACKS_ID.toString());
+        setTracks(new Set(selectedTracks));
+      }
+    } else {
+      // For other tracks, if ALL_TRACKS_ID is in the set and more tracks are selected, remove ALL_TRACKS_ID
+      if (
+        selectedTracks.has(ALL_TRACKS_ID.toString()) &&
+        selectedTracks.size > 1
+      ) {
+        selectedTracks.delete(ALL_TRACKS_ID.toString());
+      }
+      setTracks(new Set(selectedTracks));
+    }
+  };
+
   return (
     <form className="flex flex-col gap-5 text-white" action={dispatch}>
       <Select
         label="Tracks"
         placeholder="Select Tracks"
         selectionMode="multiple"
-        defaultSelectedKeys={["all"]}
         className="w-full"
+        size="sm"
         classNames={{ description: "text-foreground-600" }}
         description="Select the tracks you want to delegate"
+        selectedKeys={tracks}
+        onSelectionChange={handleSelectionChange}
       >
-        {tracks.map((track) => (
+        <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
+          All Tracks
+        </SelectItem>
+        {trackOptions?.map((track) => (
           <SelectItem key={track.id} value={track.id}>
             {track.name}
           </SelectItem>
         ))}
       </Select>
+      {JSON.stringify(trackOptions, null, 2)}
+
       <div className="flex flex-row gap-3 w-full max-w-full">
         <Input
+          size="sm"
           type="number"
           label="Amount"
           placeholder="Enter Delegation Amount"

@@ -34,3 +34,14 @@ export function parseBN(bnValue: BN | string, decimals: number) {
   // Return the result, parsed as a float and fixed to 2 decimal places
   return parseFloat(formattedValue).toFixed(2);
 }
+
+export function findChangedItem<T>(set1: Set<T>, set2: Set<T>) {
+  // Find items in set1 that are not in set2
+  const uniqueToSet1 = Array.from(set1).filter((item) => !set2.has(item));
+
+  // Find items in set2 that are not in set1
+  const uniqueToSet2 = Array.from(set2).filter((item) => !set1.has(item));
+
+  // Combine the unique items from both sets
+  return uniqueToSet1.concat(uniqueToSet2)[0];
+}
