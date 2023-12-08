@@ -27,10 +27,12 @@ export default function ModalDelegate(props: ModalPropType) {
   const { stakedBalance } = accountBalance || {};
 
   const humanStakedBalance = formatBalance(stakedBalance, {
-    withSi: true,
+    withSi: false,
     withUnit: tokenSymbol,
     decimals: 2,
     forceUnit: "-",
+    withAll: true,
+    withZero: true,
   });
 
   return (

@@ -22,6 +22,7 @@ import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
 import { BN_MAX_INTEGER, bnToBn, formatBalance } from "@polkadot/util";
 import { Input } from "@nextui-org/input";
+import { KusamaIcon, PolkadotIcon } from "../icons";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -33,12 +34,12 @@ export default function ModalStake(props: ModalPropType) {
   const { api, activeChain } = useChain(); // Using useChain hook
   const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
 
-  const { data: nominators, isLoading: isNominatorsLoading } =
+  const { data: nominators, isFetching: isNominatorsLoading } =
     useAccountNominators();
-  const { data: accountBalance, isLoading: isAccountBalanceLoading } =
+  const { data: accountBalance, isFetching: isAccountBalanceLoading } =
     useAccountBalances();
 
-  const { data: minNominatorBond, isLoading: isMinNominatorBondLoading } =
+  const { data: minNominatorBond, isFetching: isMinNominatorBondLoading } =
     useMinNominatorBond() || { data: "0" };
 
   const { freeBalance } = accountBalance || { freeBalance: "0" };
@@ -233,7 +234,10 @@ function MaybeAddToPool({
     {
       decimals: tokenDecimals,
       withUnit: tokenSymbol,
-      withSi: true,
+      withSi: false,
+      // withAll: true,
+      withZero: true,
+      withAll: false,
     }
   );
 
@@ -241,8 +245,8 @@ function MaybeAddToPool({
     <>
       <p className="text-xs">
         Your balance is below the threshold of staking alone (
-        {humanReadableMinNominatorBond}), but you can join a Nomination Pool
-        instead.
+        {humanReadableMinNominatorBond} {tokenSymbol}), but you can join a
+        Nomination Pool instead.
       </p>
       <p className="text-xs">
         Stake with nomination Pool partners Talisman (Stakes under minimum stake
@@ -251,7 +255,16 @@ function MaybeAddToPool({
       <div className="flex gap-2">
         <Input
           type="number"
-          endContent={tokenSymbol}
+          endContent={
+            <>
+              {tokenSymbol}
+              {activeChain === "Kusama" ? (
+                <KusamaIcon className="pl-1" />
+              ) : (
+                <PolkadotIcon className="pl-1" />
+              )}
+            </>
+          }
           onValueChange={setAmount}
           size="sm"
           defaultValue="0"
