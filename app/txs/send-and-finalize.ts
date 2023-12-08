@@ -153,7 +153,6 @@ export async function sendAndFinalize(
                 toast.success(messages.success, {
                   id: toastId,
                   duration: 4000,
-                  id: toastId,
                 });
               }
             }

@@ -417,7 +417,12 @@ function ReplaceOneWithKus({
           );
         })}
       </RadioGroup>
-      <Button className="w-full" color="danger" onClick={handleReplace}>
+      <Button
+        className="w-full"
+        color="danger"
+        onClick={handleReplace}
+        isDisabled={!selected}
+      >
         Replace above with Kus
       </Button>
     </div>
