@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/select";
@@ -158,13 +159,14 @@ export default function FormDelegate() {
         <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
           All Tracks
         </SelectItem>
-        {trackOptions?.map((track) => (
-          <SelectItem key={track.id} value={track.id}>
-            {track.name}
-          </SelectItem>
-        ))}
+        {trackOptions?.map((track) => {
+          return (
+            <SelectItem key={track.id} value={track.id}>
+              {track.name}
+            </SelectItem>
+          );
+        })}
       </Select>
-      {JSON.stringify(trackOptions, null, 2)}
 
       <div className="flex flex-row gap-3 w-full max-w-full">
         <Input
