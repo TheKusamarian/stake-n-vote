@@ -1,3 +1,4 @@
+import { IconSvgProps, KusamaIcon, PolkadotIcon } from "./ui/icons";
 // Desc: Configuration file for the app
 
 // Kusamarian Delegators

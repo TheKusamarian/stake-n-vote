@@ -24,6 +24,8 @@ import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
 import { BN_MAX_INTEGER, bnToBn, formatBalance } from "@polkadot/util";
 import { Input } from "@nextui-org/input";
 import { KusamaIcon, PolkadotIcon } from "../icons";
+import { parseBN } from "@/app/util";
+import { parse } from "path";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -35,15 +37,21 @@ export default function ModalStake(props: ModalPropType) {
   const { api, activeChain } = useChain(); // Using useChain hook
   const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
 
-  const { data: nominators, isFetching: isNominatorsLoading } =
-    useAccountNominators();
-  const { data: accountBalance, isFetching: isAccountBalanceLoading } =
-    useAccountBalances();
-
-  const { data: minNominatorBond, isFetching: isMinNominatorBondLoading } =
-    useMinNominatorBond() || { data: "0" };
-
-  const { freeBalance } = accountBalance || { freeBalance: "0" };
+  const {
+    data: nominators,
+    isLoading: isNominatorsLoading,
+    isFetching: isNominatorsFetching,
+  } = useAccountNominators();
+  const {
+    data: accountBalance,
+    isLoading: isAccountBalanceLoading,
+    isFetching: isAccountBalanceFetching,
+  } = useAccountBalances();
+  const {
+    data: minNominatorBond,
+    isLoading: isMinNominatorBondLoading,
+    isFetching: isMinNominatorBondFetching,
+  } = useMinNominatorBond() || { data: "0" };
 
   const {
     maxNominators,
@@ -51,6 +59,9 @@ export default function ModalStake(props: ModalPropType) {
     tokenSymbol,
     tokenDecimals,
   } = CHAIN_CONFIG[activeChain];
+
+  const { freeBalance } = accountBalance || { freeBalance: "0" };
+  const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
   return (
     <Modal
@@ -64,12 +75,18 @@ export default function ModalStake(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Stake {tokenSymbol} with Kus Validation
+              Stake {tokenSymbol} with Kus Validation{" "}
+              <span className="text-xs text-gray-300">
+                ({humanFreeBalance} {tokenSymbol} available)
+              </span>
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
               {isAccountBalanceLoading ||
               isNominatorsLoading ||
-              isMinNominatorBondLoading ? (
+              isMinNominatorBondLoading ||
+              isAccountBalanceFetching ||
+              isNominatorsFetching ||
+              isMinNominatorBondFetching ? (
                 <>
                   <Skeleton className="rounded-lg w-full h-3" />
                   <Skeleton className="rounded-lg w-full h-3 mb-2" />
@@ -245,16 +262,9 @@ function MaybeAddToPool({
     );
   };
 
-  const humanReadableMinNominatorBond = formatBalance(
-    bnToBn(minNominatorBond),
-    {
-      decimals: tokenDecimals,
-      withUnit: tokenSymbol,
-      withSi: false,
-      // withAll: true,
-      withZero: true,
-      withAll: false,
-    }
+  const humanReadableMinNominatorBond = parseBN(
+    minNominatorBond,
+    tokenDecimals
   );
 
   return (
