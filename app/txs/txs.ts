@@ -9,17 +9,21 @@ export async function sendDelegateTx(
   api: ApiPromise | undefined,
   signer: Signer | undefined,
   address: string | undefined,
-  track: number = 0,
+  tracks: string[] = ["0"],
   target: string,
   conviction: number,
   value: BN
 ) {
-  const tx = api?.tx.convictionVoting.delegate(
-    track,
-    target,
-    conviction,
-    value
+  if (tracks.length === 0 || !api || !signer || !address) {
+    return;
+  }
+
+  const txs = Array.from(tracks).map((track) =>
+    api?.tx.convictionVoting.delegate(track, target, conviction, value)
   );
+
+  const tx = api?.tx.utility.batchAll(txs);
+
   const res = await sendAndFinalize(api, tx, signer, address);
   return res;
 }

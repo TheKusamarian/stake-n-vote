@@ -10,7 +10,7 @@ export const trimAddress = (
   return `${address.slice(0, amount)}...${address.slice(-amount)}`;
 };
 
-export function parseBN(bnValue: BN | string, decimals: number) {
+export function parseBN(bnValue: BN | string, decimals: number): number {
   // Convert the BN value to a string
   const bnStr = bnValue.toString();
 
@@ -32,7 +32,7 @@ export function parseBN(bnValue: BN | string, decimals: number) {
   }
 
   // Return the result, parsed as a float and fixed to 2 decimal places
-  return parseFloat(formattedValue).toFixed(2);
+  return parseFloat(formattedValue);
 }
 
 export function findChangedItem<T>(set1: Set<T>, set2: Set<T>) {

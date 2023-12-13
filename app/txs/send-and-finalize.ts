@@ -126,15 +126,14 @@ export async function sendAndFinalize(
                   status: "error",
                   message: dispatchError.toString(),
                 };
-
-                toast.error(dispatchError.toString(), {
-                  // @ts-ignore
-                  title: toast.title,
-                  className: "toaster",
-                  id: toastId,
-                });
               }
-
+              console.log("we are here");
+              toast.error(res.message, {
+                // @ts-ignore
+                title: messages.error,
+                className: "toaster",
+                id: toastId,
+              });
               console.error(`${messages.error}: ${res.message}`);
             } else {
               console.log(
@@ -168,6 +167,7 @@ export async function sendAndFinalize(
     }
   } catch (error) {
     console.log(error);
+    console.log("not here");
     toast.error(`${error}`, {
       // @ts-ignore
       title: toast.title,

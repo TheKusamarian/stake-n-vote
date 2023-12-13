@@ -52,15 +52,19 @@ export default function ModalDelegate(props: ModalPropType) {
             <ModalBody className="text-sm">
               {!isLoading && accountBalance && stakedBalance?.eq(BN_ZERO) && (
                 <p>
-                  Your staked {humanStakedBalance} is already locked for 28 days
-                  - put it to work directing the network!
+                  Your staked {tokenSymbol} is already locked for 28 days - put
+                  it to work directing the network!
                 </p>
               )}
               <FormDelegate />
               <p className="my-2 text-center text-xs">
                 The Kus Delegate is directed by verified humans from The
                 Kusamarian community <br />
-                <a className="underline" href="https://discord.gg/eauz25UP">
+                <a
+                  className="underline"
+                  href="https://discord.gg/eauz25UP"
+                  target="_blank"
+                >
                   Join our Discord
                 </a>{" "}
                 after you delegate!

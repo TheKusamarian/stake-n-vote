@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/select";
@@ -16,6 +16,7 @@ import { on } from "events";
 import { findChangedItem, parseBN } from "@/app/util";
 import { useTracks } from "@/app/hooks/use-tracks";
 import useAccountBalances from "@/app/hooks/use-account-balance";
+import { KusamaIcon, PolkadotIcon } from "../icons";
 
 const ALL_TRACKS_ID = 9999;
 
@@ -46,9 +47,12 @@ export default function FormDelegate() {
     isSuccess: isAccountBalanceSuccess,
   } = useAccountBalances();
 
+  const { data: trackOptions } = useTracks() || [];
+  const ALL_TRACKS = trackOptions?.map((track) => track.id.toString()) || ["0"];
+
   const [conviction, setConviction] = useState<number>(1);
   const [amount, setAmount] = useState(1);
-  const [tracks, setTracks] = useState(new Set<string>(["9999"]));
+  const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS));
 
   const initialState = {
     message: null,
@@ -62,6 +66,7 @@ export default function FormDelegate() {
       ? bnToBn(amount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
   const { freeBalance } = accountBalance || { freeBalance: "0" };
+  const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
   const { api, activeChain } = useChain(); // Using useChain hook
   const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
@@ -70,11 +75,18 @@ export default function FormDelegate() {
     const signer = await getSigner();
     const target =
       activeChain === "Kusama" ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR;
+
+    let tracksArray = Array.from(tracks);
+
+    if (tracksArray.includes(ALL_TRACKS_ID.toString())) {
+      tracksArray = ALL_TRACKS;
+    }
+
     const tx = await sendDelegateTx(
       api,
       signer,
       selectedAccount?.address,
-      0,
+      tracksArray,
       target,
       conviction,
       delegateBalance
@@ -83,8 +95,6 @@ export default function FormDelegate() {
   };
 
   const effectiveVotes = conviction !== 0 ? amount * conviction : amount * 0.1;
-
-  const { data: trackOptions } = useTracks() || [];
 
   const marks = [
     {
@@ -152,7 +162,7 @@ export default function FormDelegate() {
 
   const delegateMax = () => {
     console.log("you have", amount, delegateBalance);
-    setAmount(parseBN(freeBalance?.toString(), tokenDecimals).toString());
+    setAmount(parseBN(freeBalance?.toString(), tokenDecimals));
   };
 
   return (
@@ -181,25 +191,37 @@ export default function FormDelegate() {
       </Select>
 
       <div className="flex flex-row gap-3 w-full max-w-full">
-        <Input
-          size="sm"
-          type="number"
-          label="Amount"
-          placeholder="Enter Delegation Amount"
-          description={`Enter the amount you want to delegate. You have ${freeBalance} ${tokenSymbol}`}
-          classNames={{ description: "text-foreground-600" }}
-          value={amount.toString()}
-          onChange={(e) => setAmount(parseInt(e.target.value))}
-        />
-        <Button
-          onClick={delegateMax}
-          variant="bordered"
-          className="border border-2 border-white  h-12 px-4"
-          size="sm"
-          isDisabled={!isAccountBalanceSuccess}
-        >
-          Delegate All
-        </Button>
+        <div className="flex gap-2">
+          <Input
+            size="sm"
+            type="number"
+            label="Amount"
+            placeholder="Enter Delegation Amount"
+            description={`Enter the amount you want to delegate. You have ${humanFreeBalance} ${tokenSymbol}`}
+            classNames={{ description: "text-foreground-600" }}
+            value={amount.toString()}
+            onChange={(e) => setAmount(parseInt(e.target.value))}
+            endContent={
+              <>
+                {tokenSymbol}
+                {activeChain === "Kusama" ? (
+                  <KusamaIcon className="pl-1 pt-1" />
+                ) : (
+                  <PolkadotIcon className="pl-1 pt-1" />
+                )}
+              </>
+            }
+          />
+          <Button
+            onClick={delegateMax}
+            variant="bordered"
+            className="border border-2 border-white  h-12 px-4"
+            size="sm"
+            isDisabled={!isAccountBalanceSuccess}
+          >
+            Delegate All
+          </Button>
+        </div>
       </div>
       <div className="flex flex-col gap-6 w-full max-w-full">
         <Slider

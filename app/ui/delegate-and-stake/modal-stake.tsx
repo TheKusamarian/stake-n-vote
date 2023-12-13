@@ -238,7 +238,7 @@ function MaybeAddToPool({
   selectedAccount: InjectedAccountWithMeta | null;
   minNominatorBond: any;
 }) {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState<number>(0);
 
   const joinNominationPool = async () => {
     const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
@@ -264,9 +264,8 @@ function MaybeAddToPool({
 
   const stakeMax = () => {
     console.log(" you have ", accountBalance.freeBalance?.toString());
-    setAmount(
-      parseBN(accountBalance.freeBalance?.toString(), tokenDecimals).toString()
-    );
+    const a = parseBN(accountBalance.freeBalance?.toString(), tokenDecimals);
+    setAmount(a);
   };
 
   const humanReadableMinNominatorBond = parseBN(
@@ -288,13 +287,15 @@ function MaybeAddToPool({
       <div className="flex gap-2">
         <Input
           type="number"
+          label="Amount"
+          placeholder="Enter Stake Amount"
           endContent={
             <>
               {tokenSymbol}
               {activeChain === "Kusama" ? (
-                <KusamaIcon className="pl-1" />
+                <KusamaIcon className="pl-1 pt-1" />
               ) : (
-                <PolkadotIcon className="pl-1" />
+                <PolkadotIcon className="pl-1 pt-1" />
               )}
             </>
           }
