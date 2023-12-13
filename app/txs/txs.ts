@@ -2,7 +2,7 @@ import { ApiPromise } from "@polkadot/api";
 
 import { Signer } from "@polkadot/api/types";
 import { BN } from "@polkadot/util";
-import { sendAndFinalize } from "./send-and-finalize";
+import { sendAndFinalize, DEFAULT_TOAST } from "./send-and-finalize";
 
 export async function sendDelegateTx(
   api: ApiPromise | undefined,

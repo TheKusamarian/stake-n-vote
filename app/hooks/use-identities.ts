@@ -26,7 +26,7 @@ export function useIdentities(addresses: string[]) {
     const result = addresses.map((address, index) => {
       return {
         address: address,
-        identity: identities[index].unwrapOr(null),
+        identity: identities[index].unwrapOr(null)?.toHuman(),
       };
     });
 

@@ -59,7 +59,7 @@ export async function sendAndFinalize(
 
   const { messages } = toastConfig;
 
-  if (toast) {
+  if (toastConfig) {
     toastId = toast.loading(messages.signing, {
       // @ts-ignore
       title: toast.title,
@@ -72,6 +72,8 @@ export async function sendAndFinalize(
     message: "Transaction failed",
   };
 
+  console.log("toast", toastId, toast);
+
   try {
     if (api && tx && signer && address) {
       const unsub = await tx.signAndSend(
@@ -79,6 +81,7 @@ export async function sendAndFinalize(
         { signer },
         async (result) => {
           const { status, dispatchError, events = [], txHash } = result;
+          console.log("Transaction status:", status);
           if (status.isReady) {
             if (toastId) {
               toast.loading(messages.entering, {
@@ -93,6 +96,7 @@ export async function sendAndFinalize(
             if (toastId) {
               toast.loading(messages.finalizing, {
                 id: toastId,
+                duration: undefined,
               });
             }
           } else if (status.isFinalized) {
@@ -131,16 +135,21 @@ export async function sendAndFinalize(
                 });
               }
 
-              toast.error(`${res.message}`, {
-                // @ts-ignore
-                title: toast.title,
-                className: "toaster",
-              });
-
               console.error(`${messages.error}: ${res.message}`);
-
-              return;
             } else {
+              console.log(
+                "finalized and no dispatch error, toasting with id",
+                toastId
+              );
+              if (toastId) {
+                toast.success(messages.success, {
+                  // @ts-ignore
+                  title: toast.title,
+                  id: toastId,
+                  duration: 4000,
+                });
+              }
+
               res = {
                 status: "success",
                 message: `Transaction successful`,
@@ -148,20 +157,14 @@ export async function sendAndFinalize(
                 txHash: txHash.toString(),
                 blockHeader,
               };
-
-              if (toastId) {
-                toast.success(messages.success, {
-                  id: toastId,
-                  duration: 4000,
-                });
-              }
             }
           }
 
-          cb?.(res);
-          unsub();
+          // cb?.(res);
         }
       );
+
+      // unsub();
     }
   } catch (error) {
     console.log(error);
@@ -182,5 +185,6 @@ export async function sendAndFinalize(
     cb?.(res);
   }
 
+  console.log("returning from sendAdnFinalize", res);
   return res;
 }

@@ -48,7 +48,6 @@ export default function RootLayout({
             toastOptions={{
               // Define default options
               className: "",
-              duration: 5000,
               style: {
                 background: "#363636",
                 color: "#fff",
@@ -56,10 +55,10 @@ export default function RootLayout({
 
               // Default options for specific types
               success: {
-                duration: 3000,
+                duration: 4000,
                 iconTheme: {
                   primary: "green",
-                  secondary: "black",
+                  secondary: "white",
                 },
               },
             }}

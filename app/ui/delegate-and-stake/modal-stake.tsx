@@ -24,10 +24,9 @@ import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
 import { BN_MAX_INTEGER, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util";
 import { Input } from "@nextui-org/input";
 import { KusamaIcon, PolkadotIcon } from "../icons";
-import { parseBN } from "@/app/util";
-import { parse } from "path";
-import { json } from "stream/consumers";
+import { parseBN, trimAddress } from "@/app/util";
 import { useIdentities } from "@/app/hooks/use-identities";
+import Link from "next/link";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -63,6 +62,7 @@ export default function ModalStake(props: ModalPropType) {
   } = CHAIN_CONFIG[activeChain];
 
   const { freeBalance } = accountBalance || { freeBalance: "0" };
+  console.log("freeBalance", freeBalance);
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
   return (
@@ -100,7 +100,7 @@ export default function ModalStake(props: ModalPropType) {
                 </>
               ) : nominators?.length === 0 ? (
                 <>
-                  {freeBalance === "0" ? (
+                  {freeBalance.toString() === "0" ? (
                     <NoFunds
                       tokenSymbol={tokenSymbol}
                       accountBalance={accountBalance}
@@ -146,6 +146,7 @@ export default function ModalStake(props: ModalPropType) {
                   api={api}
                   getSigner={getSigner}
                   selectedAccount={selectedAccount}
+                  activeChain={activeChain}
                 />
               ) : (
                 <>
@@ -390,17 +391,19 @@ function ReplaceOneWithKus({
   api,
   getSigner,
   selectedAccount,
+  activeChain,
 }: {
   nominators: string[];
   validator: string;
   api: ApiPromise | undefined;
   getSigner: any;
   selectedAccount: InjectedAccountWithMeta | null;
+  activeChain: string;
 }) {
   const [selected, setSelected] = useState<string | undefined>();
 
-  const { data: identities } = useIdentities(nominators);
-  console.log("in modal: identities", identities);
+  // const { data: identities } = useIdentities(nominators);
+  // console.log("in modal: identities", identities);
 
   const nominate = async (targets: string[]) => {
     const signer = await getSigner();
@@ -430,10 +433,18 @@ function ReplaceOneWithKus({
         value={selected}
         onValueChange={setSelected}
       >
-        {nominators.map((nominator) => {
+        {nominators?.map((address) => {
+          // const { address, identity } = iden;
           return (
-            <Radio value={nominator} key={nominator}>
-              {nominator}
+            <Radio value={address} key={address}>
+              <span className="">{trimAddress(address, 8)} </span>
+              <Link
+                href={`//${activeChain}.subscan.io/account/${address}`}
+                target="_blank"
+                className="underline text-xs text-default-500"
+              >
+                👀 subscan ↗️
+              </Link>
             </Radio>
           );
         })}
