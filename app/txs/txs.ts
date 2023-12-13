@@ -3,6 +3,7 @@ import { ApiPromise } from "@polkadot/api";
 import { Signer } from "@polkadot/api/types";
 import { BN } from "@polkadot/util";
 import { sendAndFinalize, DEFAULT_TOAST } from "./send-and-finalize";
+import { ToastType } from "react-hot-toast";
 
 export async function sendDelegateTx(
   api: ApiPromise | undefined,
@@ -30,7 +31,13 @@ export async function nominateTx(
   targets: string[]
 ) {
   const tx = api?.tx.staking.nominate(targets);
-  const res = await sendAndFinalize(api, tx, signer, address);
+  const res = await sendAndFinalize(api, tx, signer, address, {
+    ...DEFAULT_TOAST,
+    messages: {
+      ...DEFAULT_TOAST.messages,
+      success: "Nomination successful",
+    },
+  });
   return res;
 }
 

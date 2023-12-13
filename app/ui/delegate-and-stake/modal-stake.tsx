@@ -100,7 +100,8 @@ export default function ModalStake(props: ModalPropType) {
                 </>
               ) : nominators?.length === 0 ? (
                 <>
-                  {freeBalance.toString() === "0" ? (
+                  {freeBalance.toString() === "0" ||
+                  freeBalance.toString() === "00" ? (
                     <NoFunds
                       tokenSymbol={tokenSymbol}
                       accountBalance={accountBalance}
