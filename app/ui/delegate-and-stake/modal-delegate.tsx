@@ -57,9 +57,9 @@ export default function ModalDelegate(props: ModalPropType) {
                 </p>
               )}
               <FormDelegate />
-              <p className="my-2 text-center">
+              <p className="my-2 text-center text-xs">
                 The Kus Delegate is directed by verified humans from The
-                Kusamarian community -{" "}
+                Kusamarian community <br />
                 <a className="underline" href="https://discord.gg/eauz25UP">
                   Join our Discord
                 </a>{" "}

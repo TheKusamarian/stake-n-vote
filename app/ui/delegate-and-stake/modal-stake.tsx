@@ -21,11 +21,13 @@ import { joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
-import { BN_MAX_INTEGER, bnToBn, formatBalance } from "@polkadot/util";
+import { BN_MAX_INTEGER, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util";
 import { Input } from "@nextui-org/input";
 import { KusamaIcon, PolkadotIcon } from "../icons";
 import { parseBN } from "@/app/util";
 import { parse } from "path";
+import { json } from "stream/consumers";
+import { useIdentities } from "@/app/hooks/use-identities";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -234,7 +236,7 @@ function MaybeAddToPool({
   selectedAccount: InjectedAccountWithMeta | null;
   minNominatorBond: any;
 }) {
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState(0);
 
   const joinNominationPool = async () => {
     const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
@@ -243,12 +245,17 @@ function MaybeAddToPool({
       throw new Error("No pool to join");
     }
 
+    const stakeBalance =
+      !isNaN(amount) && amount !== 0
+        ? bnToBn(amount * Math.pow(10, tokenDecimals))
+        : BN_ZERO;
+
     const signer = await getSigner();
     const tx = await joinPool(
       api,
       signer,
       selectedAccount?.address,
-      bnToBn(amount).mul(bnToBn(10).pow(bnToBn(tokenDecimals))),
+      stakeBalance,
       poolToJoin
     );
   };
@@ -256,9 +263,7 @@ function MaybeAddToPool({
   const stakeMax = () => {
     console.log(" you have ", accountBalance.freeBalance?.toString());
     setAmount(
-      bnToBn(accountBalance.freeBalance)
-        .div(bnToBn(10).pow(bnToBn(tokenDecimals)))
-        .toString()
+      parseBN(accountBalance.freeBalance?.toString(), tokenDecimals).toString()
     );
   };
 
@@ -296,6 +301,7 @@ function MaybeAddToPool({
           defaultValue="0"
           max={accountBalance.freeBalance}
           value={amount}
+          step={0.01}
         />
         <Button
           onClick={stakeMax}
@@ -308,6 +314,8 @@ function MaybeAddToPool({
       <Button onClick={joinNominationPool} color="danger">
         Stake with Nomination Pool
       </Button>
+      accountBalance:{JSON.stringify(accountBalance, null, 2)}
+      amount:{JSON.stringify(amount, null, 2)}
     </>
   );
 }
@@ -390,6 +398,9 @@ function ReplaceOneWithKus({
   selectedAccount: InjectedAccountWithMeta | null;
 }) {
   const [selected, setSelected] = useState<string | undefined>();
+
+  const { data: identities } = useIdentities(nominators);
+  console.log("in modal: identities", identities);
 
   const nominate = async (targets: string[]) => {
     const signer = await getSigner();

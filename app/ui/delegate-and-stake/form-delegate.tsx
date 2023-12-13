@@ -8,13 +8,14 @@ import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@nextui-org/button";
 import { useState } from "react";
 import { sendDelegateTx } from "@/app/txs/txs";
-import { bnToBn } from "@polkadot/util";
+import { BN_ZERO, bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
 import { on } from "events";
-import { findChangedItem } from "@/app/util";
+import { findChangedItem, parseBN } from "@/app/util";
 import { useTracks } from "@/app/hooks/use-tracks";
+import useAccountBalances from "@/app/hooks/use-account-balance";
 
 const ALL_TRACKS_ID = 9999;
 
@@ -37,24 +38,30 @@ export function submitDelegation(prevState: State, formData: FormData) {
 }
 
 export default function FormDelegate() {
+  const { chainConfig } = useChain();
+  const {
+    data: accountBalance,
+    isLoading: isAccountBalanceLoading,
+    isFetching: isAccountBalanceFetching,
+    isSuccess: isAccountBalanceSuccess,
+  } = useAccountBalances();
+
+  const [conviction, setConviction] = useState<number>(1);
+  const [amount, setAmount] = useState(1);
+  const [tracks, setTracks] = useState(new Set<string>(["9999"]));
+
   const initialState = {
     message: null,
     errors: {},
   };
 
-  const [state, dispatch] = useFormState(submitDelegation, initialState);
-  const { pending, data, method, action } = useFormStatus();
-  const { chainConfig } = useChain();
-  const { ss58Format, tokenDecimals } = chainConfig;
+  const { tokenDecimals, tokenSymbol } = chainConfig;
 
-  const [conviction, setConviction] = useState<number>(1);
-  const [amount, setAmount] = useState(1);
-
-  const [tracks, setTracks] = useState(new Set<string>(["9999"]));
-
-  const delegateBalance = bnToBn(amount.toString()).mul(
-    bnToBn(10).pow(bnToBn(tokenDecimals))
-  );
+  const delegateBalance =
+    !isNaN(amount) && amount !== 0
+      ? bnToBn(amount * Math.pow(10, tokenDecimals))
+      : BN_ZERO;
+  const { freeBalance } = accountBalance || { freeBalance: "0" };
 
   const { api, activeChain } = useChain(); // Using useChain hook
   const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
@@ -143,8 +150,13 @@ export default function FormDelegate() {
     }
   };
 
+  const delegateMax = () => {
+    console.log("you have", amount, delegateBalance);
+    setAmount(parseBN(freeBalance?.toString(), tokenDecimals).toString());
+  };
+
   return (
-    <form className="flex flex-col gap-5 text-white" action={dispatch}>
+    <form className="flex flex-col gap-5 text-white">
       <Select
         label="Tracks"
         placeholder="Select Tracks"
@@ -174,13 +186,19 @@ export default function FormDelegate() {
           type="number"
           label="Amount"
           placeholder="Enter Delegation Amount"
-          description="Enter the amount you want to delegate"
+          description={`Enter the amount you want to delegate. You have ${freeBalance} ${tokenSymbol}`}
           classNames={{ description: "text-foreground-600" }}
           value={amount.toString()}
           onChange={(e) => setAmount(parseInt(e.target.value))}
         />
-        <Button variant="bordered" className="border-white h-14" size="lg">
-          Delegate Max
+        <Button
+          onClick={delegateMax}
+          variant="bordered"
+          className="border border-2 border-white  h-12 px-4"
+          size="sm"
+          isDisabled={!isAccountBalanceSuccess}
+        >
+          Delegate All
         </Button>
       </div>
       <div className="flex flex-col gap-6 w-full max-w-full">
@@ -203,7 +221,12 @@ export default function FormDelegate() {
         />
       </div>
       <div className="w-full flex gap-2 items-end">
-        <Button color="danger" className="w-full" onClick={delegateToTheKus}>
+        <Button
+          color="danger"
+          className="w-full"
+          onClick={delegateToTheKus}
+          isDisabled={!isAccountBalanceSuccess}
+        >
           Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
         </Button>
       </div>

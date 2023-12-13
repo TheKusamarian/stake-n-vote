@@ -23,7 +23,7 @@ body {
 
 section[role="dialog"] button {
   color: #fff;
-  border: 2px solid transparent;
+  /* border: 2px solid transparent; */
 
   &:hover {
     background: transparent;
