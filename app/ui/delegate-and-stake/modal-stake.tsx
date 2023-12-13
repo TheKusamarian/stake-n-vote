@@ -299,10 +299,12 @@ function MaybeAddToPool({
               )}
             </>
           }
+          //@ts-ignore
           onValueChange={setAmount}
           size="sm"
           defaultValue="0"
           max={accountBalance.freeBalance}
+          //@ts-ignore
           value={amount}
           step={0.01}
         />
