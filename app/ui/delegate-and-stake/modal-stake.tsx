@@ -27,6 +27,7 @@ import { KusamaIcon, PolkadotIcon } from "../icons";
 import { parseBN, trimAddress } from "@/app/util";
 import { useIdentities } from "@/app/hooks/use-identities";
 import Link from "next/link";
+import { Tooltip } from "@nextui-org/tooltip";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -61,7 +62,7 @@ export default function ModalStake(props: ModalPropType) {
     tokenDecimals,
   } = CHAIN_CONFIG[activeChain];
 
-  const { freeBalance } = accountBalance || { freeBalance: "0" };
+  const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
   console.log("freeBalance", freeBalance);
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
@@ -72,6 +73,7 @@ export default function ModalStake(props: ModalPropType) {
       className={styles.modal}
       size="2xl"
       scrollBehavior="inside"
+      backdrop="blur"
     >
       <ModalContent className={styles.modal}>
         {(onClose) => (
@@ -79,7 +81,7 @@ export default function ModalStake(props: ModalPropType) {
             <ModalHeader className="flex flex-col gap-1">
               Stake {tokenSymbol} with Kus Validation{" "}
               <span className="text-xs text-gray-300">
-                ({humanFreeBalance} {tokenSymbol} available)
+                ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
               </span>
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
@@ -90,10 +92,9 @@ export default function ModalStake(props: ModalPropType) {
               isNominatorsFetching ||
               isMinNominatorBondFetching ? (
                 <>
-                  <Skeleton className="rounded-lg w-full h-3" />
-                  <Skeleton className="rounded-lg w-full h-3 mb-2" />
-                  <Skeleton className="rounded-lg w-full h-3" />
-                  <Skeleton className="rounded-lg w-full h-3 mb-2" />
+                  <Skeleton className="rounded-lg">
+                    <Button></Button>
+                  </Skeleton>
                   <Skeleton className="rounded-lg">
                     <Button></Button>
                   </Skeleton>
@@ -101,13 +102,14 @@ export default function ModalStake(props: ModalPropType) {
               ) : nominators?.length === 0 ? (
                 <>
                   {freeBalance.toString() === "0" ||
-                  freeBalance.toString() === "00" ? (
+                  freeBalance.toString() === "00" ||
+                  (activeChain === "Kusama" &&
+                    freeBalance.lt(bnToBn(minNominatorBond))) ? (
                     <NoFunds
                       tokenSymbol={tokenSymbol}
                       accountBalance={accountBalance}
                     />
-                  ) : minNominatorBond &&
-                    bnToBn(freeBalance).lt(bnToBn(minNominatorBond)) ? (
+                  ) : (
                     <MaybeAddToPool
                       tokenSymbol={tokenSymbol}
                       tokenDecimals={tokenDecimals}
@@ -117,12 +119,6 @@ export default function ModalStake(props: ModalPropType) {
                       accountBalance={accountBalance}
                       selectedAccount={selectedAccount}
                       minNominatorBond={minNominatorBond}
-                    />
-                  ) : (
-                    <StakeToRecommendedSet
-                      api={api}
-                      getSigner={getSigner}
-                      selectedAccount={selectedAccount}
                     />
                   )}
                 </>
@@ -239,6 +235,10 @@ function MaybeAddToPool({
   minNominatorBond: any;
 }) {
   const [amount, setAmount] = useState<number>(0);
+  const stakeBalance =
+    !isNaN(amount) && amount !== 0
+      ? bnToBn(amount * Math.pow(10, tokenDecimals))
+      : BN_ZERO;
 
   const joinNominationPool = async () => {
     const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
@@ -246,11 +246,6 @@ function MaybeAddToPool({
     if (!poolToJoin) {
       throw new Error("No pool to join");
     }
-
-    const stakeBalance =
-      !isNaN(amount) && amount !== 0
-        ? bnToBn(amount * Math.pow(10, tokenDecimals))
-        : BN_ZERO;
 
     const signer = await getSigner();
     const tx = await joinPool(
@@ -273,17 +268,15 @@ function MaybeAddToPool({
     tokenDecimals
   );
 
+  const amountSmallerThanMinNominatorBond = stakeBalance.lt(
+    bnToBn(minNominatorBond)
+  );
+
+  const isDisabled =
+    stakeBalance.lte(BN_ZERO) || stakeBalance.gt(accountBalance.freeBalance);
+
   return (
     <>
-      <p className="text-xs">
-        Your balance is below the threshold of staking alone (
-        {humanReadableMinNominatorBond} {tokenSymbol}), but you can join a
-        Nomination Pool instead.
-      </p>
-      <p className="text-xs">
-        Stake with nomination Pool partners Talisman (Stakes under minimum stake
-        do not have voting power while in nomination pools)
-      </p>
       <div className="flex gap-2">
         <Input
           type="number"
@@ -316,11 +309,32 @@ function MaybeAddToPool({
           Stake Max
         </Button>
       </div>
-      <Button onClick={joinNominationPool} color="danger">
-        Stake with Nomination Pool
-      </Button>
-      accountBalance:{JSON.stringify(accountBalance, null, 2)}
-      amount:{JSON.stringify(amount, null, 2)}
+      {amountSmallerThanMinNominatorBond ? (
+        <>
+          <Tooltip
+            content={`Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}
+            stake do not have voting power while in nomination pools`}
+            size="sm"
+            color="warning"
+            radius="sm"
+          >
+            <Button
+              onClick={joinNominationPool}
+              color="danger"
+              isDisabled={isDisabled}
+            >
+              Stake with Nomination Pool
+            </Button>
+          </Tooltip>
+        </>
+      ) : (
+        <StakeToRecommendedSet
+          api={api}
+          getSigner={getSigner}
+          selectedAccount={selectedAccount}
+          isDisabled={isDisabled}
+        />
+      )}
     </>
   );
 }
@@ -329,10 +343,12 @@ function StakeToRecommendedSet({
   api,
   getSigner,
   selectedAccount,
+  isDisabled,
 }: {
   api: ApiPromise | undefined;
   getSigner: any;
   selectedAccount: InjectedAccountWithMeta | null;
+  isDisabled: boolean;
 }) {
   const { activeChain } = useChain();
 
@@ -345,7 +361,7 @@ function StakeToRecommendedSet({
 
   return (
     <>
-      <Button onClick={nominate} color="danger">
+      <Button onClick={nominate} color="danger" isDisabled={isDisabled}>
         Stake with Kus Validation and friends
       </Button>
     </>

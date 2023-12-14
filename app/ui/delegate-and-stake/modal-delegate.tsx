@@ -42,6 +42,7 @@ export default function ModalDelegate(props: ModalPropType) {
       className={styles.modal}
       size="2xl"
       scrollBehavior="inside"
+      backdrop="blur"
     >
       <ModalContent className={styles.modal}>
         {(onClose) => (
