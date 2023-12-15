@@ -7,7 +7,7 @@ export function ChainSwitch() {
   const { api, activeChain, setActiveChain } = useChain();
   const queryClient = useQueryClient();
 
-  function handleChainChange(chain: string) {
+  function handleChainChange(chain: "Kusama" | "Polkadot") {
     setActiveChain(chain);
   }
 
