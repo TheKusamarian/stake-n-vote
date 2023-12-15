@@ -27,7 +27,7 @@ export default function RootLayout({
             <header className="h-24">
               <nav className="flex max-w-7xl mx-auto h-24 p-4 justify-between">
                 <Image
-                  src="/kusamarian.png"
+                  src="kusamarian.png"
                   alt="Kusamarian Logo"
                   width={75}
                   height={80}

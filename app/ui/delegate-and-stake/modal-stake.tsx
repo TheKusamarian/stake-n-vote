@@ -68,7 +68,6 @@ export default function ModalStake(props: ModalPropType) {
   } = CHAIN_CONFIG[activeChain];
 
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
-  console.log("freeBalance", freeBalance);
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
   const [stakeAmount, setStakeAmount] = useState<number | undefined>();
@@ -185,7 +184,7 @@ export default function ModalStake(props: ModalPropType) {
                   activeChain === "Polkadot" ? (
                     <a href="https://talisman.xyz">
                       <Image
-                        src="/talisman.svg"
+                        src="talisman.svg"
                         alt="talisman nomination pool"
                         width={90}
                         height={35}
@@ -197,7 +196,7 @@ export default function ModalStake(props: ModalPropType) {
                       {activeChain === "Kusama" ? (
                         <a href="https://twitter.com/LuckyFridayLabs">
                           <Image
-                            src="/lucky.png"
+                            src="lucky.png"
                             alt="lucky friday staking"
                             width={40}
                             height={45}
@@ -207,7 +206,7 @@ export default function ModalStake(props: ModalPropType) {
                       ) : (
                         <a href="https://twitter.com/dev1_sik" target="_blank">
                           <Image
-                            src="/sik.png"
+                            src="sik.png"
                             alt="sik staking"
                             width={35}
                             height={35}
@@ -263,7 +262,7 @@ function NoFunds({
       <div className="flex gap-2 items-center">
         <a href="https://global.transak.com/">
           <Image
-            src="/transak.svg"
+            src="transak.svg"
             alt="transak fiat onramp"
             width={120}
             height={50}
@@ -272,7 +271,7 @@ function NoFunds({
         or
         <a href="https://banxa.com/">
           <Image
-            src="/banxa.svg"
+            src="banxa.svg"
             alt="banxa fiat onramp"
             width={120}
             height={50}
