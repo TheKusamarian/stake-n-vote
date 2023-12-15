@@ -24,7 +24,7 @@ export function ChainSwitch() {
         onClick={() => handleChainChange("Kusama")}
       >
         <Image
-          src="/kusama.png"
+          src="kusama.png"
           alt="Kusama Logo"
           width={100}
           height={100}
@@ -42,7 +42,7 @@ export function ChainSwitch() {
         onClick={() => handleChainChange("Polkadot")}
       >
         <Image
-          src="/polkadot.svg"
+          src="polkadot.svg"
           alt="Polkadot Logo"
           width={100}
           height={100}
