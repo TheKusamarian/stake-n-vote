@@ -17,6 +17,7 @@ import { findChangedItem, parseBN } from "@/app/util";
 import { useTracks } from "@/app/hooks/use-tracks";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { KusamaIcon, PolkadotIcon } from "../icons";
+import { Switch } from "@nextui-org/switch";
 
 const ALL_TRACKS_ID = 9999;
 
@@ -53,6 +54,7 @@ export default function FormDelegate() {
   const [conviction, setConviction] = useState<number>(1);
   const [amount, setAmount] = useState(1);
   const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS));
+  const [isAllSelected, setIsAllSelected] = useState(true);
 
   const initialState = {
     message: null,
@@ -167,37 +169,49 @@ export default function FormDelegate() {
 
   return (
     <form className="flex flex-col gap-5 text-white">
-      <Select
-        label="Tracks"
-        placeholder="Select Tracks"
-        selectionMode="multiple"
-        className="w-full"
-        size="sm"
-        classNames={{ description: "text-foreground-600" }}
-        description="Select the tracks you want to delegate"
-        selectedKeys={tracks}
-        onSelectionChange={handleSelectionChange}
-      >
-        <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
+      <div className="flex flex-col gap-2">
+        <Switch
+          isSelected={isAllSelected}
+          onValueChange={setIsAllSelected}
+          color="danger"
+        >
           All Tracks
-        </SelectItem>
-        {trackOptions?.map((track) => {
-          return (
-            <SelectItem key={track.id} value={track.id}>
-              {track.name}
+        </Switch>
+        {!isAllSelected && (
+          <Select
+            label="Tracks"
+            placeholder="Select Tracks"
+            selectionMode="multiple"
+            size="sm"
+            classNames={{ description: "text-foreground-600" }}
+            description="Select the tracks you want to delegate"
+            selectedKeys={tracks}
+            onSelectionChange={handleSelectionChange}
+          >
+            <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
+              All Tracks
             </SelectItem>
-          );
-        })}
-      </Select>
+            {trackOptions?.map((track) => {
+              return (
+                <SelectItem key={track.id} value={track.id}>
+                  {track.name}
+                </SelectItem>
+              );
+            })}
+          </Select>
+        )}
+      </div>
 
       <div className="flex flex-row gap-3 w-full max-w-full">
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full">
           <Input
             size="sm"
             type="number"
             label="Amount"
             placeholder="Enter Delegation Amount"
-            description={`Enter the amount you want to delegate. You have ${humanFreeBalance} ${tokenSymbol}`}
+            description={`Enter the amount you want to delegate. You have ${humanFreeBalance.toFixed(
+              2
+            )} ${tokenSymbol}`}
             classNames={{ description: "text-foreground-600" }}
             value={amount.toString()}
             onChange={(e) => setAmount(parseInt(e.target.value))}
@@ -219,7 +233,7 @@ export default function FormDelegate() {
             size="sm"
             isDisabled={!isAccountBalanceSuccess}
           >
-            Delegate All
+            Delegate Max
           </Button>
         </div>
       </div>

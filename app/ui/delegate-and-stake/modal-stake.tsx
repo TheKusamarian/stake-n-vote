@@ -3,7 +3,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalProps,
 } from "@nextui-org/modal";
@@ -15,19 +14,26 @@ import { useAccountNominators } from "@/app/hooks/use-account-nominations";
 import { useChain } from "@/app/providers/chain-provider";
 import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
-import { BN_MAX_INTEGER, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util";
+import {
+  BN,
+  BN_MAX_INTEGER,
+  BN_ZERO,
+  bnToBn,
+  formatBalance,
+} from "@polkadot/util";
 import { Input } from "@nextui-org/input";
 import { KusamaIcon, PolkadotIcon } from "../icons";
 import { parseBN, trimAddress } from "@/app/util";
 import { useIdentities } from "@/app/hooks/use-identities";
 import Link from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
+import Image from "next/image";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -54,7 +60,6 @@ export default function ModalStake(props: ModalPropType) {
     isLoading: isMinNominatorBondLoading,
     isFetching: isMinNominatorBondFetching,
   } = useMinNominatorBond() || { data: "0" };
-
   const {
     maxNominators,
     validator: kusValidator,
@@ -65,6 +70,18 @@ export default function ModalStake(props: ModalPropType) {
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
   console.log("freeBalance", freeBalance);
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
+
+  const [stakeAmount, setStakeAmount] = useState<number | undefined>();
+  const stakeBalance =
+    stakeAmount && !isNaN(stakeAmount) && stakeAmount !== 0
+      ? bnToBn(stakeAmount * Math.pow(10, tokenDecimals))
+      : BN_ZERO;
+
+  const amountSmallerThanMinNominatorBond = stakeBalance.lt(
+    bnToBn(minNominatorBond)
+  );
+
+  const showSupported = !freeBalance.eq(BN_ZERO);
 
   return (
     <Modal
@@ -119,6 +136,12 @@ export default function ModalStake(props: ModalPropType) {
                       accountBalance={accountBalance}
                       selectedAccount={selectedAccount}
                       minNominatorBond={minNominatorBond}
+                      stakeBalance={stakeBalance}
+                      stakeAmount={stakeAmount}
+                      setStakeAmount={setStakeAmount}
+                      amountSmallerThanMinNominatorBond={
+                        amountSmallerThanMinNominatorBond
+                      }
                     />
                   )}
                 </>
@@ -154,20 +177,47 @@ export default function ModalStake(props: ModalPropType) {
                   </pre>
                 </>
               )}
-              {/* <p>{JSON.stringify(nominators, null, 2)}</p> */}
-              {/* <FormStake /> */}
-              {/* <div className="my-2 text-xs">
-                <p>
-                  The Kus Delegate is directed by verified humans from The
-                  Kusamarian community{" "}
-                </p>
-                <p>
-                  <a className="underline" href="https://discord.gg/eauz25UP">
-                    Join our Discord
-                  </a>{" "}
-                  after you delegate!
-                </p>
-              </div> */}
+              {showSupported && (
+                <div className="flex items-center justify-end text-xs h-5 text-gray-200">
+                  supported by{" "}
+                  {amountSmallerThanMinNominatorBond &&
+                  nominators?.length === 0 &&
+                  activeChain === "Polkadot" ? (
+                    <a href="https://talisman.xyz">
+                      <Image
+                        src="/talisman.svg"
+                        alt="talisman nomination pool"
+                        width={90}
+                        height={35}
+                        className="invert pl-2"
+                      />
+                    </a>
+                  ) : (
+                    <>
+                      {activeChain === "Kusama" ? (
+                        <a href="https://twitter.com/LuckyFridayLabs">
+                          <Image
+                            src="/lucky.png"
+                            alt="lucky friday staking"
+                            width={40}
+                            height={45}
+                            className="pl-2"
+                          />
+                        </a>
+                      ) : (
+                        <a href="https://twitter.com/dev1_sik" target="_blank">
+                          <Image
+                            src="/sik.png"
+                            alt="sik staking"
+                            width={35}
+                            height={35}
+                          />
+                        </a>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
             </ModalBody>
           </>
         )}
@@ -208,9 +258,27 @@ function NoFunds({
   return (
     <>
       <p>
-        Balance 0 - Deposit {tokenSymbol} or buy {tokenSymbol} here.
+        Deposit {tokenSymbol} to your account or buy {tokenSymbol}
       </p>
-      <pre className="text-xs">{JSON.stringify(accountBalance, null, 2)}</pre>
+      <div className="flex gap-2 items-center">
+        <a href="https://global.transak.com/">
+          <Image
+            src="/transak.svg"
+            alt="transak fiat onramp"
+            width={120}
+            height={50}
+          />
+        </a>{" "}
+        or
+        <a href="https://banxa.com/">
+          <Image
+            src="/banxa.svg"
+            alt="banxa fiat onramp"
+            width={120}
+            height={50}
+          />
+        </a>
+      </div>
     </>
   );
 }
@@ -224,6 +292,10 @@ function MaybeAddToPool({
   accountBalance,
   selectedAccount,
   minNominatorBond,
+  stakeAmount,
+  setStakeAmount,
+  stakeBalance,
+  amountSmallerThanMinNominatorBond,
 }: {
   api: ApiPromise | undefined;
   getSigner: any;
@@ -233,13 +305,11 @@ function MaybeAddToPool({
   accountBalance: any;
   selectedAccount: InjectedAccountWithMeta | null;
   minNominatorBond: any;
+  stakeAmount: number | undefined;
+  setStakeAmount: Dispatch<SetStateAction<number | undefined>>;
+  stakeBalance: BN;
+  amountSmallerThanMinNominatorBond: boolean;
 }) {
-  const [amount, setAmount] = useState<number>(0);
-  const stakeBalance =
-    !isNaN(amount) && amount !== 0
-      ? bnToBn(amount * Math.pow(10, tokenDecimals))
-      : BN_ZERO;
-
   const joinNominationPool = async () => {
     const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
 
@@ -257,10 +327,17 @@ function MaybeAddToPool({
     );
   };
 
+  const nominate = async () => {
+    const targets = CHAIN_CONFIG[activeChain].validator_set;
+
+    const signer = await getSigner();
+    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
+  };
+
   const stakeMax = () => {
     console.log(" you have ", accountBalance.freeBalance?.toString());
     const a = parseBN(accountBalance.freeBalance?.toString(), tokenDecimals);
-    setAmount(a);
+    setStakeAmount(a);
   };
 
   const humanReadableMinNominatorBond = parseBN(
@@ -268,12 +345,11 @@ function MaybeAddToPool({
     tokenDecimals
   );
 
-  const amountSmallerThanMinNominatorBond = stakeBalance.lt(
-    bnToBn(minNominatorBond)
-  );
-
   const isDisabled =
-    stakeBalance.lte(BN_ZERO) || stakeBalance.gt(accountBalance.freeBalance);
+    activeChain === "Polkadot"
+      ? stakeBalance.lte(BN_ZERO)
+      : stakeBalance.lt(minNominatorBond) ||
+        stakeBalance.gt(accountBalance.freeBalance);
 
   return (
     <>
@@ -281,7 +357,11 @@ function MaybeAddToPool({
         <Input
           type="number"
           label="Amount"
-          placeholder="Enter Stake Amount"
+          placeholder={
+            activeChain === "Kusama"
+              ? `Enter staking amount > ${humanReadableMinNominatorBond} ${tokenSymbol}`
+              : `Enter staking amount`
+          }
           endContent={
             <>
               {tokenSymbol}
@@ -293,12 +373,11 @@ function MaybeAddToPool({
             </>
           }
           //@ts-ignore
-          onValueChange={setAmount}
+          onValueChange={setStakeAmount}
           size="sm"
-          defaultValue="0"
           max={accountBalance.freeBalance}
           //@ts-ignore
-          value={amount}
+          value={stakeAmount}
           step={0.01}
         />
         <Button
@@ -309,7 +388,7 @@ function MaybeAddToPool({
           Stake Max
         </Button>
       </div>
-      {amountSmallerThanMinNominatorBond ? (
+      {amountSmallerThanMinNominatorBond && activeChain !== "Kusama" ? (
         <>
           <Tooltip
             content={`Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}
@@ -317,53 +396,28 @@ function MaybeAddToPool({
             size="sm"
             color="warning"
             radius="sm"
+            placement="bottom"
           >
             <Button
               onClick={joinNominationPool}
               color="danger"
               isDisabled={isDisabled}
+              size="lg"
             >
               Stake with Nomination Pool
             </Button>
           </Tooltip>
         </>
       ) : (
-        <StakeToRecommendedSet
-          api={api}
-          getSigner={getSigner}
-          selectedAccount={selectedAccount}
+        <Button
+          onClick={nominate}
+          color="danger"
           isDisabled={isDisabled}
-        />
+          size="lg"
+        >
+          Stake with Kus Validation and friends
+        </Button>
       )}
-    </>
-  );
-}
-
-function StakeToRecommendedSet({
-  api,
-  getSigner,
-  selectedAccount,
-  isDisabled,
-}: {
-  api: ApiPromise | undefined;
-  getSigner: any;
-  selectedAccount: InjectedAccountWithMeta | null;
-  isDisabled: boolean;
-}) {
-  const { activeChain } = useChain();
-
-  const nominate = async () => {
-    const targets = CHAIN_CONFIG[activeChain].validator_set;
-
-    const signer = await getSigner();
-    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
-  };
-
-  return (
-    <>
-      <Button onClick={nominate} color="danger" isDisabled={isDisabled}>
-        Stake with Kus Validation and friends
-      </Button>
     </>
   );
 }
@@ -398,6 +452,7 @@ function AddKusToSet({
           );
         }}
         color="danger"
+        size="lg"
       >
         Add Kus to nominator set
       </Button>
@@ -474,6 +529,7 @@ function ReplaceOneWithKus({
         color="danger"
         onClick={handleReplace}
         isDisabled={!selected}
+        size="lg"
       >
         Replace above with Kus
       </Button>

@@ -16,15 +16,26 @@ import useAccountBalances from "@/app/hooks/use-account-balance";
 import { useChain } from "@/app/providers/chain-provider";
 import { format } from "path";
 import { BN_ZERO, formatBalance } from "@polkadot/util";
+import { parseBN } from "@/app/util";
+import { CHAIN_CONFIG } from "@/app/config";
 
 type ModalPropType = Omit<ModalProps, "children">;
 
 export default function ModalDelegate(props: ModalPropType) {
   const { isOpen, onOpenChange } = props;
   const { activeChain, chainConfig } = useChain();
-  const { tokenSymbol } = chainConfig;
   const { data: accountBalance, isLoading } = useAccountBalances();
   const { stakedBalance } = accountBalance || {};
+
+  const {
+    maxNominators,
+    validator: kusValidator,
+    tokenSymbol,
+    tokenDecimals,
+  } = CHAIN_CONFIG[activeChain];
+
+  const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
+  const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
   const humanStakedBalance = formatBalance(stakedBalance, {
     withSi: false,
@@ -49,12 +60,15 @@ export default function ModalDelegate(props: ModalPropType) {
           <>
             <ModalHeader className="flex flex-col gap-1">
               Delegate Votes to The Kus Delegate {activeChain}
+              <span className="text-xs text-gray-300">
+                ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
+              </span>
             </ModalHeader>
             <ModalBody className="text-sm">
               {!isLoading && accountBalance && stakedBalance?.eq(BN_ZERO) && (
                 <p>
-                  Your staked {tokenSymbol} is already locked for 28 days - put
-                  it to work directing the network!
+                  Put your {tokenSymbol} to work directing he network with The
+                  Kus Delegate!
                 </p>
               )}
               <FormDelegate />

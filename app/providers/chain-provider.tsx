@@ -16,8 +16,8 @@ export type ChainConfigType = {
 
 interface ChainContextType {
   api: ApiPromise | undefined;
-  activeChain: string;
-  setActiveChain: (chain: string) => void;
+  activeChain: "Kusama" | "Polkadot";
+  setActiveChain: (chain: "Kusama" | "Polkadot") => void;
   chainConfig: ChainConfigType;
 }
 
@@ -31,7 +31,9 @@ interface ChainProviderProps {
 
 const ChainProvider = ({ children }: ChainProviderProps) => {
   const [api, setApi] = useState<ApiPromise | undefined>(undefined);
-  const [activeChain, setActiveChain] = useState<string>("Kusama"); // Default to Kusama
+  const [activeChain, setActiveChain] = useState<"Kusama" | "Polkadot">(
+    "Kusama"
+  ); // Default to Kusama
   const [chainConfig, setChainConfig] = useState<ChainConfigType>({
     ss58Format: 2,
     tokenDecimals: 12,
