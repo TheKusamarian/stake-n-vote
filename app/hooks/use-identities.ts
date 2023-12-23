@@ -30,8 +30,6 @@ export function useIdentities(addresses: string[]) {
       };
     });
 
-    console.log(result);
-
     return result;
   };
 

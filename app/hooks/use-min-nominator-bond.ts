@@ -21,7 +21,6 @@ export function useMinNominatorBond() {
     async () => {
       // Fetch staking information
       const minNominatorBond = await api?.query.staking?.minNominatorBond();
-      console.log("minNominatorBond", minNominatorBond?.toHuman());
       return minNominatorBond;
     },
     {

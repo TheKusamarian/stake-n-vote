@@ -34,12 +34,14 @@ import { useIdentities } from "@/app/hooks/use-identities";
 import Link from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
 };
 
 export default function ModalStake(props: ModalPropType) {
+  const router = useRouter();
   const { isOpen, onOpenChange, onDelegatingOpenChange } = props;
 
   const { api, activeChain } = useChain(); // Using useChain hook
@@ -169,11 +171,16 @@ export default function ModalStake(props: ModalPropType) {
                 />
               ) : (
                 <>
-                  <p>Something went wrong, try refreshing the page.</p>
-                  <pre className="text-xs">
-                    {nominators?.length} / {maxNominators}
-                    {JSON.stringify(nominators, null, 2)}
-                  </pre>
+                  <p>
+                    Something went wrong{" "}
+                    <a
+                      className="text-danger cursor-pointer"
+                      onClick={() => router.refresh()}
+                    >
+                      Try again
+                    </a>
+                    .
+                  </p>
                 </>
               )}
               {showSupported && (
@@ -328,13 +335,11 @@ function MaybeAddToPool({
 
   const nominate = async () => {
     const targets = CHAIN_CONFIG[activeChain].validator_set;
-
     const signer = await getSigner();
     const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
   };
 
   const stakeMax = () => {
-    console.log(" you have ", accountBalance.freeBalance?.toString());
     const a = parseBN(accountBalance.freeBalance?.toString(), tokenDecimals);
     setStakeAmount(a);
   };

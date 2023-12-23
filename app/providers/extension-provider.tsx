@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   createContext,
   useContext,
@@ -9,6 +11,8 @@ import React, {
 } from "react";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { Signer } from "@polkadot/types/types";
+import { ModalInstallExtension } from "../ui/modal-install-extension";
+import { useDisclosure } from "@nextui-org/modal";
 
 interface PolkadotContextProps {
   accounts: InjectedAccountWithMeta[];
@@ -19,6 +23,7 @@ interface PolkadotContextProps {
   disconnect: () => void;
   userWantsConnection: boolean;
   getSigner: () => Promise<Signer | undefined>;
+  openExtensionModal: () => void;
 }
 
 const PolkadotExtensionContext = createContext<
@@ -41,6 +46,8 @@ export const PolkadotExtensionProvider = ({
   const [userWantsConnection, setUserWantsConnection] = useState<boolean>(
     () => localStorage.getItem("userWantsConnection") === "true"
   );
+
+  const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
   useEffect(() => {
     const enableExtension = async () => {
@@ -134,9 +141,11 @@ export const PolkadotExtensionProvider = ({
         userWantsConnection,
         disconnect,
         getSigner,
+        openExtensionModal: onOpenChange,
       }}
     >
       {children}
+      <ModalInstallExtension isOpen={isOpen} onOpenChange={onOpenChange} />
     </PolkadotExtensionContext.Provider>
   );
 };

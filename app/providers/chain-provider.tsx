@@ -41,7 +41,6 @@ const ChainProvider = ({ children }: ChainProviderProps) => {
   });
 
   useEffect(() => {
-    console.log("activeChain changed", activeChain, chainConfig);
     const initApi = async () => {
       const wsProvider = new WsProvider(
         activeChain === "Polkadot"

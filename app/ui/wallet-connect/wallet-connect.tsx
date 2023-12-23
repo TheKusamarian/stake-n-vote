@@ -75,7 +75,12 @@ export const WalletConnect = () => {
 
   if (!isExtensionAvailable)
     return (
-      <Button variant="bordered" size="lg" isIconOnly={true}>
+      <Button
+        variant="bordered"
+        size="lg"
+        isIconOnly={true}
+        className="border-white"
+      >
         <ConnectWallet stroke="currentColor" width={20} height={20} />
       </Button>
     );
@@ -94,7 +99,7 @@ export const WalletConnect = () => {
           <Button
             variant="flat"
             size="lg"
-            className="p-7 bg-transparent max-w-[300px]"
+            className="p-7 bg-transparent max-w-[300px] border-white"
           >
             <span className="truncate text-sm sm:flex hidden">
               {selectedAccount?.meta?.name ||
@@ -102,7 +107,7 @@ export const WalletConnect = () => {
             </span>
             <Identicon
               value={selectedAccount?.address}
-              size={50}
+              size={45}
               theme="polkadot"
               className="hover:cursor-pointer"
               // prefix={ss58Prefix}

@@ -93,7 +93,6 @@ export default function FormDelegate() {
       conviction,
       delegateBalance
     );
-    console.log(tx);
   };
 
   const effectiveVotes = conviction !== 0 ? amount * conviction : amount * 0.1;
@@ -137,8 +136,6 @@ export default function FormDelegate() {
   ];
 
   const handleSelectionChange = (selectedTracks: Set<string>) => {
-    console.log(selectedTracks, "eeee");
-
     const changedItem = findChangedItem(tracks, selectedTracks);
 
     if (changedItem.includes(ALL_TRACKS_ID.toString())) {
@@ -163,7 +160,6 @@ export default function FormDelegate() {
   };
 
   const delegateMax = () => {
-    console.log("you have", amount, delegateBalance);
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals));
   };
 
@@ -209,9 +205,6 @@ export default function FormDelegate() {
             type="number"
             label="Amount"
             placeholder="Enter Delegation Amount"
-            description={`Enter the amount you want to delegate. You have ${humanFreeBalance.toFixed(
-              2
-            )} ${tokenSymbol}`}
             classNames={{ description: "text-foreground-600" }}
             value={amount.toString()}
             onChange={(e) => setAmount(parseInt(e.target.value))}

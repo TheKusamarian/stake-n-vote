@@ -72,8 +72,6 @@ export async function sendAndFinalize(
     message: "Transaction failed",
   };
 
-  console.log("toast", toastId, toast);
-
   try {
     if (api && tx && signer && address) {
       const unsub = await tx.signAndSend(

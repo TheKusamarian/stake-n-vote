@@ -8,6 +8,8 @@ import "@polkadot/api-augment";
 import { Providers } from "./providers";
 import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
 import { inter, pt_mono } from "./fonts";
+import { Modal } from "@nextui-org/modal";
+import { ModalInstallExtension } from "./ui/modal-install-extension";
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
