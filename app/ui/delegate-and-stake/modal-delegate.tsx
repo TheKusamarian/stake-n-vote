@@ -54,7 +54,7 @@ export default function ModalDelegate(props: ModalPropType) {
             <ModalHeader className="flex flex-col gap-1">
               {selectedAccount ? (
                 <>
-                  Delegate Votes to The Kus {tokenSymbol} Delegate
+                  Delegate Votes to The Kus Delegate {activeChain}
                   <span className="text-xs text-gray-300">
                     ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
                   </span>
@@ -64,6 +64,12 @@ export default function ModalDelegate(props: ModalPropType) {
               )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
+              {!isLoading && accountBalance && stakedBalance?.eq(BN_ZERO) && (
+                <p>
+                  Put your {tokenSymbol} to work directing he network with The
+                  Kus Delegate!
+                </p>
+              )}
               {!selectedAccount ? (
                 <NotConnected />
               ) : (
