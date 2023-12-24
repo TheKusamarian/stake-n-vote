@@ -36,6 +36,7 @@ import Link from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { NotConnected } from "./not-connected";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -98,18 +99,26 @@ export default function ModalStake(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Stake {tokenSymbol} with Kus Validation{" "}
-              <span className="text-xs text-gray-300">
-                ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
-              </span>
+              {selectedAccount ? (
+                <>
+                  Stake {tokenSymbol} with Kus Validation{" "}
+                  <span className="text-xs text-gray-300">
+                    ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
+                  </span>
+                </>
+              ) : (
+                "No accounts found"
+              )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
-              {isAccountBalanceLoading ||
-              isNominatorsLoading ||
-              isMinNominatorBondLoading ||
-              isAccountBalanceFetching ||
-              isNominatorsFetching ||
-              isMinNominatorBondFetching ? (
+              {selectedAccount === undefined ? (
+                <NotConnected />
+              ) : isAccountBalanceLoading ||
+                isNominatorsLoading ||
+                isMinNominatorBondLoading ||
+                isAccountBalanceFetching ||
+                isNominatorsFetching ||
+                isMinNominatorBondFetching ? (
                 <>
                   <Skeleton className="rounded-lg">
                     <Button></Button>
