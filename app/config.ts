@@ -59,6 +59,7 @@ export const CHAIN_CONFIG: {
     delegator: KUSAMA_DELEGATOR,
     validator: KUSAMA_VALIDATOR,
     validator_set: [
+      "FZjqDWyTA4iP5nUfdYCurwVBz15bj8u1bH3wA5PYmP9fE3j",
       "HWyLYmpW68JGJYoVJcot6JQ1CJbtUQeTdxfY1kUTsvGCB1r",
       "GLSikJaXTVWvWtUhzB3Bj6xb5TcnhTUp6EuAkxaCohT9UBv",
       "J6HxQniipCQLVAJxzC1pn2DphoN3za9eAq1bhkBtMhZ9sid",

@@ -16,13 +16,14 @@ import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { Dispatch, SetStateAction, useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
-import { joinPool, nominateTx } from "@/app/txs/txs";
+import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
 import {
   BN,
   BN_MAX_INTEGER,
+  BN_ONE,
   BN_ZERO,
   bnToBn,
   formatBalance,
@@ -333,10 +334,19 @@ function MaybeAddToPool({
     );
   };
 
-  const nominate = async () => {
+  const bondAndNominate = async () => {
     const targets = CHAIN_CONFIG[activeChain].validator_set;
     const signer = await getSigner();
-    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
+
+    const amount = bnToBn(accountBalance.freeBalance).subn(tokenDecimals * 0.1);
+
+    const tx = await bondAndNominateTx(
+      api,
+      signer,
+      selectedAccount?.address,
+      targets,
+      amount
+    );
   };
 
   const stakeMax = () => {
@@ -414,7 +424,7 @@ function MaybeAddToPool({
         </>
       ) : (
         <Button
-          onClick={nominate}
+          onClick={bondAndNominate}
           color="danger"
           isDisabled={isDisabled}
           size="lg"

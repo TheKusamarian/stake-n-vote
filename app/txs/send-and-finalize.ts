@@ -117,6 +117,8 @@ export async function sendAndFinalize(
                   status: "error",
                   message: docs?.join(" ") || "Unknown error",
                 };
+
+                console.trace("dispatch error", decoded);
               } else {
                 // Other, CannotLookup, BadOrigin, no extra info
 
@@ -125,13 +127,13 @@ export async function sendAndFinalize(
                   message: dispatchError.toString(),
                 };
               }
-              console.log("we are here");
               toast.error(res.message, {
                 // @ts-ignore
                 title: messages.error,
                 className: "toaster",
                 id: toastId,
               });
+
               console.error(`${messages.error}: ${res.message}`);
             } else {
               console.log(
@@ -156,12 +158,8 @@ export async function sendAndFinalize(
               };
             }
           }
-
-          // cb?.(res);
         }
       );
-
-      // unsub();
     }
   } catch (error) {
     console.log(error);
