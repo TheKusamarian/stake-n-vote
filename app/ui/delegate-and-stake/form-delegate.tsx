@@ -51,7 +51,7 @@ export default function FormDelegate() {
   const { data: trackOptions } = useTracks() || [];
   const ALL_TRACKS = trackOptions?.map((track) => track.id.toString()) || ["0"];
 
-  const [conviction, setConviction] = useState<number>(1);
+  const [conviction, setConviction] = useState<number>(3);
   const [amount, setAmount] = useState(1);
   const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS));
   const [isAllSelected, setIsAllSelected] = useState(true);

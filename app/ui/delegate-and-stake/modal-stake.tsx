@@ -80,9 +80,14 @@ export default function ModalStake(props: ModalPropType) {
       ? bnToBn(stakeAmount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
 
-  const amountSmallerThanMinNominatorBond = stakeBalance.lt(
-    bnToBn(minNominatorBond)
+  const polkadotMinNominatorBond = bnToBn(minNominatorBond).addn(
+    tokenDecimals * 25
   );
+
+  const amountSmallerThanMinNominatorBond =
+    activeChain === "Kusama"
+      ? stakeBalance.lt(bnToBn(minNominatorBond))
+      : stakeBalance.lt(polkadotMinNominatorBond);
 
   const showSupported = !freeBalance.eq(BN_ZERO);
 

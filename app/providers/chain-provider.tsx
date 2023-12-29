@@ -32,7 +32,7 @@ interface ChainProviderProps {
 const ChainProvider = ({ children }: ChainProviderProps) => {
   const [api, setApi] = useState<ApiPromise | undefined>(undefined);
   const [activeChain, setActiveChain] = useState<"Kusama" | "Polkadot">(
-    "Kusama"
+    "Polkadot"
   ); // Default to Kusama
   const [chainConfig, setChainConfig] = useState<ChainConfigType>({
     ss58Format: 2,
