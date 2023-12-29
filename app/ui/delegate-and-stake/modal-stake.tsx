@@ -204,7 +204,7 @@ export default function ModalStake(props: ModalPropType) {
                   {amountSmallerThanMinNominatorBond &&
                   nominators?.length === 0 &&
                   activeChain === "Polkadot" ? (
-                    <a href="https://talisman.xyz">
+                    <a href="https://talisman.xyz" target="_blank">
                       <Image
                         src="talisman.svg"
                         alt="talisman nomination pool"
@@ -216,7 +216,10 @@ export default function ModalStake(props: ModalPropType) {
                   ) : (
                     <>
                       {activeChain === "Kusama" ? (
-                        <a href="https://twitter.com/LuckyFridayLabs">
+                        <a
+                          href="https://twitter.com/LuckyFridayLabs"
+                          target="_blank"
+                        >
                           <Image
                             src="lucky.png"
                             alt="lucky friday staking"
