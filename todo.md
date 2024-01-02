@@ -1,0 +1,3 @@
+- user wallet install modal
+- user connect process
+- delegating max calculation

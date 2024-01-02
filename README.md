@@ -1,7 +1,29 @@
-This is a minimal-dependency HTML+CSS+Javascript project intended to be built into a single-file HTML webapp.
+# The KUS Stake and Vote
 
-We're using Bulma as a CSS framework (@imported from jsdelivr CDN), `parcel` as a build tool, and `lit` for templating.
-We mix and match JS and TS for pragmatic reasons (lit templates are TS, but the rest of the code is JS); Parcel handles this just fine out of the box.
+This is a growing project to allow people to stake with the Kus (+ friends) and
+to delegate votes to the Kus.
 
-After checking out, to run the project one can simply run `yarn start`.
-To build the production version, run `yarn build`.
+We use:
+
+- next.js
+- tailwind
+- cloudflare building
+- polkadot.js
+- some nice hooks
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the
+result.
