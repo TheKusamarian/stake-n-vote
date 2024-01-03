@@ -19,7 +19,7 @@ import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
+import { useStakingMetrics } from "@/app/hooks/use-min-nominator-bond";
 import {
   BN,
   BN_MAX_INTEGER,
@@ -59,11 +59,18 @@ export default function ModalStake(props: ModalPropType) {
     isLoading: isAccountBalanceLoading,
     isFetching: isAccountBalanceFetching,
   } = useAccountBalances();
+
   const {
-    data: minNominatorBond,
-    isLoading: isMinNominatorBondLoading,
-    isFetching: isMinNominatorBondFetching,
-  } = useMinNominatorBond() || { data: "0" };
+    data: stakingMetrics,
+    isLoading: isStakingMetricsLoading,
+    isFetching: isStakingMetricsFetching,
+  } = useStakingMetrics();
+
+  const { minNominatorBond, minimumActiveStake } = stakingMetrics || {
+    minNominatorBond: "0",
+    minimumActiveStake: "0",
+  };
+
   const {
     maxNominators,
     validator: kusValidator,
@@ -80,13 +87,13 @@ export default function ModalStake(props: ModalPropType) {
       ? bnToBn(stakeAmount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
 
-  const polkadotMinNominatorBond = bnToBn(minNominatorBond).addn(
+  const polkadotMinNominatorBond = bnToBn(minimumActiveStake).addn(
     tokenDecimals * 25
   );
 
   const amountSmallerThanMinNominatorBond =
     activeChain === "Kusama"
-      ? stakeBalance.lt(bnToBn(minNominatorBond))
+      ? stakeBalance.lt(bnToBn(minimumActiveStake))
       : stakeBalance.lt(polkadotMinNominatorBond);
 
   const showSupported = !freeBalance.eq(BN_ZERO);
@@ -120,10 +127,10 @@ export default function ModalStake(props: ModalPropType) {
                 <NotConnected />
               ) : isAccountBalanceLoading ||
                 isNominatorsLoading ||
-                isMinNominatorBondLoading ||
+                isStakingMetricsLoading ||
                 isAccountBalanceFetching ||
                 isNominatorsFetching ||
-                isMinNominatorBondFetching ? (
+                isStakingMetricsFetching ? (
                 <>
                   <Skeleton className="rounded-lg">
                     <Button></Button>
@@ -152,6 +159,7 @@ export default function ModalStake(props: ModalPropType) {
                       accountBalance={accountBalance}
                       selectedAccount={selectedAccount}
                       minNominatorBond={minNominatorBond}
+                      minimumActiveStake={minimumActiveStake}
                       stakeBalance={stakeBalance}
                       stakeAmount={stakeAmount}
                       setStakeAmount={setStakeAmount}
@@ -325,6 +333,7 @@ function MaybeAddToPool({
   accountBalance,
   selectedAccount,
   minNominatorBond,
+  minimumActiveStake,
   stakeAmount,
   setStakeAmount,
   stakeBalance,
@@ -338,6 +347,7 @@ function MaybeAddToPool({
   accountBalance: any;
   selectedAccount: InjectedAccountWithMeta | null;
   minNominatorBond: any;
+  minimumActiveStake: any;
   stakeAmount: number | undefined;
   setStakeAmount: Dispatch<SetStateAction<number | undefined>>;
   stakeBalance: BN;
