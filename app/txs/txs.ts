@@ -45,6 +45,22 @@ export async function nominateTx(
   return res;
 }
 
+export async function bondAndNominateTx(
+  api: ApiPromise | undefined,
+  signer: Signer | undefined,
+  address: string | undefined,
+  targets: string[],
+  amount: BN
+) {
+  const tx = api?.tx.utility.batch([
+    api?.tx.staking.bond(amount, "Staked"),
+    api?.tx.staking.nominate(targets),
+  ]);
+
+  const res = await sendAndFinalize(api, tx, signer, address);
+  return res;
+}
+
 export async function joinPool(
   api: ApiPromise | undefined,
   signer: Signer | undefined,

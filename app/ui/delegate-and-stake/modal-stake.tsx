@@ -16,13 +16,14 @@ import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { Dispatch, SetStateAction, useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
-import { joinPool, nominateTx } from "@/app/txs/txs";
+import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useMinNominatorBond } from "@/app/hooks/use-min-nominator-bond";
 import {
   BN,
   BN_MAX_INTEGER,
+  BN_ONE,
   BN_ZERO,
   bnToBn,
   formatBalance,
@@ -35,6 +36,7 @@ import Link from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { NotConnected } from "./not-connected";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -78,9 +80,14 @@ export default function ModalStake(props: ModalPropType) {
       ? bnToBn(stakeAmount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
 
-  const amountSmallerThanMinNominatorBond = stakeBalance.lt(
-    bnToBn(minNominatorBond)
+  const polkadotMinNominatorBond = bnToBn(minNominatorBond).addn(
+    tokenDecimals * 25
   );
+
+  const amountSmallerThanMinNominatorBond =
+    activeChain === "Kusama"
+      ? stakeBalance.lt(bnToBn(minNominatorBond))
+      : stakeBalance.lt(polkadotMinNominatorBond);
 
   const showSupported = !freeBalance.eq(BN_ZERO);
 
@@ -97,18 +104,26 @@ export default function ModalStake(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Stake {tokenSymbol} with Kus Validation{" "}
-              <span className="text-xs text-gray-300">
-                ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
-              </span>
+              {selectedAccount ? (
+                <>
+                  Stake {tokenSymbol} with Kus Validation{" "}
+                  <span className="text-xs text-gray-300">
+                    ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
+                  </span>
+                </>
+              ) : (
+                "No accounts found"
+              )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
-              {isAccountBalanceLoading ||
-              isNominatorsLoading ||
-              isMinNominatorBondLoading ||
-              isAccountBalanceFetching ||
-              isNominatorsFetching ||
-              isMinNominatorBondFetching ? (
+              {selectedAccount === undefined ? (
+                <NotConnected />
+              ) : isAccountBalanceLoading ||
+                isNominatorsLoading ||
+                isMinNominatorBondLoading ||
+                isAccountBalanceFetching ||
+                isNominatorsFetching ||
+                isMinNominatorBondFetching ? (
                 <>
                   <Skeleton className="rounded-lg">
                     <Button></Button>
@@ -189,7 +204,7 @@ export default function ModalStake(props: ModalPropType) {
                   {amountSmallerThanMinNominatorBond &&
                   nominators?.length === 0 &&
                   activeChain === "Polkadot" ? (
-                    <a href="https://talisman.xyz">
+                    <a href="https://talisman.xyz" target="_blank">
                       <Image
                         src="talisman.svg"
                         alt="talisman nomination pool"
@@ -201,7 +216,10 @@ export default function ModalStake(props: ModalPropType) {
                   ) : (
                     <>
                       {activeChain === "Kusama" ? (
-                        <a href="https://twitter.com/LuckyFridayLabs">
+                        <a
+                          href="https://twitter.com/LuckyFridayLabs"
+                          target="_blank"
+                        >
                           <Image
                             src="lucky.png"
                             alt="lucky friday staking"
@@ -333,10 +351,19 @@ function MaybeAddToPool({
     );
   };
 
-  const nominate = async () => {
+  const bondAndNominate = async () => {
     const targets = CHAIN_CONFIG[activeChain].validator_set;
     const signer = await getSigner();
-    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
+
+    const amount = bnToBn(accountBalance.freeBalance).subn(tokenDecimals * 0.1);
+
+    const tx = await bondAndNominateTx(
+      api,
+      signer,
+      selectedAccount?.address,
+      targets,
+      amount
+    );
   };
 
   const stakeMax = () => {
@@ -414,7 +441,7 @@ function MaybeAddToPool({
         </>
       ) : (
         <Button
-          onClick={nominate}
+          onClick={bondAndNominate}
           color="danger"
           isDisabled={isDisabled}
           size="lg"

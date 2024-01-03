@@ -18,6 +18,7 @@ import { format } from "path";
 import { BN_ZERO, formatBalance } from "@polkadot/util";
 import { parseBN } from "@/app/util";
 import { CHAIN_CONFIG } from "@/app/config";
+import { NotConnected } from "./not-connected";
 
 type ModalPropType = Omit<ModalProps, "children">;
 
@@ -26,6 +27,7 @@ export default function ModalDelegate(props: ModalPropType) {
   const { activeChain, chainConfig } = useChain();
   const { data: accountBalance, isLoading } = useAccountBalances();
   const { stakedBalance } = accountBalance || {};
+  const { selectedAccount } = usePolkadotExtension(); // Using usePolkadotExtension hook
 
   const {
     maxNominators,
@@ -36,15 +38,6 @@ export default function ModalDelegate(props: ModalPropType) {
 
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
-
-  const humanStakedBalance = formatBalance(stakedBalance, {
-    withSi: false,
-    withUnit: tokenSymbol,
-    decimals: 2,
-    forceUnit: "-",
-    withAll: true,
-    withZero: true,
-  });
 
   return (
     <Modal
@@ -59,31 +52,37 @@ export default function ModalDelegate(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              Delegate Votes to The Kus Delegate {activeChain}
-              <span className="text-xs text-gray-300">
-                ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
-              </span>
-            </ModalHeader>
-            <ModalBody className="text-sm">
-              {!isLoading && accountBalance && stakedBalance?.eq(BN_ZERO) && (
-                <p>
-                  Put your {tokenSymbol} to work directing he network with The
-                  Kus Delegate!
-                </p>
+              {selectedAccount ? (
+                <>
+                  Delegate Votes to The Kus {tokenSymbol} Delegate
+                  <span className="text-xs text-gray-300">
+                    ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
+                  </span>
+                </>
+              ) : (
+                "No accounts found"
               )}
-              <FormDelegate />
-              <p className="my-2 text-center text-xs">
-                The Kus Delegate is directed by verified humans from The
-                Kusamarian community <br />
-                <a
-                  className="underline"
-                  href="https://discord.gg/eauz25UP"
-                  target="_blank"
-                >
-                  Join our Discord
-                </a>{" "}
-                after you delegate!
-              </p>
+            </ModalHeader>
+            <ModalBody className="text-sm mb-4">
+              {!selectedAccount ? (
+                <NotConnected />
+              ) : (
+                <>
+                  <FormDelegate />
+                  <p className="my-2 text-center text-xs">
+                    The Kus Delegate is directed by verified humans from The
+                    Kusamarian community <br />
+                    <a
+                      className="underline"
+                      href="https://discord.gg/eauz25UP"
+                      target="_blank"
+                    >
+                      Join our Discord
+                    </a>{" "}
+                    after you delegate!
+                  </p>
+                </>
+              )}
             </ModalBody>
           </>
         )}
