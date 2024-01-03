@@ -201,21 +201,39 @@ export default function ModalStake(props: ModalPropType) {
               {showSupported && (
                 <div className="flex items-center justify-end text-xs h-5 text-gray-200">
                   supported by{" "}
-                  {amountSmallerThanMinNominatorBond &&
-                  nominators?.length === 0 &&
-                  activeChain === "Polkadot" ? (
-                    <a href="https://talisman.xyz" target="_blank">
+                  {activeChain === "Polkadot" && (
+                    <a
+                      className="pl-1"
+                      href="https://twitter.com/dev1_sik"
+                      target="_blank"
+                    >
                       <Image
-                        src="talisman.svg"
-                        alt="talisman nomination pool"
-                        width={90}
+                        src="sik.png"
+                        alt="sik staking"
+                        width={35}
                         height={35}
-                        className="invert pl-2"
                       />
                     </a>
+                  )}
+                  {amountSmallerThanMinNominatorBond &&
+                  nominators?.length === 0 &&
+                  activeChain === "Polkadot" &&
+                  stakeAmount ? (
+                    <>
+                      <span className="px-1">+</span>
+                      <a href="https://talisman.xyz" target="_blank">
+                        <Image
+                          src="talisman.svg"
+                          alt="talisman nomination pool"
+                          width={90}
+                          height={35}
+                          className="invert pl-2"
+                        />
+                      </a>
+                    </>
                   ) : (
                     <>
-                      {activeChain === "Kusama" ? (
+                      {activeChain === "Kusama" && (
                         <a
                           href="https://twitter.com/LuckyFridayLabs"
                           target="_blank"
@@ -226,15 +244,6 @@ export default function ModalStake(props: ModalPropType) {
                             width={40}
                             height={45}
                             className="pl-2"
-                          />
-                        </a>
-                      ) : (
-                        <a href="https://twitter.com/dev1_sik" target="_blank">
-                          <Image
-                            src="sik.png"
-                            alt="sik staking"
-                            width={35}
-                            height={35}
                           />
                         </a>
                       )}
