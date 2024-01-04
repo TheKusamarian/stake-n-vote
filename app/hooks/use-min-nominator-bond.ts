@@ -6,7 +6,7 @@ import { encodeAddress } from "@polkadot/keyring";
 import { BN } from "@polkadot/util";
 
 // Custom hook
-export function useMinNominatorBond() {
+export function useStakingMetrics() {
   const { api, chainConfig, activeChain } = useChain();
   const { selectedAccount } = usePolkadotExtension();
   const { ss58Format } = chainConfig || {};
@@ -17,11 +17,17 @@ export function useMinNominatorBond() {
       : "";
 
   return useQuery(
-    ["minNominatorBond", userAddress, activeChain],
+    ["stakingMetrics", userAddress, activeChain],
     async () => {
       // Fetch staking information
-      const minNominatorBond = await api?.query.staking?.minNominatorBond();
-      return minNominatorBond;
+      const [minNominatorBond, minimumActiveStake] = await Promise.all([
+        api?.query.staking?.minNominatorBond(),
+        api?.query.staking?.minimumActiveStake(),
+      ]);
+      return {
+        minNominatorBond,
+        minimumActiveStake,
+      };
     },
     {
       enabled: !!api && !!userAddress,
