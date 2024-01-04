@@ -11,7 +11,7 @@ import { inter, pt_mono } from "./fonts";
 import { Modal } from "@nextui-org/modal";
 import { ModalInstallExtension } from "./ui/modal-install-extension";
 import Link from "next/link";
-import { GithubIcon } from "./ui/icons";
+import { DiscordIcon, GithubIcon } from "./ui/icons";
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
@@ -42,13 +42,21 @@ export default function RootLayout({
             <main className="flex max-w-7xl mx-auto h-24 p-4 flex-grow w-full">
               {children}
             </main>
-            <footer className="flex max-w-7xl mx-auto h-24 p-4 w-full text-xs">
+            <footer className="flex max-w-7xl mx-auto h-24 p-4 py-6 w-full text-xs items-end">
               <Link
                 href="https://github.com/TheKusamarian/stake-n-vote"
                 target="_blank"
               >
                 {" "}
                 <GithubIcon />
+              </Link>
+              <Link
+                href="https://discord.gg/CRNDnguJXx
+                "
+                target="_blank"
+                className="pl-2"
+              >
+                <DiscordIcon />
               </Link>
             </footer>
           </div>
