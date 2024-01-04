@@ -16,6 +16,7 @@ import { DiscordIcon, GithubIcon } from "./ui/icons";
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
   description: "Stake your DOT and KSM with The Kusamarian",
+  metadataBase: new URL("https://thekus.xyz"),
 };
 
 export default function RootLayout({
