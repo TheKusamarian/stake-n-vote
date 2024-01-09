@@ -65,7 +65,7 @@ export const WalletConnect = () => {
           onClick={initiateConnection}
           variant="bordered"
           size="lg"
-          className="border-3 border-white text-xl"
+          className="border-3 border-white text-lg"
         >
           Connect <ConnectWallet stroke="white" width={25} height={25} />
         </Button>

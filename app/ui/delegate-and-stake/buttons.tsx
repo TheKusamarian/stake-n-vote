@@ -6,6 +6,7 @@ import ModalDelegate from "./modal-delegate";
 import { useChain } from "@/app/providers/chain-provider";
 import ModalStake from "./modal-stake";
 import { on } from "events";
+import { event } from "nextjs-google-analytics";
 
 export function DelegateStakeButtons() {
   const {
@@ -18,25 +19,39 @@ export function DelegateStakeButtons() {
     onOpen: onDelegatingOpen,
     onOpenChange: onDelegatingOpenChange,
   } = useDisclosure();
+  const { chainConfig } = useChain();
 
-  const { activeChain, chainConfig } = useChain();
+  const handleStakingOpen = () => {
+    event("staking_open", {
+      category: "Modal",
+      label: "staking modal opened",
+    });
+    onStakingOpenChange();
+  };
+
+  const handleDelegatingOpen = () => {
+    event("delegating_open", {
+      category: "Modal",
+      label: "delegating modal opened",
+    });
+    onDelegatingOpenChange();
+  };
+
   return (
     <div className="max-w-xl grid gap-4 md:grid-cols-2 items-center justify-center my-10">
       <Button
         variant="bordered"
-        className={
-          "text-foreground-50 border-3 border-white text-white w-full  shadow-xl"
-        }
+        className={"border-3 border-white text-white w-full  shadow-xl"}
         size="lg"
-        onClick={onStakingOpenChange}
+        onClick={handleStakingOpen}
       >
         Stake {chainConfig.tokenSymbol}
       </Button>
       <Button
         variant="bordered"
-        className="text-foreground-50 border-3 border-white text-white w-full shadow-xl"
+        className="border-3 border-white text-white w-full shadow-xl"
         size="lg"
-        onClick={onDelegatingOpenChange}
+        onClick={handleDelegatingOpen}
       >
         Delegate {chainConfig.tokenSymbol} Votes
       </Button>

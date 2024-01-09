@@ -12,6 +12,7 @@ import { Modal } from "@nextui-org/modal";
 import { ModalInstallExtension } from "./ui/modal-install-extension";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon } from "./ui/icons";
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
