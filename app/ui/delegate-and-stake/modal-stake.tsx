@@ -119,7 +119,7 @@ export default function ModalStake(props: ModalPropType) {
                   </span>
                 </>
               ) : (
-                "No accounts found"
+                "No account found"
               )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
