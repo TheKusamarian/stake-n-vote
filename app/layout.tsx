@@ -13,6 +13,7 @@ import { ModalInstallExtension } from "./ui/modal-install-extension";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon } from "./ui/icons";
 import { GoogleAnalytics } from "nextjs-google-analytics";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
@@ -87,6 +88,16 @@ export default function RootLayout({
             }}
           />
         </Providers>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-LVHZ7QNZFB" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-LVHZ7QNZFB');
+        `}
+        </Script>
       </body>
     </html>
   );
