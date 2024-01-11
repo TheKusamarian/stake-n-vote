@@ -7,8 +7,12 @@ import { useChain } from "@/app/providers/chain-provider";
 import ModalStake from "./modal-stake";
 import { on } from "events";
 import { event } from "nextjs-google-analytics";
+import { usePolkadotExtension } from "@/app/providers/extension-provider";
 
 export function DelegateStakeButtons() {
+  const { openExtensionModal, selectedAccount, userWantsConnection } =
+    usePolkadotExtension();
+
   const {
     isOpen: isStakingOpen,
     onOpen: onStakingOpen,
@@ -26,7 +30,9 @@ export function DelegateStakeButtons() {
       category: "Modal",
       label: "staking modal opened",
     });
-    onStakingOpenChange();
+    selectedAccount && userWantsConnection
+      ? onStakingOpenChange()
+      : openExtensionModal();
   };
 
   const handleDelegatingOpen = () => {
@@ -34,7 +40,9 @@ export function DelegateStakeButtons() {
       category: "Modal",
       label: "delegating modal opened",
     });
-    onDelegatingOpenChange();
+    selectedAccount && userWantsConnection
+      ? onDelegatingOpenChange()
+      : openExtensionModal();
   };
 
   return (

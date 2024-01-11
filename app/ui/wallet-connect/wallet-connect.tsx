@@ -31,18 +31,14 @@ export const WalletConnect = () => {
     userWantsConnection,
     setSelectedAccountIndex,
     disconnect,
+    openExtensionModal,
+    getExtensions,
   } = usePolkadotExtension();
 
   const { chainConfig } = useChain();
 
   const { ss58Format } = chainConfig;
   const router = useRouter();
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleChange = (key: Key) => {
     if (["profile"].includes(key as string)) {
@@ -58,11 +54,20 @@ export const WalletConnect = () => {
     }
   };
 
+  const onClickConnect = async () => {
+    const extensions = await getExtensions();
+    if (extensions.length === 0) {
+      openExtensionModal();
+    } else {
+      initiateConnection();
+    }
+  };
+
   if (!userWantsConnection) {
     return (
       <div className="max-w-xs">
         <Button
-          onClick={initiateConnection}
+          onClick={onClickConnect}
           variant="bordered"
           size="lg"
           className="border-3 border-white text-lg"
@@ -73,17 +78,17 @@ export const WalletConnect = () => {
     );
   }
 
-  if (!isExtensionAvailable)
-    return (
-      <Button
-        variant="bordered"
-        size="lg"
-        isIconOnly={true}
-        className="border-white"
-      >
-        <ConnectWallet stroke="currentColor" width={20} height={20} />
-      </Button>
-    );
+  // if (!isExtensionAvailable)
+  //   return (
+  //     <Button
+  //       variant="bordered"
+  //       size="lg"
+  //       isIconOnly={true}
+  //       className="border-white"
+  //     >
+  //       <ConnectWallet stroke="currentColor" width={20} height={20} />
+  //     </Button>
+  //   );
 
   if (accounts.length === 0) return <p>No account found</p>;
 
