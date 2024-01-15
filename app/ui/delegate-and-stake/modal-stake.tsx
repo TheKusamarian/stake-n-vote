@@ -374,7 +374,7 @@ function MaybeAddToPool({
     const targets = CHAIN_CONFIG[activeChain].validator_set;
     const signer = await getSigner();
 
-    const amount = bnToBn(stakeAmount).subn(tokenDecimals * 0.2);
+    const amount = bnToBn(stakeAmount);
 
     const tx = await bondAndNominateTx(
       api,
@@ -386,7 +386,8 @@ function MaybeAddToPool({
   };
 
   const stakeMax = () => {
-    const a = parseBN(accountBalance.freeBalance?.toString(), tokenDecimals);
+    const a =
+      parseBN(accountBalance.freeBalance?.toString(), tokenDecimals) - 0.2;
     setStakeAmount(a);
   };
 
@@ -397,7 +398,7 @@ function MaybeAddToPool({
 
   const isDisabled =
     activeChain === "Polkadot"
-      ? stakeBalance.lte(BN_ZERO)
+      ? stakeBalance.lte(BN_ZERO) || stakeBalance.gt(accountBalance.freeBalance)
       : stakeBalance.lt(minNominatorBond) ||
         stakeBalance.gt(accountBalance.freeBalance);
 
