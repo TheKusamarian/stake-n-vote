@@ -10,7 +10,8 @@ export function NotConnected() {
       >
         Talisman Browser Extension
       </a>{" "}
-      (Desktop) or{" "}
+      (Desktop) <br />
+      or <br />
       <a className="underline" href="https://novawallet.io/" target="_blank">
         {" "}
         Nova Wallet

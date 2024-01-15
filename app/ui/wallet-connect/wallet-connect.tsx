@@ -56,14 +56,15 @@ export const WalletConnect = () => {
 
   const onClickConnect = async () => {
     const extensions = await getExtensions();
-    if (extensions.length === 0) {
+    if (extensions?.length === 0) {
       openExtensionModal();
+      return;
     } else {
       initiateConnection();
     }
   };
 
-  if (!userWantsConnection) {
+  if (!userWantsConnection || accounts.length === 0) {
     return (
       <div className="max-w-xs">
         <Button
@@ -90,7 +91,7 @@ export const WalletConnect = () => {
   //     </Button>
   //   );
 
-  if (accounts.length === 0) return <p>No account found</p>;
+  // if (accounts.length === 0) return <p>No account found</p>;
 
   return (
     <div className="max-w-xs">

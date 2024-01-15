@@ -48,7 +48,7 @@ export function ModalInstallExtension(props: ModalPropType) {
                 </a>{" "}
                 (Mobile)
               </p>
-              <p>and then connect!</p>
+              <p>allow this site access, and then connect!</p>
             </ModalBody>
           </>
         )}

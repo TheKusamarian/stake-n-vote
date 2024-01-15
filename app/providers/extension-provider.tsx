@@ -71,15 +71,16 @@ export const PolkadotExtensionProvider = ({
 
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-  async function getExtensions() {
+  async function getExtensions(): Promise<InjectedExtension[]> {
     const { web3Accounts, web3Enable } = await import(
       "@polkadot/extension-dapp"
     );
 
+    if (!userWantsConnection) return [];
     web3Enable("The Kus");
     const extensions = await web3EnablePromise;
-    console.log("extensions", extensions);
-    setExtensions(extensions);
+    // console.log("extensions", extensions);
+    // setExtensions(extensions);
     return extensions || [];
   }
 
