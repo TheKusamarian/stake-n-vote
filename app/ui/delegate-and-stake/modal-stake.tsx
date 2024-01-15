@@ -18,7 +18,6 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
-import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useStakingMetrics } from "@/app/hooks/use-min-nominator-bond";
 import {
   BN,
@@ -37,6 +36,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { NotConnected } from "./not-connected";
+import { WalletAccount } from "@talismn/connect-wallets";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -345,7 +345,7 @@ function MaybeAddToPool({
   tokenSymbol: string;
   tokenDecimals: number;
   accountBalance: any;
-  selectedAccount: InjectedAccountWithMeta | null;
+  selectedAccount: WalletAccount | null;
   minNominatorBond: any;
   minimumActiveStake: any;
   stakeAmount: number | undefined;
@@ -485,7 +485,7 @@ function AddKusToSet({
   validator: string;
   api: ApiPromise | undefined;
   getSigner: any;
-  selectedAccount: InjectedAccountWithMeta | null;
+  selectedAccount: WalletAccount | null;
   tokenSymbol: string;
 }) {
   return (
@@ -523,7 +523,7 @@ function ReplaceOneWithKus({
   validator: string;
   api: ApiPromise | undefined;
   getSigner: any;
-  selectedAccount: InjectedAccountWithMeta | null;
+  selectedAccount: WalletAccount | null;
   activeChain: string;
 }) {
   const [selected, setSelected] = useState<string | undefined>();
