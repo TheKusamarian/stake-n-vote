@@ -12,12 +12,12 @@ import React, {
 import { Signer } from "@polkadot/types/types";
 import { ModalInstallExtension } from "../ui/modal-install-extension";
 import { useDisclosure } from "@nextui-org/modal";
-import { getWallets } from "@talismn/connect-wallets";
-import { web3EnablePromise } from "@polkadot/extension-dapp";
+import { Wallet, WalletAccount, getWallets } from "@talismn/connect-wallets";
+// import { web3EnablePromise } from "@polkadot/extension-dapp";
 
 import type {
   InjectedAccount,
-  InjectedAccountWithMeta,
+  WalletAccount,
   InjectedExtension,
   InjectedProviderWithMeta,
   InjectedWindow,
@@ -25,13 +25,14 @@ import type {
   Unsubcall,
   Web3AccountsOptions,
 } from "@polkadot/extension-inject/types";
+import { get } from "http";
 
 // import { web3EnablePromise } from "@polkadot/extension-dapp";
 
 interface PolkadotContextProps {
-  accounts: InjectedAccountWithMeta[];
+  accounts: WalletAccount[];
   isExtensionAvailable: boolean | undefined;
-  selectedAccount: InjectedAccountWithMeta | null;
+  selectedAccount: WalletAccount | null;
   setSelectedAccountIndex: Dispatch<SetStateAction<number | null>>;
   initiateConnection: () => void;
   disconnect: () => void;
@@ -39,7 +40,7 @@ interface PolkadotContextProps {
   getSigner: () => Promise<Signer | undefined>;
   openExtensionModal: () => void;
   isExtensionCheckInProgress: boolean;
-  getExtensions: () => Promise<InjectedExtension[]>;
+  getExtensions: () => Promise<Wallet[]>;
 }
 
 const PolkadotExtensionContext = createContext<
@@ -53,10 +54,8 @@ export const PolkadotExtensionProvider = ({
   appName?: string;
   children: React.ReactNode;
 }) => {
-  const [extensions, setExtensions] = useState<InjectedExtension[] | null>(
-    null
-  );
-  const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([]);
+  const [extensions, setExtensions] = useState<Wallet[] | null>(null);
+  const [accounts, setAccounts] = useState<WalletAccount[]>([]);
   const [selectedAccountIndex, setSelectedAccountIndex] = useState<
     number | null
   >(null);
@@ -66,47 +65,72 @@ export const PolkadotExtensionProvider = ({
   const [userWantsConnection, setUserWantsConnection] = useState<boolean>(
     () => localStorage.getItem("userWantsConnection") === "true"
   );
+  const [lastEnabledExtension, setLastEnabledExtension] = useState<
+    string | null
+  >(localStorage.getItem("lastEnabledExtension"));
   const [isExtensionCheckInProgress, setIsExtensionCheckInProgress] =
     useState<boolean>(false);
 
   const { isOpen, onOpenChange, onOpen } = useDisclosure();
 
-  async function getExtensions(): Promise<InjectedExtension[]> {
-    const { web3Accounts, web3Enable } = await import(
-      "@polkadot/extension-dapp"
-    );
+  useEffect(() => {
+    // setSelectedAccountIndex(0);
+    // localStorage.setItem("selectedAccountIndex", String(0));
+    enableExtension();
+  }, [lastEnabledExtension]);
+
+  async function getExtensions(): Promise<Wallet[]> {
+    // const { web3Accounts, web3Enable } = await import(
+    //   "@polkadot/extension-dapp"
+    // );
 
     if (!userWantsConnection) return [];
-    web3Enable("The Kus");
-    const extensions = await web3EnablePromise;
+    // web3Enable("The Kus");
+    // const extensions = await web3EnablePromise;
     // console.log("extensions", extensions);
     // setExtensions(extensions);
-    return extensions || [];
+    const installedWallets = getWallets().filter((wallet) => wallet.installed);
+    // setExtensions(installedWallets);
+
+    return installedWallets || [];
   }
 
-  async function areExtensionsAvailable() {
-    const extensions = await getExtensions();
-    return extensions.length > 0;
-  }
+  const enableExtension = async () => {
+    console.log("enableExtension userWantsconnection", userWantsConnection);
+    console.log("enableExtensions extensions", extensions);
 
-  useEffect(() => {
-    getExtensions();
-  }, []);
+    if (!userWantsConnection) return;
 
-  useEffect(() => {
-    if (extensions?.length === 0) {
-      return;
+    const favoriteWallet = extensions?.[0];
+
+    if (!favoriteWallet) {
+      const extensions = await getExtensions();
+      if (extensions.length === 0) {
+        onOpenChange();
+      } else {
+        setExtensions(extensions);
+      }
     }
 
-    const enableExtension = async () => {
-      if (!userWantsConnection) return;
+    setLastEnabledExtension(favoriteWallet?.extensionName || null);
+    localStorage.setItem(
+      "lastEnabledExtension",
+      favoriteWallet?.extensionName || ""
+    );
 
-      const { web3Accounts } = await import("@polkadot/extension-dapp");
+    favoriteWallet?.enable("The Kus").then(() => {
+      console.log("favorite wallet enabled", favoriteWallet);
+      favoriteWallet.subscribeAccounts((accounts) => {
+        // do anything you want with the accounts provided by the wallet
+        console.log("got accounts", accounts);
+        setAccounts(accounts || []);
+      });
+    });
+
+    if (extensions && extensions?.length !== 0) {
+      console.log("We try to enable the kus");
 
       try {
-        const availableAccounts = await web3Accounts();
-        setAccounts(availableAccounts);
-
         const selectedIndex = localStorage.getItem("selectedAccountIndex");
 
         if (isNaN(Number(selectedIndex)) || Number(selectedIndex) < 0) {
@@ -119,10 +143,13 @@ export const PolkadotExtensionProvider = ({
       } catch (error) {
         console.error("Error enabling the extension:", error);
       }
-    };
+    }
+  };
 
+  useEffect(() => {
+    console.log("user wants connection now in useEffect", userWantsConnection);
     enableExtension();
-  }, [extensions, userWantsConnection]);
+  }, [userWantsConnection, extensions]);
 
   // useEffect(() => {
   //   const enableExtension = async () => {
@@ -192,15 +219,19 @@ export const PolkadotExtensionProvider = ({
   //   enableExtension();
   // }, [userWantsConnection]);
 
-  const initiateConnection = () => {
-    console.log("initiating connection");
-    setUserWantsConnection(true);
-    localStorage.setItem("userWantsConnection", "true");
+  const initiateConnection = async () => {
+    if (userWantsConnection) {
+      await enableExtension();
+    } else {
+      setUserWantsConnection(true);
+      localStorage.setItem("userWantsConnection", "true");
+    }
   };
 
   const disconnect = () => {
     setUserWantsConnection(false);
     localStorage.removeItem("userWantsConnection");
+    localStorage.removeItem("lastEnabledExtension");
   };
 
   const getSigner = async () => {
@@ -235,7 +266,6 @@ export const PolkadotExtensionProvider = ({
         isExtensionAvailable,
         selectedAccount,
         setSelectedAccountIndex: (index) => {
-          console.log("setting accountIndex to local storage", String(index));
           setSelectedAccountIndex(index);
           localStorage.setItem("selectedAccountIndex", String(index));
         },

@@ -55,13 +55,7 @@ export const WalletConnect = () => {
   };
 
   const onClickConnect = async () => {
-    const extensions = await getExtensions();
-    if (extensions?.length === 0) {
-      openExtensionModal();
-      return;
-    } else {
-      initiateConnection();
-    }
+    initiateConnection();
   };
 
   if (!userWantsConnection || accounts.length === 0) {
@@ -108,8 +102,7 @@ export const WalletConnect = () => {
             className="p-7 bg-transparent max-w-[300px] border-white"
           >
             <span className="truncate text-sm sm:flex hidden">
-              {selectedAccount?.meta?.name ||
-                trimAddress(selectedAccount?.address)}
+              {selectedAccount?.name || trimAddress(selectedAccount?.address)}
             </span>
             <Identicon
               value={selectedAccount?.address}
@@ -153,7 +146,8 @@ export const WalletConnect = () => {
                 className="hover:bg-default-100"
               >
                 <span className="truncate text-xs">
-                  {account.meta?.name || trimAddress(account.address)}
+                  {account?.name ||
+                    trimAddress(encodeAddress(account.address, ss58Format))}
                 </span>
               </DropdownItem>
             ))}
