@@ -17,7 +17,6 @@ import { Wallet, WalletAccount, getWallets } from "@talismn/connect-wallets";
 
 import type {
   InjectedAccount,
-  WalletAccount,
   InjectedExtension,
   InjectedProviderWithMeta,
   InjectedWindow,
