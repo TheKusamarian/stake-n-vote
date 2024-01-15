@@ -31,18 +31,14 @@ export const WalletConnect = () => {
     userWantsConnection,
     setSelectedAccountIndex,
     disconnect,
+    openExtensionModal,
+    getExtensions,
   } = usePolkadotExtension();
 
   const { chainConfig } = useChain();
 
   const { ss58Format } = chainConfig;
   const router = useRouter();
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const handleChange = (key: Key) => {
     if (["profile"].includes(key as string)) {
@@ -58,11 +54,15 @@ export const WalletConnect = () => {
     }
   };
 
-  if (!userWantsConnection) {
+  const onClickConnect = async () => {
+    initiateConnection();
+  };
+
+  if (!userWantsConnection || accounts.length === 0) {
     return (
       <div className="max-w-xs">
         <Button
-          onClick={initiateConnection}
+          onClick={onClickConnect}
           variant="bordered"
           size="lg"
           className="border-3 border-white text-lg"
@@ -73,19 +73,19 @@ export const WalletConnect = () => {
     );
   }
 
-  if (!isExtensionAvailable)
-    return (
-      <Button
-        variant="bordered"
-        size="lg"
-        isIconOnly={true}
-        className="border-white"
-      >
-        <ConnectWallet stroke="currentColor" width={20} height={20} />
-      </Button>
-    );
+  // if (!isExtensionAvailable)
+  //   return (
+  //     <Button
+  //       variant="bordered"
+  //       size="lg"
+  //       isIconOnly={true}
+  //       className="border-white"
+  //     >
+  //       <ConnectWallet stroke="currentColor" width={20} height={20} />
+  //     </Button>
+  //   );
 
-  if (accounts.length === 0) return <p>No account found</p>;
+  // if (accounts.length === 0) return <p>No account found</p>;
 
   return (
     <div className="max-w-xs">
@@ -102,8 +102,7 @@ export const WalletConnect = () => {
             className="p-7 bg-transparent max-w-[300px] border-white"
           >
             <span className="truncate text-sm sm:flex hidden">
-              {selectedAccount?.meta?.name ||
-                trimAddress(selectedAccount?.address)}
+              {selectedAccount?.name || trimAddress(selectedAccount?.address)}
             </span>
             <Identicon
               value={selectedAccount?.address}
@@ -147,7 +146,8 @@ export const WalletConnect = () => {
                 className="hover:bg-default-100"
               >
                 <span className="truncate text-xs">
-                  {account.meta?.name || trimAddress(account.address)}
+                  {account?.name ||
+                    trimAddress(encodeAddress(account.address, ss58Format))}
                 </span>
               </DropdownItem>
             ))}

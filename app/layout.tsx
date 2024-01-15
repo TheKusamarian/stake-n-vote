@@ -8,8 +8,6 @@ import "@polkadot/api-augment";
 import { Providers } from "./providers";
 import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
 import { inter, pt_mono } from "./fonts";
-import { Modal } from "@nextui-org/modal";
-import { ModalInstallExtension } from "./ui/modal-install-extension";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon } from "./ui/icons";
 import { GoogleAnalytics } from "nextjs-google-analytics";
@@ -88,14 +86,14 @@ export default function RootLayout({
             }}
           />
         </Providers>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-LVHZ7QNZFB" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-7RG8GF0LMC" />
         <Script id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
  
-          gtag('config', 'G-LVHZ7QNZFB');
+          gtag('config', 'G-7RG8GF0LMC');
         `}
         </Script>
       </body>

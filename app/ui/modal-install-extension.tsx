@@ -25,10 +25,30 @@ export function ModalInstallExtension(props: ModalPropType) {
             <ModalHeader className="flex flex-col gap-1">
               Install a compatible wallet
             </ModalHeader>
-            <ModalBody className="text-sm">
-              In order to stake or delegate your DOT or KSM, you need to install
-              a compatible wallet and allow access to this site.
-              <div></div>
+            <ModalBody className="text-sm mb-4">
+              <p>
+                Please click Connect in the top right corner or download the
+              </p>
+              <p>
+                <a
+                  className="underline"
+                  href="https://www.talisman.xyz/download"
+                  target="_blank"
+                >
+                  Talisman Browser Extension
+                </a>{" "}
+                (Desktop) or <br />
+                <a
+                  className="underline"
+                  href="https://novawallet.io/"
+                  target="_blank"
+                >
+                  {" "}
+                  Nova Wallet
+                </a>{" "}
+                (Mobile)
+              </p>
+              <p>allow this site access, and then connect!</p>
             </ModalBody>
           </>
         )}
