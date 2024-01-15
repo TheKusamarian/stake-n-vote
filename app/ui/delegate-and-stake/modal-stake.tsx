@@ -374,7 +374,7 @@ function MaybeAddToPool({
     const targets = CHAIN_CONFIG[activeChain].validator_set;
     const signer = await getSigner();
 
-    const amount = bnToBn(accountBalance.freeBalance).subn(tokenDecimals * 0.1);
+    const amount = bnToBn(stakeAmount).subn(tokenDecimals * 0.2);
 
     const tx = await bondAndNominateTx(
       api,
