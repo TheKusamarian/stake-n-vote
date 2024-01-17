@@ -241,18 +241,12 @@ export const PolkadotExtensionProvider = ({
   };
 
   const getSigner = async () => {
-    const { web3FromSource } = await import("@talismn/connect-components");
     if (
       selectedAccountIndex !== null &&
       accounts.length > selectedAccountIndex
     ) {
       const selectedAccount = accounts[selectedAccountIndex];
-      try {
-        const injector = await web3FromSource();
-        return injector.signer;
-      } catch (error) {
-        console.warn("Unable to get the signer", error);
-      }
+      return selectedAccount.signer;
     }
     return undefined;
   };
