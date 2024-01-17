@@ -246,7 +246,7 @@ export const PolkadotExtensionProvider = ({
       accounts.length > selectedAccountIndex
     ) {
       const selectedAccount = accounts[selectedAccountIndex];
-      return selectedAccount.signer;
+      return selectedAccount.signer as Signer;
     }
     return undefined;
   };
