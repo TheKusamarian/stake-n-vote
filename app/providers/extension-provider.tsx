@@ -95,8 +95,8 @@ export const PolkadotExtensionProvider = ({
   }
 
   const enableExtension = async () => {
-    console.log("enableExtension userWantsconnection", userWantsConnection);
-    console.log("enableExtensions extensions", extensions);
+    // console.log("enableExtension userWantsconnection", userWantsConnection);
+    // console.log("enableExtensions extensions", extensions);
 
     if (!userWantsConnection) return;
 
@@ -122,10 +122,10 @@ export const PolkadotExtensionProvider = ({
     enablePromise &&
       enablePromise
         .then(() => {
-          console.log("favorite wallet enabled", favoriteWallet);
+          // console.log("favorite wallet enabled", favoriteWallet);
           favoriteWallet?.subscribeAccounts((accounts) => {
             // do anything you want with the accounts provided by the wallet
-            console.log("got accounts", accounts);
+            // console.log("got accounts", accounts);
             setAccounts(accounts || []);
           });
         })
@@ -134,7 +134,7 @@ export const PolkadotExtensionProvider = ({
         });
 
     if (extensions && extensions?.length !== 0) {
-      console.log("We try to enable the kus");
+      // console.log("We try to enable the kus");
 
       try {
         const selectedIndex = localStorage.getItem("selectedAccountIndex");
@@ -153,7 +153,7 @@ export const PolkadotExtensionProvider = ({
   };
 
   useEffect(() => {
-    console.log("user wants connection now in useEffect", userWantsConnection);
+    // console.log("user wants connection now in useEffect", userWantsConnection);
     enableExtension();
   }, [userWantsConnection, extensions]);
 

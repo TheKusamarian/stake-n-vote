@@ -49,7 +49,9 @@ export default function FormDelegate() {
   } = useAccountBalances();
 
   const { data: trackOptions } = useTracks() || [];
-  const ALL_TRACKS = trackOptions?.map((track) => track.id.toString()) || ["0"];
+  const ALL_TRACKS = trackOptions?.map((track) => track.id.toString()) || [
+    ALL_TRACKS_ID.toString(),
+  ];
 
   const { api, activeChain } = useChain(); // Using useChain hook
   const [conviction, setConviction] = useState<number>(
@@ -82,9 +84,13 @@ export default function FormDelegate() {
 
     let tracksArray = Array.from(tracks);
 
+    console.log(tracksArray);
+
     if (tracksArray.includes(ALL_TRACKS_ID.toString())) {
       tracksArray = ALL_TRACKS;
     }
+
+    // setTracks(new Set([ALL_TRACKS_ID.toString()]));
 
     const tx = await sendDelegateTx(
       api,

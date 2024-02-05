@@ -136,10 +136,10 @@ export async function sendAndFinalize(
 
               console.error(`${messages.error}: ${res.message}`);
             } else {
-              console.log(
-                "finalized and no dispatch error, toasting with id",
-                toastId
-              );
+              // console.log(
+              //   "finalized and no dispatch error, toasting with id",
+              //   toastId
+              // );
               if (toastId) {
                 toast.success(messages.success, {
                   // @ts-ignore
@@ -163,7 +163,6 @@ export async function sendAndFinalize(
     }
   } catch (error) {
     console.log(error);
-    console.log("not here");
     toast.error(`${error}`, {
       // @ts-ignore
       title: toast.title,
@@ -181,6 +180,6 @@ export async function sendAndFinalize(
     cb?.(res);
   }
 
-  console.log("returning from sendAdnFinalize", res);
+  // console.log("returning from sendAdnFinalize", res);
   return res;
 }
