@@ -6,7 +6,7 @@ import { Input } from "@nextui-org/input";
 import { Slider } from "@nextui-org/slider";
 import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@nextui-org/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { sendDelegateTx } from "@/app/txs/txs";
 import { BN_ZERO, bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
@@ -164,6 +164,13 @@ export default function FormDelegate() {
   const delegateMax = () => {
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals));
   };
+
+
+  useEffect(() => {
+    if (isAllSelected) {
+      setTracks(new Set(ALL_TRACKS));
+    }
+  }, [isAllSelected, ALL_TRACKS]);
 
   return (
     <form className="flex flex-col gap-5 text-white">
