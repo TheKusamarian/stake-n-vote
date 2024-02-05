@@ -170,7 +170,10 @@ export default function FormDelegate() {
       <div className="flex flex-col gap-2">
         <Switch
           isSelected={isAllSelected}
-          onValueChange={setIsAllSelected}
+          onValueChange={(isSelected) => {
+            setIsAllSelected(isSelected);
+            setTracks(new Set(isSelected ? ALL_TRACKS : []));
+          }}
           color="danger"
         >
           All Tracks
