@@ -11,26 +11,29 @@ type Video = {
 };
 
 type LatestVideoProps = {
-  channelId: string;
+  //   channelId: string;
+  video: any;
 };
 
 const LatestYtVideo: React.FC<LatestVideoProps> = ({
-  channelId,
   video,
 }: {
-  channelId: string;
   video: any;
 }) => {
+  if (!video) {
+    return null;
+  }
+
   return (
     <>
       {video && (
-        <div className="w-1/2">
-          <h2 className="text-lg mb-2 mt-8">
+        <div className="w-3/4 lg:w-1/2">
+          <h2 className="text-lg mb-2 mt-8 text-center">
             Here&apos;s the latest on Polkadot
           </h2>
           <LazyYoutubeEmbed
-            previewImageUrl={video.previewUrl}
-            videoId={video.id}
+            previewImageUrl={video.snippet.thumbnails.high.url}
+            videoId={video.id.videoId}
           />
         </div>
       )}

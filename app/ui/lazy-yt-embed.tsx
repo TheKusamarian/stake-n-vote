@@ -19,9 +19,7 @@ const LazyYoutubeEmbed = ({
 
   return (
     <div
-      className={`relative overflow-hidden ${
-        isVideoLoaded ? "pb-[56.25%]" : "pb-[40%]"
-      }`}
+      className={`relative overflow-hidden pb-[56.25%] shadow-lg`}
       style={{ transition: "padding-bottom 0.5s ease" }}
     >
       {!isVideoLoaded && (
@@ -34,10 +32,16 @@ const LazyYoutubeEmbed = ({
           onClick={handleVideoLoad}
           style={{ aspectRatio: "16 / 9" }}
           width={3000}
-          height={1500}
+          height={1687}
         />
       )}
-      {!isVideoLoaded && <PlayCircle />}
+      {!isVideoLoaded && (
+        <PlayCircle
+          size={80}
+          strokeWidth={1}
+          className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+        />
+      )}
       {isVideoLoaded && (
         <iframe
           src={videoUrl}
