@@ -9,9 +9,10 @@ import { Providers } from "./providers";
 import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
 import { inter, pt_mono } from "./fonts";
 import Link from "next/link";
-import { DiscordIcon, GithubIcon } from "./ui/icons";
+import { DiscordIcon, GithubIcon, XIcon } from "./ui/icons";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import Script from "next/script";
+import { Youtube, YoutubeIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
@@ -43,21 +44,38 @@ export default function RootLayout({
             <main className="flex max-w-7xl mx-auto h-24 p-4 flex-grow w-full">
               {children}
             </main>
-            <footer className="flex max-w-7xl mx-auto h-24 p-4 py-6 w-full text-xs items-end">
+            <footer className="flex max-w-7xl mx-auto h-24 p-4 py-6 w-full text-xs items-center gap-2">
               <Link
                 href="https://github.com/TheKusamarian/stake-n-vote"
                 target="_blank"
               >
                 {" "}
-                <GithubIcon />
+                <GithubIcon size={28} />
               </Link>
+
               <Link
                 href="https://discord.gg/CRNDnguJXx
                 "
                 target="_blank"
                 className="pl-2"
               >
-                <DiscordIcon />
+                <DiscordIcon size={32} />
+              </Link>
+              <Link
+                href="https://www.youtube.com/channel/UCqNw3CEyOD-bjjYYaxVyG3Q
+                "
+                target="_blank"
+                className="pl-2"
+              >
+                <Youtube size={32} />
+              </Link>
+              <Link
+                href="https://twitter.com/TheKusamarian
+                "
+                target="_blank"
+                className="pl-2"
+              >
+                <XIcon size={22} />
               </Link>
             </footer>
           </div>
