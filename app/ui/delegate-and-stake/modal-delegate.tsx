@@ -60,7 +60,7 @@ export default function ModalDelegate(props: ModalPropType) {
                   </span>
                 </>
               ) : (
-                "No accounts found"
+                "No account found"
               )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
@@ -74,7 +74,7 @@ export default function ModalDelegate(props: ModalPropType) {
                     Kusamarian community <br />
                     <a
                       className="underline"
-                      href="https://discord.gg/eauz25UP"
+                      href="https://discord.gg/QumzjDyeY4"
                       target="_blank"
                     >
                       Join our Discord
