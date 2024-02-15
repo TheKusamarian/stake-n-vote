@@ -88,7 +88,7 @@ export default function ModalStake(props: ModalPropType) {
       : BN_ZERO;
 
   const polkadotMinNominatorBond = bnToBn(minimumActiveStake).addn(
-    tokenDecimals * 25
+    tokenDecimals * 100
   );
 
   const amountSmallerThanMinNominatorBond =
