@@ -27,13 +27,13 @@ const LatestYtVideo: React.FC<LatestVideoProps> = ({
   return (
     <>
       {video && (
-        <div className="w-3/4 lg:w-1/2">
+        <div className="w-3/4 lg:w-1/2 ">
           <h2 className="text-lg mb-2 mt-8 text-center">
             Here&apos;s the latest on Polkadot
           </h2>
           <LazyYoutubeEmbed
             previewImageUrl={video.snippet.thumbnails.high.url}
-            videoId={video.id.videoId}
+            videoId={video?.snippet?.resourceId?.videoId}
           />
         </div>
       )}

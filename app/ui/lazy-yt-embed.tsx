@@ -19,7 +19,7 @@ const LazyYoutubeEmbed = ({
 
   return (
     <div
-      className={`relative overflow-hidden pb-[56.25%] shadow-lg`}
+      className={`relative overflow-hidden pb-[56.25%] shadow-lg backdrop-blur-md bg-black`}
       style={{ transition: "padding-bottom 0.5s ease" }}
     >
       {!isVideoLoaded && (

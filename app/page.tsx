@@ -8,16 +8,19 @@ export const revalidate = 1000 * 60 * 60 * 4; // 4 hours
 
 export default async function Home() {
   const key = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";
+  const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ";
 
   let vid = null;
 
   try {
     const latestYtVideoRaw = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?key=${key}&channelId=UCqNw3CEyOD-bjjYYaxVyG3Q&part=snippet&type=video&order=date&maxResults=1`
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${key}`
     );
     const latestYtVideoData = await latestYtVideoRaw.json();
     const { items } = latestYtVideoData;
     vid = items?.[0];
+
+    // console.log("vid", vid);
   } catch (e) {
     console.error(e);
   }

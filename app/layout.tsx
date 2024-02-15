@@ -27,11 +27,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${pt_mono.className} h-full`}>
+      <body className={`${pt_mono.className}`}>
         <Providers>
-          <div className="relative flex flex-col">
+          <div className="relative flex flex-col min-h-[100vh]">
             <header className="h-24">
-              <nav className="flex max-w-7xl mx-auto h-24 p-4 justify-between">
+              <nav className="flex fixed w-full top-0 h-24 p-4 justify-between">
                 <Image
                   src="kusamarian.png"
                   alt="Kusamarian Logo"
