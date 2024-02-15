@@ -16,6 +16,10 @@
   }
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(90deg,#105b5d 20%,#9a1c54 100%)

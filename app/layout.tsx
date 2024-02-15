@@ -27,9 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${pt_mono.className} `}>
+      <body className={`${pt_mono.className} h-full`}>
         <Providers>
-          <div className="relative flex flex-col h-screen">
+          <div className="relative flex flex-col">
             <header className="h-24">
               <nav className="flex max-w-7xl mx-auto h-24 p-4 justify-between">
                 <Image
@@ -41,10 +41,10 @@ export default function RootLayout({
                 <WalletConnect />
               </nav>
             </header>
-            <main className="flex max-w-7xl mx-auto h-24 p-4 flex-grow w-full">
+            <main className="flex max-w-7xl mx-auto p-4 flex-grow w-full">
               {children}
             </main>
-            <footer className="flex max-w-7xl mx-auto h-24 p-4 py-6 w-full text-xs items-center gap-2">
+            <footer className="fixed bottom-0 flex max-w-7xl mx-auto h-16 p-4 w-full text-xs items-center gap-2">
               <Link
                 href="https://github.com/TheKusamarian/stake-n-vote"
                 target="_blank"
