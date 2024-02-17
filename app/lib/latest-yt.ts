@@ -34,6 +34,12 @@ export async function fetchLatestVideo() {
 
     return video;
   } catch (error) {
-    return { error: error.message || "Something went wrong" };
+    let message: string;
+    if (error instanceof Error) {
+      message = error.message;
+    } else {
+      message = "Something went wrong";
+    }
+    return { error: message };
   }
 }
