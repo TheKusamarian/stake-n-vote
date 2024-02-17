@@ -14,7 +14,7 @@ export async function fetchLatestVideo() {
     return cachedVideo;
   }
 
-  const apiKey = process.env.YOUTUBE_API_KEY; // Use the YouTube API key from your environment variables
+  const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${apiKey}`;
 
   try {
