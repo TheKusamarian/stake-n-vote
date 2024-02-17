@@ -37,6 +37,7 @@
     "lucide-react": "^0.330.0",
     "next": "^14.0.4",
     "nextjs-google-analytics": "^2.3.3",
+    "node-cache": "^5.1.2",
     "react": "^18",
     "react-dom": "^18.2.0",
     "react-ga": "^3.3.1",
