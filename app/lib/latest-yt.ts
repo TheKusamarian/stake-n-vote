@@ -1,5 +1,3 @@
-"use server";
-
 import cache from "@/app/lib/node-cache";
 
 export async function fetchLatestVideo() {
