@@ -38,8 +38,10 @@ export function DelegateStakeButtons() {
     <div className="max-w-xl grid gap-4 md:grid-cols-2 items-center justify-center my-10">
       <Button
         variant="bordered"
-        className={"border-3 border-white text-white w-full  shadow-xl"}
-        size="lg"
+        className={
+          "border-3 border-white text-white w-full  shadow-xl text-sm py-6 rounded-xl"
+        }
+        size="sm"
         onClick={handleStakingOpen}
         isLoading={isConnecting}
       >
@@ -48,8 +50,8 @@ export function DelegateStakeButtons() {
       </Button>
       <Button
         variant="bordered"
-        className="border-3 border-white text-white w-full shadow-xl"
-        size="lg"
+        className="border-3 border-white text-white w-full shadow-xl text-sm py-6 rounded-xl"
+        size="sm"
         onClick={handleDelegatingOpen}
         isLoading={isConnecting}
       >
