@@ -15,7 +15,6 @@ import { useChain } from "@/app/providers/chain-provider";
 import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { Dispatch, SetStateAction, useState } from "react";
-import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs";
 import { ApiPromise } from "@polkadot/api";
 import { useStakingMetrics } from "@/app/hooks/use-min-nominator-bond";
@@ -36,7 +35,10 @@ import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { NotConnected } from "./not-connected";
-import { WalletAccount } from "@talismn/connect-wallets";
+import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon";
+import { kusamaRelay, polkadotRelay } from "@/app/lib/chains";
+import { InjectedAccount } from "@polkadot/extension-inject/types";
+import { Signer } from "@polkadot/types/types";
 
 type ModalPropType = Omit<ModalProps, "children"> & {
   onDelegatingOpenChange: () => void;
@@ -46,8 +48,7 @@ export default function ModalStake(props: ModalPropType) {
   const router = useRouter();
   const { isOpen, onOpenChange, onDelegatingOpenChange } = props;
 
-  const { api, activeChain } = useChain(); // Using useChain hook
-  const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
+  const { activeChain, activeAccount, api, activeSigner } = useInkathon();
 
   const {
     data: nominators,
@@ -76,7 +77,7 @@ export default function ModalStake(props: ModalPropType) {
     validator: kusValidator,
     tokenSymbol,
     tokenDecimals,
-  } = CHAIN_CONFIG[activeChain];
+  } = CHAIN_CONFIG[activeChain?.network || "Polkadot"] || {};
 
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO };
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
@@ -92,7 +93,7 @@ export default function ModalStake(props: ModalPropType) {
   );
 
   const amountSmallerThanMinNominatorBond =
-    activeChain === "Kusama"
+    activeChain === kusamaRelay
       ? stakeBalance.lt(bnToBn(minimumActiveStake))
       : stakeBalance.lt(polkadotMinNominatorBond);
 
@@ -111,7 +112,7 @@ export default function ModalStake(props: ModalPropType) {
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {selectedAccount ? (
+              {activeAccount ? (
                 <>
                   Stake {tokenSymbol} with Kus Validation{" "}
                   <span className="text-xs text-gray-300">
@@ -123,7 +124,7 @@ export default function ModalStake(props: ModalPropType) {
               )}
             </ModalHeader>
             <ModalBody className="text-sm mb-4">
-              {selectedAccount === undefined ? (
+              {activeAccount === undefined ? (
                 <NotConnected />
               ) : isAccountBalanceLoading ||
                 isNominatorsLoading ||
@@ -143,7 +144,7 @@ export default function ModalStake(props: ModalPropType) {
                 <>
                   {freeBalance.toString() === "0" ||
                   freeBalance.toString() === "00" ||
-                  (activeChain === "Kusama" &&
+                  (activeChain === kusamaRelay &&
                     freeBalance.lt(bnToBn(minNominatorBond))) ? (
                     <NoFunds
                       tokenSymbol={tokenSymbol}
@@ -154,10 +155,10 @@ export default function ModalStake(props: ModalPropType) {
                       tokenSymbol={tokenSymbol}
                       tokenDecimals={tokenDecimals}
                       api={api}
-                      getSigner={getSigner}
+                      signer={activeSigner}
                       activeChain={activeChain}
                       accountBalance={accountBalance}
-                      selectedAccount={selectedAccount}
+                      activeAccount={activeAccount}
                       minNominatorBond={minNominatorBond}
                       minimumActiveStake={minimumActiveStake}
                       stakeBalance={stakeBalance}
@@ -179,8 +180,8 @@ export default function ModalStake(props: ModalPropType) {
                   nominators={nominators}
                   validator={kusValidator}
                   api={api}
-                  getSigner={getSigner}
-                  selectedAccount={selectedAccount}
+                  signer={activeSigner}
+                  activeAccount={activeAccount}
                   tokenSymbol={tokenSymbol}
                 />
               ) : nominators?.length === maxNominators ? (
@@ -188,8 +189,8 @@ export default function ModalStake(props: ModalPropType) {
                   nominators={nominators}
                   validator={kusValidator}
                   api={api}
-                  getSigner={getSigner}
-                  selectedAccount={selectedAccount}
+                  signer={activeSigner}
+                  activeAccount={activeAccount}
                   activeChain={activeChain}
                 />
               ) : (
@@ -209,7 +210,7 @@ export default function ModalStake(props: ModalPropType) {
               {showSupported && (
                 <div className="flex items-center justify-end text-xs h-5 text-gray-200">
                   supported by{" "}
-                  {activeChain === "Polkadot" && (
+                  {activeChain === polkadotRelay && (
                     <a
                       className="pl-1"
                       href="https://twitter.com/dev1_sik"
@@ -225,7 +226,7 @@ export default function ModalStake(props: ModalPropType) {
                   )}
                   {amountSmallerThanMinNominatorBond &&
                   nominators?.length === 0 &&
-                  activeChain === "Polkadot" &&
+                  activeChain === polkadotRelay &&
                   stakeAmount ? (
                     <>
                       <span className="px-1">+</span>
@@ -241,7 +242,7 @@ export default function ModalStake(props: ModalPropType) {
                     </>
                   ) : (
                     <>
-                      {activeChain === "Kusama" && (
+                      {activeChain === kusamaRelay && (
                         <a
                           href="https://twitter.com/LuckyFridayLabs"
                           target="_blank"
@@ -326,12 +327,12 @@ function NoFunds({
 
 function MaybeAddToPool({
   api,
-  getSigner,
+  signer,
   tokenSymbol,
   tokenDecimals,
   activeChain,
   accountBalance,
-  selectedAccount,
+  activeAccount,
   minNominatorBond,
   minimumActiveStake,
   stakeAmount,
@@ -340,12 +341,12 @@ function MaybeAddToPool({
   amountSmallerThanMinNominatorBond,
 }: {
   api: ApiPromise | undefined;
-  getSigner: any;
-  activeChain: string;
+  signer: Signer | undefined;
+  activeChain: SubstrateChain | undefined;
   tokenSymbol: string;
   tokenDecimals: number;
   accountBalance: any;
-  selectedAccount: WalletAccount | null;
+  activeAccount: InjectedAccount | null;
   minNominatorBond: any;
   minimumActiveStake: any;
   stakeAmount: number | undefined;
@@ -354,32 +355,31 @@ function MaybeAddToPool({
   amountSmallerThanMinNominatorBond: boolean;
 }) {
   const joinNominationPool = async () => {
-    const poolToJoin = CHAIN_CONFIG[activeChain].poolId;
+    const poolToJoin = CHAIN_CONFIG[activeChain?.network || "Polkadot"].poolId;
 
     if (!poolToJoin) {
       throw new Error("No pool to join");
     }
 
-    const signer = await getSigner();
     const tx = await joinPool(
       api,
       signer,
-      selectedAccount?.address,
+      activeAccount?.address,
       stakeBalance,
       poolToJoin
     );
   };
 
   const bondAndNominate = async () => {
-    const targets = CHAIN_CONFIG[activeChain].validator_set;
-    const signer = await getSigner();
+    const targets =
+      CHAIN_CONFIG[activeChain?.network || "Polkadot"].validator_set;
 
     const amount = bnToBn(stakeAmount);
 
     const tx = await bondAndNominateTx(
       api,
       signer,
-      selectedAccount?.address,
+      activeAccount?.address,
       targets,
       amount
     );
@@ -397,7 +397,7 @@ function MaybeAddToPool({
   );
 
   const isDisabled =
-    activeChain === "Polkadot"
+    activeChain === polkadotRelay
       ? stakeBalance.lte(BN_ZERO) || stakeBalance.gt(accountBalance.freeBalance)
       : stakeBalance.lt(minNominatorBond) ||
         stakeBalance.gt(accountBalance.freeBalance);
@@ -409,14 +409,14 @@ function MaybeAddToPool({
           type="number"
           label="Amount"
           placeholder={
-            activeChain === "Kusama"
+            activeChain === kusamaRelay
               ? `Enter staking amount > ${humanReadableMinNominatorBond} ${tokenSymbol}`
               : `Enter staking amount`
           }
           endContent={
             <>
               {tokenSymbol}
-              {activeChain === "Kusama" ? (
+              {activeChain === kusamaRelay ? (
                 <KusamaIcon className="pl-1 pt-1" />
               ) : (
                 <PolkadotIcon className="pl-1 pt-1" />
@@ -439,7 +439,7 @@ function MaybeAddToPool({
           Stake Max
         </Button>
       </div>
-      {amountSmallerThanMinNominatorBond && activeChain !== "Kusama" ? (
+      {amountSmallerThanMinNominatorBond && kusamaRelay ? (
         <>
           <Tooltip
             content={`Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}
@@ -477,15 +477,15 @@ function AddKusToSet({
   nominators,
   validator,
   api,
-  getSigner,
-  selectedAccount,
+  signer,
+  activeAccount,
   tokenSymbol,
 }: {
   nominators: string[];
   validator: string;
   api: ApiPromise | undefined;
-  getSigner: any;
-  selectedAccount: WalletAccount | null;
+  signer: Signer | undefined;
+  activeAccount: InjectedAccount | null;
   tokenSymbol: string;
 }) {
   return (
@@ -494,11 +494,10 @@ function AddKusToSet({
       <p>Would you like to add The Kus to your nominator set?</p>
       <Button
         onClick={async () => {
-          const signer = await getSigner();
           const tx = await nominateTx(
             api,
             signer,
-            selectedAccount?.address,
+            activeAccount?.address,
             nominators.concat(validator)
           );
         }}
@@ -515,16 +514,16 @@ function ReplaceOneWithKus({
   nominators,
   validator,
   api,
-  getSigner,
-  selectedAccount,
+  signer,
+  activeAccount,
   activeChain,
 }: {
   nominators: string[];
   validator: string;
   api: ApiPromise | undefined;
-  getSigner: any;
-  selectedAccount: WalletAccount | null;
-  activeChain: string;
+  signer: Signer | undefined;
+  activeAccount: InjectedAccount | null;
+  activeChain: SubstrateChain | undefined;
 }) {
   const [selected, setSelected] = useState<string | undefined>();
 
@@ -532,8 +531,7 @@ function ReplaceOneWithKus({
   // console.log("in modal: identities", identities);
 
   const nominate = async (targets: string[]) => {
-    const signer = await getSigner();
-    const tx = await nominateTx(api, signer, selectedAccount?.address, targets);
+    const tx = await nominateTx(api, signer, activeAccount?.address, targets);
   };
 
   const handleReplace = () => {

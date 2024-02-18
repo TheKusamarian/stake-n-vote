@@ -7,32 +7,23 @@ import { useChain } from "@/app/providers/chain-provider";
 import ModalStake from "./modal-stake";
 import { on } from "events";
 import { event } from "nextjs-google-analytics";
-import { usePolkadotExtension } from "@/app/providers/extension-provider";
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 export function DelegateStakeButtons() {
-  const { openExtensionModal, selectedAccount, userWantsConnection } =
-    usePolkadotExtension();
+  const openExtensionModal = () => {};
 
-  const {
-    isOpen: isStakingOpen,
-    onOpen: onStakingOpen,
-    onOpenChange: onStakingOpenChange,
-  } = useDisclosure();
-  const {
-    isOpen: isDelegatingOpen,
-    onOpen: onDelegatingOpen,
-    onOpenChange: onDelegatingOpenChange,
-  } = useDisclosure();
-  const { chainConfig } = useChain();
+  const { isOpen: isStakingOpen, onOpenChange: onStakingOpenChange } =
+    useDisclosure();
+  const { isOpen: isDelegatingOpen, onOpenChange: onDelegatingOpenChange } =
+    useDisclosure();
+  const { activeChain, isConnecting, activeAccount } = useInkathon();
 
   const handleStakingOpen = () => {
     event("staking_open", {
       category: "Modal",
       label: "staking modal opened",
     });
-    selectedAccount && userWantsConnection
-      ? onStakingOpenChange()
-      : openExtensionModal();
+    activeAccount ? onStakingOpenChange() : openExtensionModal();
   };
 
   const handleDelegatingOpen = () => {
@@ -40,9 +31,7 @@ export function DelegateStakeButtons() {
       category: "Modal",
       label: "delegating modal opened",
     });
-    selectedAccount && userWantsConnection
-      ? onDelegatingOpenChange()
-      : openExtensionModal();
+    activeAccount ? onDelegatingOpenChange() : openExtensionModal();
   };
 
   return (
@@ -52,16 +41,18 @@ export function DelegateStakeButtons() {
         className={"border-3 border-white text-white w-full  shadow-xl"}
         size="lg"
         onClick={handleStakingOpen}
+        isLoading={isConnecting}
       >
-        Stake {chainConfig.tokenSymbol}
+        Stake {activeChain.tokenSymbol}
       </Button>
       <Button
         variant="bordered"
         className="border-3 border-white text-white w-full shadow-xl"
         size="lg"
         onClick={handleDelegatingOpen}
+        isLoading={isConnecting}
       >
-        Delegate {chainConfig.tokenSymbol} Votes
+        Delegate {activeChain?.tokenSymbol} Votes
       </Button>
 
       {isDelegatingOpen && (

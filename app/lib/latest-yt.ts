@@ -8,7 +8,6 @@ export async function fetchLatestVideo() {
 
   // If the video is found in the cache, return it without fetching from the YouTube API
   if (cachedVideo) {
-    console.log("Returning cached video");
     return cachedVideo;
   }
 
@@ -38,6 +37,7 @@ export async function fetchLatestVideo() {
     } else {
       message = "Something went wrong";
     }
+    console.error(error);
     return { error: message };
   }
 }

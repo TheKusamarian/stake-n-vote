@@ -1,7 +1,5 @@
 import { useQuery } from "react-query";
 import { useChain } from "../providers/chain-provider";
-import { usePolkadotExtension } from "../providers/extension-provider";
-import { encodeAddress } from "@polkadot/keyring";
 
 export interface Track {
   id: number;

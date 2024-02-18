@@ -4,13 +4,11 @@
 import { Select, SelectItem } from "@nextui-org/select";
 import { Input } from "@nextui-org/input";
 import { Slider } from "@nextui-org/slider";
-import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@nextui-org/button";
 import { useState } from "react";
 import { sendDelegateTx } from "@/app/txs/txs";
 import { BN_ZERO, bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
-import { usePolkadotExtension } from "@/app/providers/extension-provider";
 import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
 import { on } from "events";
 import { findChangedItem, parseBN } from "@/app/util";
@@ -75,7 +73,8 @@ export default function FormDelegate() {
   const { freeBalance } = accountBalance || { freeBalance: "0" };
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
 
-  const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
+  const selectedAccount = null;
+  const getSigner = null;
 
   const delegateToTheKus = async () => {
     const signer = await getSigner();
@@ -83,8 +82,6 @@ export default function FormDelegate() {
       activeChain === "Kusama" ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR;
 
     let tracksArray = Array.from(tracks);
-
-    console.log(tracksArray);
 
     if (tracksArray.includes(ALL_TRACKS_ID.toString())) {
       tracksArray = ALL_TRACKS;

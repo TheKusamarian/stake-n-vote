@@ -1,9 +1,5 @@
 import { useQuery } from "react-query";
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import { useChain } from "../providers/chain-provider";
-import { usePolkadotExtension } from "../providers/extension-provider";
-import { encodeAddress } from "@polkadot/keyring";
-import { BN } from "@polkadot/util";
 
 // Custom hook
 export function useIdentities(addresses: string[]) {
