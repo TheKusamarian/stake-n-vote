@@ -74,8 +74,8 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
         <DropdownTrigger>
           <Button
             variant="flat"
-            size="lg"
-            className="p-7 bg-transparent max-w-[300px] border-2 border-white"
+            size="sm"
+            className="p-7 bg-transparent max-w-[300px] border-2 border-white py-6 text-base rounded-xl"
             isLoading={isConnecting}
             isDisabled={isConnecting}
           >
