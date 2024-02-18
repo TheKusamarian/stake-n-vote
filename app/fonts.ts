@@ -9,3 +9,4 @@ import {
 
 export const pt_mono = Noto_Sans_Mono({ subsets: ["latin"], weight: ["400"] });
 export const inter = Inter({ subsets: ["latin"] });
+export const notoSansMono = Noto_Sans_Mono({ subsets: ["latin"] });

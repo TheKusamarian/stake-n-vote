@@ -58,7 +58,6 @@ export function DelegateStakeButtons() {
         {/* @ts-ignore */}
         Delegate {activeChain?.tokenSymbol} Votes
       </Button>
-
       {isDelegatingOpen && (
         <ModalDelegate
           isOpen={isDelegatingOpen}

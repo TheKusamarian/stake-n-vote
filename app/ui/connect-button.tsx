@@ -26,6 +26,7 @@ import Identicon from "@polkadot/react-identicon";
 import { useRouter } from "next/navigation";
 import UseCases from "@w3f/polkadot-icons/keyline/UseCases";
 import { Button } from "@nextui-org/button";
+import { cn } from "@nextui-org/system";
 
 export interface ConnectButtonProps {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
@@ -81,8 +82,14 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
             isLoading={isConnecting}
             isDisabled={isConnecting}
           >
-            Connect Wallet
-            <ChevronDown size={16} />
+            {isConnecting ? (
+              "connecting"
+            ) : (
+              <>
+                Connect Wallet
+                <ChevronDown size={16} />
+              </>
+            )}
           </Button>
         </DropdownTrigger>
         <DropdownMenu
@@ -151,7 +158,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
         <DropdownMenu
           variant="bordered"
           aria-label="Account Select"
-          onAction={handleChange}
+          //   onAction={handleChange}
           classNames={{ base: "w-[250px]" }}
         >
           <DropdownSection
@@ -165,7 +172,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
             {(accounts || []).map((account) => (
               <DropdownItem
                 key={account.address}
-                value={account.address}
+                // value={account.address}
                 description={trimAddress(
                   encodeAddress(account.address, activeChain?.ss58Prefix)
                 )}
@@ -177,8 +184,16 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
                     className="hover:cursor-pointer"
                   />
                 }
+                onClick={() => {
+                  setActiveAccount?.(account);
+                }}
                 aria-label={account.address}
-                className="hover:bg-transparent"
+                className={cn(
+                  "hover:bg-transparent data-[hover=true]:border-white hover:border-white",
+                  {
+                    "bg-white/10": activeAccount?.address === account.address,
+                  }
+                )}
               >
                 <span className="truncate text-xs">
                   {account?.name ||
@@ -198,7 +213,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               value={"logout"}
               aria-label={"logout"}
               onClick={disconnect}
-              className="hover:bg-transparent"
+              className="hover:bg-transparent  data-[hover=true]:border-white hover:border-white"
             >
               Logout
             </DropdownItem>

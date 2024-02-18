@@ -6,7 +6,7 @@ import Image from "next/image";
 import { NextUIProvider } from "@nextui-org/system";
 import "@polkadot/api-augment";
 import { Providers } from "./providers";
-import { inter, pt_mono } from "./fonts";
+import { inter, notoSansMono, pt_mono } from "./fonts";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon, XIcon } from "./ui/icons";
 import Script from "next/script";
@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${pt_mono.className}`}>
+      <body className={`${notoSansMono.className}`}>
         <Providers>
           <div className="relative flex flex-col min-h-[100vh]">
             <header className="h-24">

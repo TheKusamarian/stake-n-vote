@@ -1,4 +1,3 @@
-//@ts-nocheck
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/select";
@@ -10,12 +9,12 @@ import { sendDelegateTx } from "@/app/txs/txs";
 import { BN_ZERO, bnToBn } from "@polkadot/util";
 import { useChain } from "@/app/providers/chain-provider";
 import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
-import { on } from "events";
 import { findChangedItem, parseBN } from "@/app/util";
 import { useTracks } from "@/app/hooks/use-tracks";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { KusamaIcon, PolkadotIcon } from "../icons";
 import { Switch } from "@nextui-org/switch";
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 const ALL_TRACKS_ID = 9999;
 
@@ -59,6 +58,8 @@ export default function FormDelegate() {
   const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS));
   const [isAllSelected, setIsAllSelected] = useState(true);
 
+  const { activeAccount, activeSigner } = useInkathon();
+
   const initialState = {
     message: null,
     errors: {},
@@ -71,13 +72,8 @@ export default function FormDelegate() {
       ? bnToBn(amount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
   const { freeBalance } = accountBalance || { freeBalance: "0" };
-  const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
-
-  const selectedAccount = null;
-  const getSigner = null;
 
   const delegateToTheKus = async () => {
-    const signer = await getSigner();
     const target =
       activeChain === "Kusama" ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR;
 
@@ -91,8 +87,8 @@ export default function FormDelegate() {
 
     const tx = await sendDelegateTx(
       api,
-      signer,
-      selectedAccount?.address,
+      activeSigner,
+      activeAccount?.address,
       tracksArray,
       target,
       conviction,
@@ -187,18 +183,21 @@ export default function FormDelegate() {
             classNames={{ description: "text-foreground-600" }}
             description="Select the tracks you want to delegate"
             selectedKeys={tracks}
+            // @ts-ignore
             onSelectionChange={handleSelectionChange}
           >
             <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
               All Tracks
             </SelectItem>
-            {trackOptions?.map((track) => {
-              return (
-                <SelectItem key={track.id} value={track.id}>
-                  {track.name}
-                </SelectItem>
-              );
-            })}
+            <>
+              {(trackOptions || []).map((track) => {
+                return (
+                  <SelectItem key={track.id} value={track.id}>
+                    {track.name}
+                  </SelectItem>
+                );
+              })}
+            </>
           </Select>
         )}
       </div>
