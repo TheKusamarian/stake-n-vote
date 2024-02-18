@@ -13,7 +13,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <UseInkathonProvider
         appName="The Kus"
         defaultChain={polkadotRelay}
-        connectOnInit={false}
+        // connectOnInit={false}
       >
         <QueryClientProvider client={queryClient}>
           {children}

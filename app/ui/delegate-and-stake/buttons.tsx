@@ -39,7 +39,7 @@ export function DelegateStakeButtons() {
       <Button
         variant="bordered"
         className={
-          "border-2 border-white text-white w-full  shadow-xl text-base py-6 rounded-xl"
+          "border-2 border-white text-white w-full  shadow-xl text-base py-6 rounded-xl hover:bg-white/10"
         }
         size="sm"
         onClick={handleStakingOpen}
@@ -50,7 +50,7 @@ export function DelegateStakeButtons() {
       </Button>
       <Button
         variant="bordered"
-        className="border-2 border-white text-white w-full shadow-xl text-base py-6 rounded-xl"
+        className="border-2 border-white text-white w-full shadow-xl text-base py-6 rounded-xl hover:bg-white/10"
         size="sm"
         onClick={handleDelegatingOpen}
         isLoading={isConnecting}

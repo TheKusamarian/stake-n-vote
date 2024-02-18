@@ -59,7 +59,9 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
 
   //   const router = useRouter();
   const handleChange = (key: Key) => {
-    setActiveAccount?.(accounts?.find((acc) => acc.address === key));
+    const clickedAcc = accounts?.find((acc) => acc.address === key);
+    console.log("clicked account", clickedAcc);
+    setActiveAccount?.(clickedAcc);
   };
 
   // Connect Button
@@ -160,36 +162,32 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               group: "max-h-72 overflow-y-scroll",
             }}
           >
-            {accounts ? (
-              accounts?.map((account) => (
-                <DropdownItem
-                  key={account.address}
-                  value={account.address}
-                  description={trimAddress(
-                    encodeAddress(account.address, activeChain?.ss58Prefix)
-                  )}
-                  startContent={
-                    <Identicon
-                      value={account.address}
-                      size={40}
-                      theme="polkadot"
-                      className="hover:cursor-pointer"
-                    />
-                  }
-                  aria-label={account.address}
-                  className="hover:bg-default-100"
-                >
-                  <span className="truncate text-xs">
-                    {account?.name ||
-                      trimAddress(
-                        encodeAddress(account.address, activeChain?.ss58Prefix)
-                      )}
-                  </span>
-                </DropdownItem>
-              ))
-            ) : (
-              <></>
-            )}
+            {(accounts || []).map((account) => (
+              <DropdownItem
+                key={account.address}
+                value={account.address}
+                description={trimAddress(
+                  encodeAddress(account.address, activeChain?.ss58Prefix)
+                )}
+                startContent={
+                  <Identicon
+                    value={account.address}
+                    size={40}
+                    theme="polkadot"
+                    className="hover:cursor-pointer"
+                  />
+                }
+                aria-label={account.address}
+                className="hover:bg-transparent"
+              >
+                <span className="truncate text-xs">
+                  {account?.name ||
+                    trimAddress(
+                      encodeAddress(account.address, activeChain?.ss58Prefix)
+                    )}
+                </span>
+              </DropdownItem>
+            ))}
           </DropdownSection>
           <DropdownSection title="Actions">
             <DropdownItem
@@ -200,7 +198,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               value={"logout"}
               aria-label={"logout"}
               onClick={disconnect}
-              className="hover:bg-default-100"
+              className="hover:bg-transparent"
             >
               Logout
             </DropdownItem>
