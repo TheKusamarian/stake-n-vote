@@ -47,7 +47,6 @@ export default function ModalDelegate(props: ModalPropType) {
       <ModalContent className={styles.modal}>
         {(onClose) => (
           <>
-            activeaccount: {activeAccount?.address}
             <ModalHeader className="flex flex-col gap-1">
               {activeAccount ? (
                 <>

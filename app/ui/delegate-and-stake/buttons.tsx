@@ -43,7 +43,8 @@ export function DelegateStakeButtons() {
         onClick={handleStakingOpen}
         isLoading={isConnecting}
       >
-        Stake {activeChain.tokenSymbol}
+        {/* @ts-ignore */}
+        Stake {activeChain?.tokenSymbol}
       </Button>
       <Button
         variant="bordered"
@@ -52,6 +53,7 @@ export function DelegateStakeButtons() {
         onClick={handleDelegatingOpen}
         isLoading={isConnecting}
       >
+        {/* @ts-ignore */}
         Delegate {activeChain?.tokenSymbol} Votes
       </Button>
 
