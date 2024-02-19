@@ -188,6 +188,7 @@ export default function FormDelegate() {
             classNames={{ description: "text-foreground-600" }}
             description="Select the tracks you want to delegate"
             selectedKeys={tracks}
+            // @ts-ignore
             onSelectionChange={handleSelectionChange}
           >
             {trackOptionsWithAll.map((track) => {
