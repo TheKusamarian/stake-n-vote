@@ -77,4 +77,13 @@ export const CHAIN_CONFIG: {
       "FyL5TJXFEWDHC1yuBGwtngo3LRg4nEQ4ua47p1szMQdh8HR",
     ],
   },
+  Rococo: {
+    ss58Format: 2,
+    tokenDecimals: 12,
+    tokenSymbol: "ROC",
+    maxNominators: 24,
+    delegator: KUSAMA_DELEGATOR,
+    validator: KUSAMA_VALIDATOR,
+    validator_set: [],
+  },
 };
