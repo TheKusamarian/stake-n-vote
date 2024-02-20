@@ -3,14 +3,13 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Image from "next/image";
 
-import { NextUIProvider } from "@nextui-org/system";
 import "@polkadot/api-augment";
 import { Providers } from "./providers";
 import { inter, notoSansMono, pt_mono } from "./fonts";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon, XIcon } from "./ui/icons";
 import Script from "next/script";
-import { Youtube, YoutubeIcon } from "lucide-react";
+import { Youtube } from "lucide-react";
 import { ConnectButton } from "./ui/connect-button";
 
 export const metadata: Metadata = {

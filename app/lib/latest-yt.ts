@@ -1,13 +1,18 @@
 import cache from "@/app/lib/node-cache";
 
+const CACHE_EXPIRATION_DURATION = 1000 * 60 * 60 * 4; // 4 hours
+
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
   const cacheKey = `latest-video-${playlistId}`;
 
-  const cachedVideo = cache.get(cacheKey);
+  const cachedVideo: any = cache.get(cacheKey);
 
-  // If the video is found in the cache, return it without fetching from the YouTube API
-  if (cachedVideo) {
+  // Check if the cached video exists and has not expired
+  if (
+    cachedVideo &&
+    Date.now() - cachedVideo.cachedAt < CACHE_EXPIRATION_DURATION
+  ) {
     return cachedVideo;
   }
 
@@ -20,6 +25,7 @@ export async function fetchLatestVideo() {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
     const data = await response.json();
+
     const video = data.items?.[0]?.snippet;
 
     if (!video) {
@@ -28,7 +34,6 @@ export async function fetchLatestVideo() {
 
     // Cache the fetched video before returning it
     cache.set(cacheKey, { ...video, cachedAt: Date.now() });
-
     return video;
   } catch (error) {
     let message: string;
