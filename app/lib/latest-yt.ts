@@ -2,7 +2,7 @@ import cache, { CACHE_VIDEO_EXPIRATION_DURATION } from "@/app/lib/node-cache";
 
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
-  const cacheKey = `latest-video-${playlistId}`;
+  const cacheKey = `latest-yt-video-${playlistId}`;
 
   const cachedVideo: any = cache.get(cacheKey);
 

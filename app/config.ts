@@ -1,6 +1,8 @@
 import { IconSvgProps, KusamaIcon, PolkadotIcon } from "./ui/icons";
 // Desc: Configuration file for the app
 
+export const isDev = process.env.NODE_ENV === "development";
+
 // Kusamarian Delegators
 export const POLKADOT_DELEGATOR =
   "15KHTWdJyzyxaQbBNRmQN89KmFr1jPXXsPHM5Rxvd1Tkb2XZ";

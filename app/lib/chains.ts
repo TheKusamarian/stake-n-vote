@@ -21,3 +21,12 @@ export const kusamaRelay: SubstrateChainExtended = {
   testnet: false,
   tokenSymbol: "KSM",
 };
+
+export const rocoRelay: SubstrateChainExtended = {
+  network: "Rococo",
+  name: "Rococo Relay Chain",
+  rpcUrls: ["wss://rococo-rpc.polkadot.io"],
+  ss58Prefix: 42,
+  testnet: false,
+  tokenSymbol: "ROC",
+};
