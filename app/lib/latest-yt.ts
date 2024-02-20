@@ -1,6 +1,4 @@
-import cache from "@/app/lib/node-cache";
-
-export const CACHE_VIDEO_EXPIRATION_DURATION = 1000 * 60 * 60 * 0.5; // 30 minutes
+import cache, { CACHE_VIDEO_EXPIRATION_DURATION } from "@/app/lib/node-cache";
 
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
