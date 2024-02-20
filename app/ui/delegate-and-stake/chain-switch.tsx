@@ -3,13 +3,10 @@ import { clsx } from "clsx";
 import { useChain } from "@/app/providers/chain-provider";
 import { useQueryClient } from "react-query";
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon";
-import { kusamaRelay, polkadotRelay } from "@/app/lib/chains";
+import { kusamaRelay, polkadotRelay, rocoRelay } from "@/app/lib/chains";
 import { isDev } from "@/app/config";
 
 export function ChainSwitch() {
-  const { api } = useChain();
-  const queryClient = useQueryClient();
-
   const { activeChain, switchActiveChain } = useInkathon();
 
   function handleChainChange(chain: SubstrateChain) {
@@ -59,15 +56,15 @@ export function ChainSwitch() {
           className={clsx(
             "rounded-full hover:outline-2 border-3 border-transparent w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 p-2 md:p-3 hover:rotate-6 hover:scale-105 transition-all",
             {
-              "border-white": activeChain === "local",
-              "opacity-50": activeChain !== "local",
+              "border-white": activeChain === rocoRelay,
+              "opacity-50": activeChain !== rocoRelay,
             }
           )}
-          onClick={() => handleChainChange("local")}
+          onClick={() => handleChainChange(rocoRelay)}
         >
           <Image
-            src="local.png"
-            alt="Local Logo"
+            src="rococo.svg"
+            alt="Rococo Logo"
             width={100}
             height={100}
             className="rounded-full"
