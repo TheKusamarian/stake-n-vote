@@ -1,6 +1,6 @@
 import cache from "@/app/lib/node-cache";
 
-const CACHE_EXPIRATION_DURATION = 1000 * 60 * 60 * 4; // 4 hours
+export const CACHE_VIDEO_EXPIRATION_DURATION = 1000 * 60 * 60 * 0.5; // 30 minutes
 
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
@@ -11,7 +11,7 @@ export async function fetchLatestVideo() {
   // Check if the cached video exists and has not expired
   if (
     cachedVideo &&
-    Date.now() - cachedVideo.cachedAt < CACHE_EXPIRATION_DURATION
+    Date.now() - cachedVideo.cachedAt < CACHE_VIDEO_EXPIRATION_DURATION
   ) {
     return cachedVideo;
   }

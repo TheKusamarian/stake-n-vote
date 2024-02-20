@@ -1,7 +1,7 @@
 import NodeCache from "node-cache";
+import { CACHE_VIDEO_EXPIRATION_DURATION } from "./latest-yt";
 
 // Initialize a NodeCache instance. The stdTTL option sets a default TTL for all cache entries in seconds.
-// Here, setting a default TTL of 1 hours (1 * 60 * 60 seconds).
-const cache = new NodeCache({ stdTTL: 1 * 60 * 60 });
+const cache = new NodeCache({ stdTTL: CACHE_VIDEO_EXPIRATION_DURATION });
 
 export default cache;
