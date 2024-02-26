@@ -1,11 +1,14 @@
+import { CACHE_INVALIDATION_TIME } from "../config";
+
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
-
   const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${apiKey}`;
 
   try {
-    const response = await fetch(apiUrl, { next: { revalidate: 100 } });
+    const response = await fetch(apiUrl, {
+      next: { revalidate: CACHE_INVALIDATION_TIME },
+    });
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }

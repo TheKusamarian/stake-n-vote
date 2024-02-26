@@ -3,6 +3,8 @@ import { IconSvgProps, KusamaIcon, PolkadotIcon } from "./ui/icons";
 
 export const isDev = process.env.NODE_ENV === "development";
 
+export const CACHE_INVALIDATION_TIME = 60 * 30; // in seconds, equals 30min
+
 // Kusamarian Delegators
 export const POLKADOT_DELEGATOR =
   "15KHTWdJyzyxaQbBNRmQN89KmFr1jPXXsPHM5Rxvd1Tkb2XZ";
