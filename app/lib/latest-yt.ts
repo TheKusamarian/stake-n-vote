@@ -2,23 +2,23 @@ import cache, { CACHE_VIDEO_EXPIRATION_DURATION } from "@/app/lib/node-cache";
 
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
-  const cacheKey = `latest-yt-video-${playlistId}`;
+  // const cacheKey = `latest-yt-video-${playlistId}`;
 
-  const cachedVideo: any = cache.get(cacheKey);
+  // const cachedVideo: any = cache.get(cacheKey);
 
   // Check if the cached video exists and has not expired
-  if (
-    cachedVideo &&
-    Date.now() - cachedVideo.cachedAt < CACHE_VIDEO_EXPIRATION_DURATION
-  ) {
-    return cachedVideo;
-  }
+  // if (
+  //   cachedVideo &&
+  //   Date.now() - cachedVideo.cachedAt < CACHE_VIDEO_EXPIRATION_DURATION
+  // ) {
+  //   return cachedVideo;
+  // }
 
   const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${apiKey}`;
 
   try {
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, { next: { revalidate: 100 } });
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
@@ -30,8 +30,10 @@ export async function fetchLatestVideo() {
       throw new Error("No video found");
     }
 
+    console.log("new video fetched at: ", Date.now());
+
     // Cache the fetched video before returning it
-    cache.set(cacheKey, { ...video, cachedAt: Date.now() });
+    // cache.set(cacheKey, { ...video, cachedAt: Date.now() });
     return video;
   } catch (error) {
     let message: string;
