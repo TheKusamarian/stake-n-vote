@@ -15,14 +15,14 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      animation: {
-        border: "border 4s ease infinite",
-      },
       keyframes: {
-        border: {
-          "0%, 100%": { backgroundPosition: "0% 50%" },
-          "50%": { backgroundPosition: "100% 50%" },
+        wiggle: {
+          "0%, 100%": { transform: " translateX(6px)" },
+          "50%": { transform: "translateX(-6px)" },
         },
+      },
+      animation: {
+        wiggle: "wiggle 300ms ease-in-out infinite",
       },
     },
   },

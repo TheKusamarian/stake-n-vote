@@ -7,7 +7,6 @@ import { Button } from "@nextui-org/button";
 import { useState } from "react";
 import { sendDelegateTx } from "@/app/txs/txs";
 import { BN_ZERO, bnToBn } from "@polkadot/util";
-import { useChain } from "@/app/providers/chain-provider";
 import {
   CHAIN_CONFIG,
   KUSAMA_DELEGATOR,

@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import UseCases from "@w3f/polkadot-icons/keyline/UseCases";
 import { Button } from "@nextui-org/button";
 import { cn } from "@nextui-org/system";
+import { useApp } from "../providers/app-provider";
 
 export interface ConnectButtonProps {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
@@ -41,8 +42,9 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     activeAccount,
     accounts,
     setActiveAccount,
-    switchActiveChain,
   } = useInkathon();
+
+  const { isEffectTrue } = useApp();
 
   // Sort installed wallets first
   const [browserWallets] = useState([
@@ -78,7 +80,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
           <Button
             variant="flat"
             size="sm"
-            className="p-7 bg-transparent max-w-[300px] border-2 border-white py-6 text-base rounded-xl"
+            className={cn(
+              "p-7 bg-transparent max-w-[300px] border-2 border-white py-6 text-base rounded-xl",
+              { "animate-wiggle": isEffectTrue }
+            )}
             isLoading={isConnecting}
             isDisabled={isConnecting}
           >
@@ -212,7 +217,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               key={"logout"}
               value={"logout"}
               aria-label={"logout"}
-              onClick={disconnect}
+              onClick={() => {
+                disconnect?.();
+                setActiveAccount?.(undefined);
+              }}
               className="hover:bg-transparent  data-[hover=true]:border-white hover:border-white"
             >
               Logout

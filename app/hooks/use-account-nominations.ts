@@ -1,5 +1,4 @@
 import { useQuery } from "react-query";
-import { useChain } from "../providers/chain-provider";
 import { encodeAddress } from "@polkadot/keyring";
 import { useInkathon } from "@scio-labs/use-inkathon";
 

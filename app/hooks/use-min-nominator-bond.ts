@@ -1,8 +1,5 @@
 import { useQuery } from "react-query";
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { useChain } from "../providers/chain-provider";
 import { encodeAddress } from "@polkadot/keyring";
-import { BN } from "@polkadot/util";
 import { useInkathon } from "@scio-labs/use-inkathon";
 
 // Custom hook

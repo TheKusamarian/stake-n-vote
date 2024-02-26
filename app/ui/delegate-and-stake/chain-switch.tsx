@@ -1,7 +1,5 @@
 import Image from "next/image";
 import { clsx } from "clsx";
-import { useChain } from "@/app/providers/chain-provider";
-import { useQueryClient } from "react-query";
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon";
 import { kusamaRelay, polkadotRelay, rocoRelay } from "@/app/lib/chains";
 import { isDev } from "@/app/config";

@@ -11,7 +11,6 @@ import { Skeleton } from "@nextui-org/skeleton";
 
 import styles from "./modal.module.scss";
 import { useAccountNominators } from "@/app/hooks/use-account-nominations";
-import { useChain } from "@/app/providers/chain-provider";
 import { CHAIN_CONFIG } from "@/app/config";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -29,7 +28,6 @@ import {
 import { Input } from "@nextui-org/input";
 import { KusamaIcon, PolkadotIcon } from "../icons";
 import { parseBN, trimAddress } from "@/app/util";
-import { useIdentities } from "@/app/hooks/use-identities";
 import Link from "next/link";
 import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";

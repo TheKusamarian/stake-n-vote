@@ -1,16 +1,19 @@
-import { clsx } from "clsx";
+"use client";
+
 import { Button, ButtonGroup } from "@nextui-org/button";
 
 import { useDisclosure } from "@nextui-org/modal";
 import ModalDelegate from "./modal-delegate";
-import { useChain } from "@/app/providers/chain-provider";
 import ModalStake from "./modal-stake";
-import { on } from "events";
 import { event } from "nextjs-google-analytics";
 import { useInkathon } from "@scio-labs/use-inkathon";
+import { useApp } from "@/app/providers/app-provider";
 
 export function DelegateStakeButtons() {
-  const openExtensionModal = () => {};
+  const { enableEffect } = useApp();
+  const openExtensionModal = () => {
+    enableEffect();
+  };
 
   const { isOpen: isStakingOpen, onOpenChange: onStakingOpenChange } =
     useDisclosure();

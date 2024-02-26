@@ -11,7 +11,6 @@ import {
 import styles from "./modal.module.scss";
 import FormDelegate from "./form-delegate";
 import useAccountBalances from "@/app/hooks/use-account-balance";
-import { useChain } from "@/app/providers/chain-provider";
 import { BN_ZERO, formatBalance } from "@polkadot/util";
 import { parseBN } from "@/app/util";
 import { CHAIN_CONFIG } from "@/app/config";

@@ -1,7 +1,5 @@
 import { useQuery } from "react-query";
 import { ApiPromise } from "@polkadot/api";
-import { ChainConfigType, useChain } from "../providers/chain-provider";
-import { format } from "path";
 import { BN, BN_ZERO, formatBalance, bnToBn } from "@polkadot/util";
 import { encodeAddress } from "@polkadot/keyring";
 import { useInkathon } from "@scio-labs/use-inkathon";
