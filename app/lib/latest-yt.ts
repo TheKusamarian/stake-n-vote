@@ -1,5 +1,3 @@
-"use server";
-
 import { CACHE_INVALIDATION_TIME } from "../config";
 
 export async function fetchLatestVideo() {
