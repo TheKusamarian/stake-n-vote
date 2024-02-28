@@ -6,9 +6,7 @@ export async function fetchLatestVideo() {
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${apiKey}`;
 
   try {
-    const response = await fetch(apiUrl, {
-      next: { revalidate: CACHE_INVALIDATION_TIME },
-    });
+    const response = await fetch(apiUrl);
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
