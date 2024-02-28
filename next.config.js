@@ -4,7 +4,7 @@ const basePath = isProd ? "/stake-n-vote" : "";
 
 const nextConfig = {
   basePath: "",
-  output: "export",
+  // output: "export",
   distDir: "dist",
   images: {
     unoptimized: true,
