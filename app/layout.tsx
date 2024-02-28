@@ -12,6 +12,8 @@ import Script from "next/script";
 import { Youtube } from "lucide-react";
 import { ConnectButton } from "./ui/connect-button";
 
+export const revalidate = 1800;
+
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
   description: "Stake your DOT and KSM with The Kusamarian",

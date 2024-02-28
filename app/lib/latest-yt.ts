@@ -1,3 +1,5 @@
+"use server";
+
 import { CACHE_INVALIDATION_TIME } from "../config";
 
 export async function fetchLatestVideo() {
@@ -20,7 +22,10 @@ export async function fetchLatestVideo() {
       throw new Error("No video found");
     }
 
-    return video;
+    return {
+      ...video,
+      fetchedAt: Date.now(),
+    };
   } catch (error) {
     let message: string;
     if (error instanceof Error) {
