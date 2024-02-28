@@ -12,7 +12,7 @@ import Script from "next/script";
 import { Youtube } from "lucide-react";
 import { ConnectButton } from "./ui/connect-button";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",

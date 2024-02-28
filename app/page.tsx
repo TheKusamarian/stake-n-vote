@@ -2,7 +2,7 @@ import { DelegateAndStake } from "./ui/delegate-and-stake/delegate-and-stake";
 import LatestYtVideo from "./ui/latest-yt-video";
 import { fetchLatestVideo } from "./lib/latest-yt";
 
-export const revalidate = 1800;
+export const revalidate = 60;
 
 export default async function Home() {
   const vid = await fetchLatestVideo();
