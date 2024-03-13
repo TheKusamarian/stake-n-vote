@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import LazyYoutubeEmbed from "./lazy-yt-embed";
+import { useLatestYt } from "../hooks/use-latest-yt";
 
 type Video = {
   id: string;
@@ -15,14 +16,15 @@ type LatestVideoProps = {
   video: any;
 };
 
-const LatestYtVideo: React.FC<LatestVideoProps> = ({
-  video,
-}: {
-  video: any;
-}) => {
+const LatestYtVideo: React.FC<LatestVideoProps> = () => {
+  const { data: video } = useLatestYt();
+
   if (!video || !video?.thumbnails) {
     return null;
   }
+
+  const fetchedAt =
+    video.fetchedAt && new Date(video.fetchedAt).toLocaleTimeString();
 
   return (
     <>
@@ -35,6 +37,7 @@ const LatestYtVideo: React.FC<LatestVideoProps> = ({
             previewImageUrl={video?.thumbnails?.high.url}
             videoId={video?.resourceId?.videoId}
           />
+          <>{fetchedAt}</>
         </div>
       )}
     </>

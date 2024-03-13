@@ -2217,6 +2217,40 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tanstack/query-core@5.28.0":
+  version "5.28.0"
+  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.28.0.tgz"
+  integrity sha512-BfltXqnoIAXTCFrQCu40M3Ch7odQ6IJraTy0t8n12jAwXMYKIgDwOBWTqkSUYD+vxMi8Ag0+9F8lw9wZKhi2Yg==
+
+"@tanstack/query-persist-client-core@5.28.0":
+  version "5.28.0"
+  resolved "https://registry.npmjs.org/@tanstack/query-persist-client-core/-/query-persist-client-core-5.28.0.tgz"
+  integrity sha512-hMiK9ciWCAtlHjRzu29TeuEdP91RlPy9YQk+3AH8Kjvc4JLREkRdzexy2jatQiaTOIJUH8SL+04FoU+nAaRW+A==
+  dependencies:
+    "@tanstack/query-core" "5.28.0"
+
+"@tanstack/query-sync-storage-persister@^5.28.0":
+  version "5.28.0"
+  resolved "https://registry.npmjs.org/@tanstack/query-sync-storage-persister/-/query-sync-storage-persister-5.28.0.tgz"
+  integrity sha512-tx5Y+K3VHeBoPMqSpsivSDJ22EwCLpQJLeLW01AppWDrYm1aglovCsXWSYtxV5xgsnTtRCbte/c+FZbc/+0Xnw==
+  dependencies:
+    "@tanstack/query-core" "5.28.0"
+    "@tanstack/query-persist-client-core" "5.28.0"
+
+"@tanstack/react-query-persist-client@^5.28.0":
+  version "5.28.0"
+  resolved "https://registry.npmjs.org/@tanstack/react-query-persist-client/-/react-query-persist-client-5.28.0.tgz"
+  integrity sha512-g5sa4HAmrY1fvNrR6jPwtT62YPCPcroSDr0HEr2pDnBj28vC51KH2zWXp/FB1faQ9IATrbURLnfEDX9kew8qEA==
+  dependencies:
+    "@tanstack/query-persist-client-core" "5.28.0"
+
+"@tanstack/react-query@^5.28.0":
+  version "5.28.0"
+  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.28.0.tgz"
+  integrity sha512-nF4E4rFMQdh30gECGkTfyzgjgfSr4MLVgYoIsf7KqVkjUjEQHPpi9jyx10kO3Yq/OQMKOLMHAzD31st/lxDPbQ==
+  dependencies:
+    "@tanstack/query-core" "5.28.0"
+
 "@types/bn.js@^5.1.0", "@types/bn.js@^5.1.5":
   version "5.1.5"
   resolved "https://registry.npmjs.org/@types/bn.js/-/bn.js-5.1.5.tgz"

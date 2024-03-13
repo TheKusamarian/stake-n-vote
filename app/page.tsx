@@ -4,14 +4,11 @@ import { fetchLatestVideo } from "./lib/latest-yt";
 
 export const revalidate = 60;
 
-export default async function Home() {
-  const vid = await fetchLatestVideo();
-
+export default function Home() {
   return (
     <div className="h-full flex justify-center items-center w-full flex-col mb-10">
       <DelegateAndStake />
-      <LatestYtVideo video={vid} />
-      fetchedAt: {vid.fetchedAt && new Date(vid.fetchedAt).toLocaleTimeString()}
+      <LatestYtVideo />{" "}
     </div>
   );
 }
