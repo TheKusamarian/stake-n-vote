@@ -11,12 +11,7 @@ type Video = {
   previewUrl: string;
 };
 
-type LatestVideoProps = {
-  //   channelId: string;
-  video: any;
-};
-
-const LatestYtVideo: React.FC<LatestVideoProps> = () => {
+const LatestYtVideo: React.FC = () => {
   const { data: video } = useLatestYt();
 
   console.log("video", video);
