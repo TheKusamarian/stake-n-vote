@@ -19,6 +19,8 @@ type LatestVideoProps = {
 const LatestYtVideo: React.FC<LatestVideoProps> = () => {
   const { data: video } = useLatestYt();
 
+  console.log("video", video);
+
   if (!video || !video?.thumbnails) {
     return null;
   }
@@ -34,10 +36,9 @@ const LatestYtVideo: React.FC<LatestVideoProps> = () => {
             Here&apos;s the latest on Polkadot
           </h2>
           <LazyYoutubeEmbed
-            previewImageUrl={video?.thumbnails?.high.url}
+            previewImageUrl={video?.thumbnails?.maxres.url}
             videoId={video?.resourceId?.videoId}
           />
-          <>{fetchedAt}</>
         </div>
       )}
     </>
