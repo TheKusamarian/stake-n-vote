@@ -11,8 +11,11 @@ import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persist
 import { polkadotRelay } from "./lib/chains";
 import { AppProvider } from "./providers/app-provider";
 import { useEffect, useState } from "react";
+import ls from "localstorage-slim";
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [userWantsToConnect, setUserWantsToConnect] = useState(false);
+
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -21,21 +24,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
   });
 
-  const [persister, setPersister] = useState<Persister | null>(null);
-
-  useEffect(() => {
-    const persister = createSyncStoragePersister({
-      storage: window.localStorage,
-    });
-    setPersister(persister);
-  }, []);
-
   return (
-    <UseInkathonProvider
-      appName="The Kus"
-      defaultChain={polkadotRelay}
-      connectOnInit={true}
-    >
+    <UseInkathonProvider appName="The Kus" defaultChain={polkadotRelay}>
       <AppProvider>
         <QueryClientProvider client={queryClient}>
           {children}

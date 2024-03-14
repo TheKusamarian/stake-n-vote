@@ -1,15 +1,12 @@
 "use client";
 
-import { FC, Key, useMemo, useState } from "react";
-import Image from "next/image";
+import { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { InjectedAccount } from "@polkadot/extension-inject/types";
 import { encodeAddress } from "@polkadot/util-crypto";
 import {
   SubstrateWalletPlatform,
-  allSubstrateWallets,
   isWalletInstalled,
-  useBalance,
   useInkathon,
 } from "@scio-labs/use-inkathon";
 import { ArrowUpRight, CheckCircle, ChevronDown } from "lucide-react";
@@ -23,11 +20,12 @@ import {
 } from "@nextui-org/dropdown";
 import { trimAddress } from "../util";
 import Identicon from "@polkadot/react-identicon";
-import { useRouter } from "next/navigation";
 import UseCases from "@w3f/polkadot-icons/keyline/UseCases";
 import { Button } from "@nextui-org/button";
 import { cn } from "@nextui-org/system";
 import { useApp } from "../providers/app-provider";
+import { supportedWallets } from "../lib/wallets";
+import ls from "localstorage-slim";
 
 export interface ConnectButtonProps {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined;
@@ -48,24 +46,24 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
 
   // Sort installed wallets first
   const [browserWallets] = useState([
-    ...allSubstrateWallets.filter(
+    ...supportedWallets.filter(
       (w) =>
         w.platforms.includes(SubstrateWalletPlatform.Browser) &&
         isWalletInstalled(w)
     ),
-    ...allSubstrateWallets.filter(
+    ...supportedWallets.filter(
       (w) =>
         w.platforms.includes(SubstrateWalletPlatform.Browser) &&
         !isWalletInstalled(w)
     ),
   ]);
 
-  //   const router = useRouter();
-  const handleChange = (key: Key) => {
-    const clickedAcc = accounts?.find((acc) => acc.address === key);
-    console.log("clicked account", clickedAcc);
-    setActiveAccount?.(clickedAcc);
-  };
+  useEffect(() => {
+    const userWantsConnection = ls.get("userWantsConnection");
+    if (userWantsConnection) {
+      connect?.();
+    }
+  }, []);
 
   // Connect Button
   if (!activeAccount)
@@ -86,6 +84,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
             )}
             isLoading={isConnecting}
             isDisabled={isConnecting}
+            onClick={() => {
+              console.log("clickled");
+              ls.set("userWantsConnection", true);
+            }}
           >
             {isConnecting ? (
               "connecting"
@@ -109,7 +111,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
                 isWalletInstalled(w) ? (
                   <DropdownItem
                     key={w.id}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-transparent data-[hover=true]:border-white hover:border-white"
                     onClick={() => {
                       connect?.(undefined, w);
                     }}
@@ -117,7 +119,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
                     {w.name}
                   </DropdownItem>
                 ) : (
-                  <DropdownItem key={w.id} className="opacity-50">
+                  <DropdownItem
+                    key={w.id}
+                    className="opacity-50 hover:bg-transparent data-[hover=true]:border-white hover:border-white"
+                  >
                     <Link href={w.urls.website}>
                       <div className="align-center flex justify-start gap-2">
                         <p>{w.name}</p>
@@ -156,14 +161,12 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               size={45}
               theme="polkadot"
               className="hover:cursor-pointer"
-              // prefix={ss58Prefix}
             />
           </Button>
         </DropdownTrigger>
         <DropdownMenu
           variant="bordered"
           aria-label="Account Select"
-          //   onAction={handleChange}
           classNames={{ base: "w-[250px]" }}
         >
           <DropdownSection
@@ -177,7 +180,6 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
             {(accounts || []).map((account) => (
               <DropdownItem
                 key={account.address}
-                // value={account.address}
                 description={trimAddress(
                   encodeAddress(account.address, activeChain?.ss58Prefix)
                 )}
@@ -220,8 +222,9 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
               onClick={() => {
                 disconnect?.();
                 setActiveAccount?.(undefined);
+                ls.set("userWantsConnection", false);
               }}
-              className="hover:bg-transparent  data-[hover=true]:border-white hover:border-white"
+              className="hover:bg-transparent data-[hover=true]:border-white hover:border-white"
             >
               Logout
             </DropdownItem>
