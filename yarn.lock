@@ -825,7 +825,7 @@
     postcss-lit "^1.1.0"
     tailwindcss "^3.3.2"
 
-"@nightlylabs/wallet-selector-polkadot@^0.1.19", "@nightlylabs/wallet-selector-polkadot@>=0.1.10":
+"@nightlylabs/wallet-selector-polkadot@^0.1.19":
   version "0.1.19"
   resolved "https://registry.npmjs.org/@nightlylabs/wallet-selector-polkadot/-/wallet-selector-polkadot-0.1.19.tgz"
   integrity sha512-AhNQ6OSPb65Q1yCvDo4bF9CPZsmuTC+5wltmdrUI8b1HPIqitLtQEdmqv3idEfbgZ63nv4M2pO4HllhZr8qQVQ==
@@ -932,7 +932,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/api-contract@^10.11.2", "@polkadot/api-contract@>=10":
+"@polkadot/api-contract@^10.11.2":
   version "10.11.2"
   resolved "https://registry.npmjs.org/@polkadot/api-contract/-/api-contract-10.11.2.tgz"
   integrity sha512-n+G1puptaQA5CwO2EHmD29QR1qlV/dVs6R0cBSGFaXvYJxqYJvN2LEir3i9vWjO0IVqulTjLPWvv7MbR3CxhmA==
@@ -979,7 +979,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/api@*", "@polkadot/api@^10.10.1", "@polkadot/api@^10.11.1", "@polkadot/api@^10.11.2", "@polkadot/api@>=10", "@polkadot/api@10.11.2":
+"@polkadot/api@*", "@polkadot/api@^10.10.1", "@polkadot/api@^10.11.1", "@polkadot/api@^10.11.2", "@polkadot/api@10.11.2":
   version "10.11.2"
   resolved "https://registry.npmjs.org/@polkadot/api/-/api-10.11.2.tgz"
   integrity sha512-AorCZxCWCoTtdbl4DPUZh+ACe/pbLIS1BkdQY0AFJuZllm0x/yWzjgampcPd5jQAA/O3iKShRBkZqj6Mk9yG/A==
@@ -1047,7 +1047,7 @@
     "@polkadot/util-crypto" "^8.7.1"
     "@polkadot/x-global" "^8.7.1"
 
-"@polkadot/extension-inject@^0.46.5", "@polkadot/extension-inject@^0.46.6", "@polkadot/extension-inject@>=0.46":
+"@polkadot/extension-inject@^0.46.5", "@polkadot/extension-inject@^0.46.6":
   version "0.46.6"
   resolved "https://registry.npmjs.org/@polkadot/extension-inject/-/extension-inject-0.46.6.tgz"
   integrity sha512-5lJzL/iQ9oUcIDcER22Hxdjj4S9CoWS09yQoAKkfAmZMuTJkL/j36m7AnpNPN5ohWoPyd1Yl/JfwtoLmtRoZog==
@@ -1073,7 +1073,7 @@
     "@polkadot/x-global" "^12.3.2"
     tslib "^2.5.3"
 
-"@polkadot/keyring@^12.5.1", "@polkadot/keyring@^12.6.1", "@polkadot/keyring@^12.6.2", "@polkadot/keyring@>=10":
+"@polkadot/keyring@^12.5.1", "@polkadot/keyring@^12.6.1", "@polkadot/keyring@^12.6.2":
   version "12.6.2"
   resolved "https://registry.npmjs.org/@polkadot/keyring/-/keyring-12.6.2.tgz"
   integrity sha512-O3Q7GVmRYm8q7HuB3S0+Yf/q/EB2egKRRU3fv9b3B7V+A52tKzA+vIwEmNVaD1g5FKW9oB97rmpggs0zaKFqHw==
@@ -1361,7 +1361,7 @@
     "@babel/runtime" "^7.17.8"
     "@polkadot/util" "^8.7.1"
 
-"@polkadot/types@^10.10.1", "@polkadot/types@^10.11.1", "@polkadot/types@^10.11.2", "@polkadot/types@>=10", "@polkadot/types@10.11.2":
+"@polkadot/types@^10.10.1", "@polkadot/types@^10.11.1", "@polkadot/types@^10.11.2", "@polkadot/types@10.11.2":
   version "10.11.2"
   resolved "https://registry.npmjs.org/@polkadot/types/-/types-10.11.2.tgz"
   integrity sha512-d52j3xXni+C8GdYZVTSfu8ROAnzXFMlyRvXtor0PudUc8UQHOaC4+mYAkTBGA2gKdmL8MHSfRSbhcxHhsikY6Q==
@@ -1422,7 +1422,7 @@
     colord "^2.9.3"
     tslib "^2.6.2"
 
-"@polkadot/util-crypto@*", "@polkadot/util-crypto@^12.3.2", "@polkadot/util-crypto@^12.5.1", "@polkadot/util-crypto@^12.6.1", "@polkadot/util-crypto@^12.6.2", "@polkadot/util-crypto@>=10", "@polkadot/util-crypto@12.6.2":
+"@polkadot/util-crypto@*", "@polkadot/util-crypto@^12.3.2", "@polkadot/util-crypto@^12.5.1", "@polkadot/util-crypto@^12.6.1", "@polkadot/util-crypto@^12.6.2", "@polkadot/util-crypto@12.6.2":
   version "12.6.2"
   resolved "https://registry.npmjs.org/@polkadot/util-crypto/-/util-crypto-12.6.2.tgz"
   integrity sha512-FEWI/dJ7wDMNN1WOzZAjQoIcCP/3vz3wvAp5QQm+lOrzOLj0iDmaIGIcBkz8HVm3ErfSe/uKP0KS4jgV/ib+Mg==
@@ -1455,7 +1455,7 @@
     ed2curve "^0.3.0"
     tweetnacl "^1.0.3"
 
-"@polkadot/util@*", "@polkadot/util@^12.3.2", "@polkadot/util@^12.5.1", "@polkadot/util@^12.6.1", "@polkadot/util@^12.6.2", "@polkadot/util@>=10", "@polkadot/util@12.6.2":
+"@polkadot/util@*", "@polkadot/util@^12.3.2", "@polkadot/util@^12.5.1", "@polkadot/util@^12.6.1", "@polkadot/util@^12.6.2", "@polkadot/util@12.6.2":
   version "12.6.2"
   resolved "https://registry.npmjs.org/@polkadot/util/-/util-12.6.2.tgz"
   integrity sha512-l8TubR7CLEY47240uki0TQzFvtnxFIO7uI/0GoWzpYD/O62EIAMRsuY01N4DuwgKq2ZWD59WhzsLYmA5K6ksdw==
@@ -2143,11 +2143,6 @@
   version "1.7.2"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.7.2.tgz"
   integrity sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==
-
-"@scio-labs/use-inkathon@^0.8.1":
-  version "0.8.1"
-  resolved "https://registry.npmjs.org/@scio-labs/use-inkathon/-/use-inkathon-0.8.1.tgz"
-  integrity sha512-KBeyo61dDqPT2/NkqWMR3yQmr2gbPayQKLM/mtKRyOovSLDUz2F40W+nsONDUnDIYcJ2ozibxI8Na/NbL8jA8A==
 
 "@scure/base@^1.1.5":
   version "1.1.5"

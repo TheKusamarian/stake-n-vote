@@ -85,7 +85,6 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
             isLoading={isConnecting}
             isDisabled={isConnecting}
             onClick={() => {
-              console.log("clickled");
               ls.set("userWantsConnection", true);
             }}
           >
