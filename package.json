@@ -32,7 +32,7 @@
     "@polkadot/types": "^10.11.2",
     "@polkadot/util": "^12.6.1",
     "@polkadot/util-crypto": "^12.6.2",
-    "@scio-labs/use-inkathon": "file:./use-inkathon",
+    "@scio-labs/use-inkathon": "github:niklasp/use-inkathon#add/supportedWalletsRelease",
     "@tanstack/query-sync-storage-persister": "^5.28.0",
     "@tanstack/react-query-persist-client": "^5.28.0",
     "@w3f/polkadot-icons": "^1.0.0",
