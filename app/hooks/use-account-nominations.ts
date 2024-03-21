@@ -1,17 +1,14 @@
 import { useQuery } from "react-query";
-import { useChain } from "../providers/chain-provider";
-import { usePolkadotExtension } from "../providers/extension-provider";
 import { encodeAddress } from "@polkadot/keyring";
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 // Custom hook
 export function useAccountNominators() {
-  const { api, chainConfig, activeChain } = useChain();
-  const { selectedAccount } = usePolkadotExtension();
-  const { ss58Format } = chainConfig || {};
+  const { api, activeChain, activeAccount } = useInkathon();
 
   const userAddress =
-    selectedAccount?.address && ss58Format !== undefined
-      ? encodeAddress(selectedAccount.address, ss58Format)
+    activeAccount?.address && activeChain?.ss58Prefix !== undefined
+      ? encodeAddress(activeAccount.address, activeChain?.ss58Prefix)
       : "";
 
   return useQuery(

@@ -10,6 +10,11 @@ const nextConfig = {
     unoptimized: true,
     path: `${basePath}/_next/image`,
   },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
 };
 
 module.exports = nextConfig;

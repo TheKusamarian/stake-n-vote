@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import LazyYoutubeEmbed from "./lazy-yt-embed";
+import { useLatestYt } from "../hooks/use-latest-yt";
 
 type Video = {
   id: string;
@@ -10,19 +11,17 @@ type Video = {
   previewUrl: string;
 };
 
-type LatestVideoProps = {
-  //   channelId: string;
-  video: any;
-};
+const LatestYtVideo: React.FC = () => {
+  const { data: video } = useLatestYt();
 
-const LatestYtVideo: React.FC<LatestVideoProps> = ({
-  video,
-}: {
-  video: any;
-}) => {
+  console.log("video", video);
+
   if (!video || !video?.thumbnails) {
     return null;
   }
+
+  const fetchedAt =
+    video.fetchedAt && new Date(video.fetchedAt).toLocaleTimeString();
 
   return (
     <>
@@ -32,7 +31,7 @@ const LatestYtVideo: React.FC<LatestVideoProps> = ({
             Here&apos;s the latest on Polkadot
           </h2>
           <LazyYoutubeEmbed
-            previewImageUrl={video?.thumbnails?.high.url}
+            previewImageUrl={video?.thumbnails?.maxres.url}
             videoId={video?.resourceId?.videoId}
           />
         </div>

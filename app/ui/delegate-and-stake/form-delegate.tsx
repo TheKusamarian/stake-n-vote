@@ -1,23 +1,24 @@
-//@ts-nocheck
 "use client";
 
 import { Select, SelectItem } from "@nextui-org/select";
 import { Input } from "@nextui-org/input";
 import { Slider } from "@nextui-org/slider";
-import { useFormState, useFormStatus } from "react-dom";
 import { Button } from "@nextui-org/button";
 import { useState } from "react";
 import { sendDelegateTx } from "@/app/txs/txs";
 import { BN_ZERO, bnToBn } from "@polkadot/util";
-import { useChain } from "@/app/providers/chain-provider";
-import { usePolkadotExtension } from "@/app/providers/extension-provider";
-import { KUSAMA_DELEGATOR, POLKADOT_DELEGATOR } from "@/app/config";
-import { on } from "events";
+import {
+  CHAIN_CONFIG,
+  KUSAMA_DELEGATOR,
+  POLKADOT_DELEGATOR,
+} from "@/app/config";
 import { findChangedItem, parseBN } from "@/app/util";
 import { useTracks } from "@/app/hooks/use-tracks";
 import useAccountBalances from "@/app/hooks/use-account-balance";
 import { KusamaIcon, PolkadotIcon } from "../icons";
 import { Switch } from "@nextui-org/switch";
+import { useInkathon } from "@scio-labs/use-inkathon";
+import { kusamaRelay } from "@/app/lib/chains";
 
 const ALL_TRACKS_ID = 9999;
 
@@ -40,7 +41,6 @@ export function submitDelegation(prevState: State, formData: FormData) {
 }
 
 export default function FormDelegate() {
-  const { chainConfig } = useChain();
   const {
     data: accountBalance,
     isLoading: isAccountBalanceLoading,
@@ -53,38 +53,30 @@ export default function FormDelegate() {
     ALL_TRACKS_ID.toString(),
   ];
 
-  const { api, activeChain } = useChain(); // Using useChain hook
-  const [conviction, setConviction] = useState<number>(
-    activeChain === "Kusama" ? 1 : 3
-  );
   const [amount, setAmount] = useState(1);
   const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS));
   const [isAllSelected, setIsAllSelected] = useState(true);
 
-  const initialState = {
-    message: null,
-    errors: {},
-  };
+  const { activeAccount, activeSigner, activeChain, api } = useInkathon();
+  const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"];
 
-  const { tokenDecimals, tokenSymbol } = chainConfig;
+  const { tokenSymbol, tokenDecimals } = activeChainConfig;
+
+  const [conviction, setConviction] = useState<number>(
+    activeChain === kusamaRelay ? 1 : 3
+  );
 
   const delegateBalance =
     !isNaN(amount) && amount !== 0
       ? bnToBn(amount * Math.pow(10, tokenDecimals))
       : BN_ZERO;
   const { freeBalance } = accountBalance || { freeBalance: "0" };
-  const humanFreeBalance = parseBN(freeBalance, tokenDecimals);
-
-  const { selectedAccount, getSigner } = usePolkadotExtension(); // Using usePolkadotExtension hook
 
   const delegateToTheKus = async () => {
-    const signer = await getSigner();
     const target =
-      activeChain === "Kusama" ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR;
+      activeChain === kusamaRelay ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR;
 
     let tracksArray = Array.from(tracks);
-
-    console.log(tracksArray);
 
     if (tracksArray.includes(ALL_TRACKS_ID.toString())) {
       tracksArray = ALL_TRACKS;
@@ -94,8 +86,8 @@ export default function FormDelegate() {
 
     const tx = await sendDelegateTx(
       api,
-      signer,
-      selectedAccount?.address,
+      activeSigner,
+      activeAccount?.address,
       tracksArray,
       target,
       conviction,
@@ -171,6 +163,11 @@ export default function FormDelegate() {
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals));
   };
 
+  const trackOptionsWithAll = [
+    { id: ALL_TRACKS_ID, name: "All Tracks" },
+    ...(trackOptions || []),
+  ];
+
   return (
     <form className="flex flex-col gap-5 text-white">
       <div className="flex flex-col gap-2">
@@ -190,12 +187,10 @@ export default function FormDelegate() {
             classNames={{ description: "text-foreground-600" }}
             description="Select the tracks you want to delegate"
             selectedKeys={tracks}
+            // @ts-ignore
             onSelectionChange={handleSelectionChange}
           >
-            <SelectItem key={ALL_TRACKS_ID} value={ALL_TRACKS_ID}>
-              All Tracks
-            </SelectItem>
-            {trackOptions?.map((track) => {
+            {trackOptionsWithAll.map((track) => {
               return (
                 <SelectItem key={track.id} value={track.id}>
                   {track.name}
@@ -219,7 +214,7 @@ export default function FormDelegate() {
             endContent={
               <>
                 {tokenSymbol}
-                {activeChain === "Kusama" ? (
+                {activeChain === kusamaRelay ? (
                   <KusamaIcon className="pl-1 pt-1" />
                 ) : (
                   <PolkadotIcon className="pl-1 pt-1" />

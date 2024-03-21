@@ -1,6 +1,10 @@
 import { IconSvgProps, KusamaIcon, PolkadotIcon } from "./ui/icons";
 // Desc: Configuration file for the app
 
+export const isDev = process.env.NODE_ENV === "development";
+
+export const CACHE_INVALIDATION_TIME = 60 * 30; // in seconds, equals 30min
+
 // Kusamarian Delegators
 export const POLKADOT_DELEGATOR =
   "15KHTWdJyzyxaQbBNRmQN89KmFr1jPXXsPHM5Rxvd1Tkb2XZ";
@@ -74,5 +78,14 @@ export const CHAIN_CONFIG: {
       "D6NNbc18fTh4WVQtmrTyLRHGv8SKVtjKFY8uV34k5ydBMaV",
       "FyL5TJXFEWDHC1yuBGwtngo3LRg4nEQ4ua47p1szMQdh8HR",
     ],
+  },
+  Rococo: {
+    ss58Format: 2,
+    tokenDecimals: 12,
+    tokenSymbol: "ROC",
+    maxNominators: 24,
+    delegator: KUSAMA_DELEGATOR,
+    validator: KUSAMA_VALIDATOR,
+    validator_set: [],
   },
 };

@@ -3,16 +3,16 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Image from "next/image";
 
-import { NextUIProvider } from "@nextui-org/system";
 import "@polkadot/api-augment";
 import { Providers } from "./providers";
-import { WalletConnect } from "./ui/wallet-connect/wallet-connect";
-import { inter, pt_mono } from "./fonts";
+import { inter, notoSansMono, pt_mono } from "./fonts";
 import Link from "next/link";
 import { DiscordIcon, GithubIcon, XIcon } from "./ui/icons";
-import { GoogleAnalytics } from "nextjs-google-analytics";
 import Script from "next/script";
-import { Youtube, YoutubeIcon } from "lucide-react";
+import { Youtube } from "lucide-react";
+import { ConnectButton } from "./ui/connect-button";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "The Kusamarian Staking and Delegating App",
@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${pt_mono.className}`}>
+      <body className={`${notoSansMono.className}`}>
         <Providers>
           <div className="relative flex flex-col min-h-[100vh]">
             <header className="h-24">
@@ -38,7 +38,7 @@ export default function RootLayout({
                   width={75}
                   height={80}
                 />
-                <WalletConnect />
+                <ConnectButton />
               </nav>
             </header>
             <main className="flex max-w-7xl mx-auto p-4 flex-grow w-full">

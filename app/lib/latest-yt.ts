@@ -1,17 +1,7 @@
-import cache from "@/app/lib/node-cache";
+import { CACHE_INVALIDATION_TIME } from "../config";
 
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
-  const cacheKey = `latest-video-${playlistId}`;
-
-  const cachedVideo = cache.get(cacheKey);
-
-  // If the video is found in the cache, return it without fetching from the YouTube API
-  if (cachedVideo) {
-    console.log("Returning cached video");
-    return cachedVideo;
-  }
-
   const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=1&key=${apiKey}`;
 
@@ -21,16 +11,17 @@ export async function fetchLatestVideo() {
       throw new Error(`Failed to fetch data: ${response.statusText}`);
     }
     const data = await response.json();
+
     const video = data.items?.[0]?.snippet;
 
     if (!video) {
       throw new Error("No video found");
     }
 
-    // Cache the fetched video before returning it
-    cache.set(cacheKey, { ...video, cachedAt: Date.now() });
-
-    return video;
+    return {
+      ...video,
+      fetchedAt: Date.now(),
+    };
   } catch (error) {
     let message: string;
     if (error instanceof Error) {
@@ -38,6 +29,7 @@ export async function fetchLatestVideo() {
     } else {
       message = "Something went wrong";
     }
+    console.error(error);
     return { error: message };
   }
 }

@@ -1,30 +1,34 @@
 "use client";
 
-import ChainProvider from "./providers/chain-provider";
-import { PolkadotExtensionProvider } from "./providers/extension-provider";
-import dynamic from "next/dynamic";
+import { SubstrateChain, UseInkathonProvider } from "@scio-labs/use-inkathon";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { polkadotRelay } from "./lib/chains";
+import { AppProvider } from "./providers/app-provider";
+import { useEffect, useState } from "react";
+import { supportedWallets } from "./lib/wallets";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const DynamicPolkadotExtensionProvider = dynamic(
-    () =>
-      import("@/app/providers/extension-provider").then(
-        (mod) => mod.PolkadotExtensionProvider
-      ),
-    {
-      ssr: false,
-    }
-  );
+  const [userWantsToConnect, setUserWantsToConnect] = useState(false);
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        cacheTime: 1000 * 60 * 60 * 12, // 12 hours
+      },
+    },
+  });
 
   return (
-    <ChainProvider>
-      <DynamicPolkadotExtensionProvider>
+    <UseInkathonProvider
+      appName="The Kus"
+      defaultChain={polkadotRelay}
+      supportedWallets={supportedWallets}
+    >
+      <AppProvider>
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
-      </DynamicPolkadotExtensionProvider>
-    </ChainProvider>
+      </AppProvider>
+    </UseInkathonProvider>
   );
 }

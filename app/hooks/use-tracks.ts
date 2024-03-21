@@ -1,7 +1,5 @@
 import { useQuery } from "react-query";
-import { useChain } from "../providers/chain-provider";
-import { usePolkadotExtension } from "../providers/extension-provider";
-import { encodeAddress } from "@polkadot/keyring";
+import { useInkathon } from "@scio-labs/use-inkathon";
 
 export interface Track {
   id: number;
@@ -10,10 +8,10 @@ export interface Track {
 
 // Custom hook
 export function useTracks() {
-  const { api, activeChain } = useChain();
+  const { api, activeChain } = useInkathon();
 
   return useQuery<Track[] | undefined>(
-    ["tracks", activeChain],
+    ["tracks", activeChain?.name],
     async () => {
       // Fetch staking information
       const tracks = await api?.consts.referenda.tracks;
