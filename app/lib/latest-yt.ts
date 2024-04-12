@@ -1,5 +1,3 @@
-import { CACHE_INVALIDATION_TIME } from "../config";
-
 export async function fetchLatestVideo() {
   const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"; // Replace with your actual playlist ID
   const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg";

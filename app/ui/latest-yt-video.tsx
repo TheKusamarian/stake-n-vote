@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import LazyYoutubeEmbed from "./lazy-yt-embed";
 import { useLatestYt } from "../hooks/use-latest-yt";
 
@@ -31,7 +30,7 @@ const LatestYtVideo: React.FC = () => {
             Here&apos;s the latest on Polkadot
           </h2>
           <LazyYoutubeEmbed
-            previewImageUrl={video?.thumbnails?.maxres.url}
+            previewImageUrl={video?.thumbnails?.maxres?.url}
             videoId={video?.resourceId?.videoId}
           />
         </div>
