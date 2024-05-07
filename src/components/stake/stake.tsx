@@ -1,14 +1,5 @@
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalProps,
-} from '@nextui-org/modal'
 import { RadioGroup, Radio } from '@nextui-org/radio'
-import { Skeleton } from '@nextui-org/skeleton'
 
-import styles from './modal.module.scss'
 import { useAccountNominators } from '@/hooks/use-account-nominations'
 import { CHAIN_CONFIG } from '@/config/config'
 import useAccountBalances from '@/hooks/use-account-balance'
@@ -17,7 +8,6 @@ import { bondAndNominateTx, joinPool, nominateTx } from '@/app/txs/txs'
 import { ApiPromise } from '@polkadot/api'
 import { useStakingMetrics } from '@/hooks/use-min-nominator-bond'
 import { BN, BN_ZERO, bnToBn } from '@polkadot/util'
-import { KusamaIcon, PolkadotIcon } from '../../icons'
 import { parseBN, trimAddress } from '@/util'
 import Link from 'next/link'
 import { Tooltip } from '@nextui-org/tooltip'
@@ -28,11 +18,10 @@ import { SubstrateChain, useInkathon } from '@scio-labs/use-inkathon'
 import { kusamaRelay, polkadotRelay } from '@/config/chains'
 import { InjectedAccount } from '@polkadot/extension-inject/types'
 import { Signer } from '@polkadot/types/types'
-import { David_Libre } from 'next/font/google'
-import { Button } from '../ui/button'
 import { Loader } from '../loader'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
+import { Button } from '../ui/button'
 
 export default function StakeComponent() {
   const router = useRouter()
@@ -182,7 +171,7 @@ export default function StakeComponent() {
             <p>
               Something went wrong{' '}
               <a
-                className="text-danger cursor-pointer"
+                className="cursor-pointer text-danger"
                 onClick={() => router.refresh()}
               >
                 Try again
@@ -322,7 +311,7 @@ function MaybeAddToPool({
   amountSmallerThanMinNominatorBond: boolean
 }) {
   const joinNominationPool = useCallback(
-    async (e) => {
+    async (e: any) => {
       e.preventDefault()
       if (!activeChain || !activeChain?.network || !api || !signer) {
         return
@@ -367,7 +356,7 @@ function MaybeAddToPool({
     )
   }
 
-  const stakeMax = (e) => {
+  const stakeMax = (e: any) => {
     e.preventDefault()
     const a =
       parseBN(accountBalance.freeBalance?.toString(), tokenDecimals) - 0.2
@@ -596,7 +585,7 @@ function ReplaceOneWithKus({
         className="w-full"
         color="danger"
         onClick={handleReplace}
-        isDisabled={!selected}
+        disabled={!selected}
         size="lg"
       >
         Replace above with Kus

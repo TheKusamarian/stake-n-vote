@@ -137,8 +137,9 @@ export function PrimaryFeatures() {
                           )}
                         >
                           <span className="absolute inset-0 rounded-full lg:rounded-l-xl lg:rounded-r-none" />
-                          {feature.image} {feature.title}{' '}
-                          {activeChain.tokenSymbol}
+                          {feature.image} {feature.title}
+                          {/* @ts-ignore */}
+                          {activeChain?.tokenSymbol}
                         </Tab>
                       </h3>
                       <p

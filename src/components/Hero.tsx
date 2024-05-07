@@ -67,6 +67,7 @@ export function Hero() {
             </Button>
           </div>
         </div>
+        {/* @ts-ignore */}
         <div className="mt-16 flex-auto lg:ml-16 lg:mt-0" ref={ref}>
           <div className="w-full flex-none sm:max-w-5xl">
             <div className="group relative mt-4 overflow-hidden rounded-xl p-2 lg:mt-0 lg:p-4">

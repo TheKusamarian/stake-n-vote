@@ -1,14 +1,6 @@
 'use client'
 
-import { useId } from 'react'
-import Image, { type ImageProps } from 'next/image'
-import { Tab } from '@headlessui/react'
-import clsx from 'clsx'
-
 import { Container } from '@/components/Container'
-import screenshotContacts from '@/images/screenshots/contacts.png'
-import screenshotInventory from '@/images/screenshots/inventory.png'
-import screenshotProfitLoss from '@/images/screenshots/profit-loss.png'
 import { useLatestYt } from '@/hooks/use-latest-yt'
 import LazyYoutubeEmbed from './lazy-yt-embed'
 
@@ -19,12 +11,12 @@ function LatestVideos() {
   // return <pre>{JSON.stringify(videos, null, 2)}</pre>
   return (
     <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {videos?.map((video) => {
+      {videos?.map((video: any) => {
         const description = video.description.split('\n')[0]
         return (
           <div key={video.id} className="relative">
             <div className="group relative overflow-hidden rounded-md p-2">
-              <div className="from-primary-500 group-hover:animate-spin_right absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-md bg-gradient-to-br to-teal-500 p-2"></div>
+              <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-md bg-gradient-to-br from-primary-500 to-teal-500 p-2 group-hover:animate-spin_right"></div>
               <LazyYoutubeEmbed
                 previewImageUrl={video?.thumbnails?.maxres?.url}
                 videoId={video?.id}

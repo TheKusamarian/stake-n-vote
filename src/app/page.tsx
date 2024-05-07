@@ -7,6 +7,7 @@ import { Pricing } from '@/components/Pricing'
 import { PrimaryFeatures } from '@/components/PrimaryFeatures'
 import { SecondaryFeatures } from '@/components/SecondaryFeatures'
 import { Testimonials } from '@/components/Testimonials'
+import { Suspense } from 'react'
 
 export default function Home() {
   return (
@@ -14,7 +15,9 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <PrimaryFeatures />
+        <Suspense fallback={<div>Loading...</div>}>
+          <PrimaryFeatures />
+        </Suspense>
         <SecondaryFeatures />
         <CallToAction />
         {/* <Testimonials />

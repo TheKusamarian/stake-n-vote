@@ -94,8 +94,8 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
       <DropdownMenu>
         <DropdownMenuTrigger
           className={cn(buttonVariants(), { 'animate-wiggle': isEffectTrue })}
-          isLoading={isConnecting}
-          isDisabled={isConnecting}
+          // isLoading={isConnecting}
+          disabled={isConnecting}
           onClick={() => {
             ls.set('userWantsConnection', true)
           }}
@@ -148,8 +148,9 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(buttonVariants())}
-        isLoading={isConnecting}
-        isDisabled={isConnecting}
+        // isLoading={isConnecting}
+        // isDisabled={isConnecting}
+        disabled={isConnecting}
       >
         <span className="mr-2 hidden truncate text-sm sm:flex">
           {activeAccount?.name || trimAddress(activeAccount?.address)}
@@ -238,173 +239,173 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     </DropdownMenu>
   )
 
-  // Connect Button
-  if (!activeAccount)
-    return (
-      <Dropdown
-        classNames={{
-          content:
-            'border-3 border-white bg-gradient-to-r from-[#105b5d] to-[#9a1c54]',
-        }}
-      >
-        <DropdownTrigger>
-          <Button
-            variant="flat"
-            size="sm"
-            className={cn(
-              'max-w-[300px] rounded-xl border-2 border-white bg-transparent p-7 py-6 text-base',
-              { 'animate-wiggle': isEffectTrue },
-            )}
-            isLoading={isConnecting}
-            isDisabled={isConnecting}
-            onClick={() => {
-              ls.set('userWantsConnection', true)
-            }}
-          >
-            {isConnecting ? (
-              'connecting'
-            ) : (
-              <>
-                Connect Wallet
-                <ChevronDown size={16} />
-              </>
-            )}
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu
-          className="min-w-[14rem]"
-          variant="bordered"
-          aria-label="WalletSelect"
-          classNames={{ base: 'w-[250px]' }}
-        >
-          <DropdownSection>
-            {!activeAccount &&
-              browserWallets.map((w) =>
-                isWalletInstalled(w) ? (
-                  <DropdownItem
-                    key={w.id}
-                    className="cursor-pointer hover:border-white hover:bg-transparent data-[hover=true]:border-white"
-                    onClick={() => {
-                      connect?.(undefined, w)
-                    }}
-                  >
-                    {w.name}
-                  </DropdownItem>
-                ) : (
-                  <DropdownItem
-                    key={w.id}
-                    className="opacity-50 hover:border-white hover:bg-transparent data-[hover=true]:border-white"
-                  >
-                    <Link href={w.urls.website}>
-                      <div className="align-center flex justify-start gap-2">
-                        <p>{w.name}</p>
-                        <ArrowUpRight />
-                      </div>
-                      <p>Not installed</p>
-                    </Link>
-                  </DropdownItem>
-                ),
-              )}
-          </DropdownSection>
-        </DropdownMenu>
-      </Dropdown>
-    )
+  // // Connect Button
+  // if (!activeAccount)
+  //   return (
+  //     <Dropdown
+  //       classNames={{
+  //         content:
+  //           'border-3 border-white bg-gradient-to-r from-[#105b5d] to-[#9a1c54]',
+  //       }}
+  //     >
+  //       <DropdownTrigger>
+  //         <Button
+  //           variant="flat"
+  //           size="sm"
+  //           className={cn(
+  //             'max-w-[300px] rounded-xl border-2 border-white bg-transparent p-7 py-6 text-base',
+  //             { 'animate-wiggle': isEffectTrue },
+  //           )}
+  //           isLoading={isConnecting}
+  //           isDisabled={isConnecting}
+  //           onClick={() => {
+  //             ls.set('userWantsConnection', true)
+  //           }}
+  //         >
+  //           {isConnecting ? (
+  //             'connecting'
+  //           ) : (
+  //             <>
+  //               Connect Wallet
+  //               <ChevronDown size={16} />
+  //             </>
+  //           )}
+  //         </Button>
+  //       </DropdownTrigger>
+  //       <DropdownMenu
+  //         className="min-w-[14rem]"
+  //         variant="bordered"
+  //         aria-label="WalletSelect"
+  //         classNames={{ base: 'w-[250px]' }}
+  //       >
+  //         <DropdownSection>
+  //           {!activeAccount &&
+  //             browserWallets.map((w) =>
+  //               isWalletInstalled(w) ? (
+  //                 <DropdownItem
+  //                   key={w.id}
+  //                   className="cursor-pointer hover:border-white hover:bg-transparent data-[hover=true]:border-white"
+  //                   onClick={() => {
+  //                     connect?.(undefined, w)
+  //                   }}
+  //                 >
+  //                   {w.name}
+  //                 </DropdownItem>
+  //               ) : (
+  //                 <DropdownItem
+  //                   key={w.id}
+  //                   className="opacity-50 hover:border-white hover:bg-transparent data-[hover=true]:border-white"
+  //                 >
+  //                   <Link href={w.urls.website}>
+  //                     <div className="align-center flex justify-start gap-2">
+  //                       <p>{w.name}</p>
+  //                       <ArrowUpRight />
+  //                     </div>
+  //                     <p>Not installed</p>
+  //                   </Link>
+  //                 </DropdownItem>
+  //               ),
+  //             )}
+  //         </DropdownSection>
+  //       </DropdownMenu>
+  //     </Dropdown>
+  //   )
 
-  // Account Menu & Disconnect Button
-  return (
-    <div className="flex select-none flex-wrap items-stretch justify-center gap-4">
-      <Dropdown
-        classNames={{
-          content:
-            'border-3 border-white bg-gradient-to-r from-[#105b5d] to-[#9a1c54]',
-        }}
-      >
-        <DropdownTrigger>
-          <Button
-            variant="flat"
-            size="lg"
-            className="max-w-[300px] border-white bg-transparent p-7"
-          >
-            <span className="hidden truncate text-sm sm:flex">
-              {activeAccount.name || trimAddress(activeAccount?.address)}
-            </span>
-            <Identicon
-              value={activeAccount?.address}
-              size={45}
-              theme="polkadot"
-              className="hover:cursor-pointer"
-            />
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu
-          variant="bordered"
-          aria-label="Account Select"
-          classNames={{ base: 'w-[250px]' }}
-        >
-          <DropdownSection
-            title="Accounts"
-            showDivider
-            className="max-h"
-            classNames={{
-              group: 'max-h-72 overflow-y-scroll',
-            }}
-          >
-            {(accounts || []).map((account) => (
-              <DropdownItem
-                key={account.address}
-                description={trimAddress(
-                  encodeAddress(account.address, activeChain?.ss58Prefix),
-                )}
-                startContent={
-                  <Identicon
-                    value={account.address}
-                    size={40}
-                    theme="polkadot"
-                    className="hover:cursor-pointer"
-                  />
-                }
-                onClick={() => {
-                  setActiveAccount?.(account)
-                }}
-                aria-label={account.address}
-                className={cn(
-                  'hover:border-white hover:bg-transparent data-[hover=true]:border-white',
-                  {
-                    'bg-white/10': activeAccount?.address === account.address,
-                  },
-                )}
-              >
-                <span className="truncate text-xs">
-                  {account?.name ||
-                    trimAddress(
-                      encodeAddress(account.address, activeChain?.ss58Prefix),
-                    )}
-                </span>
-              </DropdownItem>
-            ))}
-          </DropdownSection>
-          <DropdownSection title="Actions">
-            <DropdownItem
-              startContent={
-                <UseCases width={20} height={20} stroke="currentColor" />
-              }
-              key={'logout'}
-              value={'logout'}
-              aria-label={'logout'}
-              onClick={() => {
-                disconnect?.()
-                setActiveAccount?.(undefined)
-                ls.set('userWantsConnection', false)
-              }}
-              className="hover:border-white hover:bg-transparent data-[hover=true]:border-white"
-            >
-              Logout
-            </DropdownItem>
-          </DropdownSection>
-        </DropdownMenu>
-      </Dropdown>
-    </div>
-  )
+  // // Account Menu & Disconnect Button
+  // return (
+  //   <div className="flex select-none flex-wrap items-stretch justify-center gap-4">
+  //     <Dropdown
+  //       classNames={{
+  //         content:
+  //           'border-3 border-white bg-gradient-to-r from-[#105b5d] to-[#9a1c54]',
+  //       }}
+  //     >
+  //       <DropdownTrigger>
+  //         <Button
+  //           variant="flat"
+  //           size="lg"
+  //           className="max-w-[300px] border-white bg-transparent p-7"
+  //         >
+  //           <span className="hidden truncate text-sm sm:flex">
+  //             {activeAccount.name || trimAddress(activeAccount?.address)}
+  //           </span>
+  //           <Identicon
+  //             value={activeAccount?.address}
+  //             size={45}
+  //             theme="polkadot"
+  //             className="hover:cursor-pointer"
+  //           />
+  //         </Button>
+  //       </DropdownTrigger>
+  //       <DropdownMenu
+  //         variant="bordered"
+  //         aria-label="Account Select"
+  //         classNames={{ base: 'w-[250px]' }}
+  //       >
+  //         <DropdownSection
+  //           title="Accounts"
+  //           showDivider
+  //           className="max-h"
+  //           classNames={{
+  //             group: 'max-h-72 overflow-y-scroll',
+  //           }}
+  //         >
+  //           {(accounts || []).map((account) => (
+  //             <DropdownItem
+  //               key={account.address}
+  //               description={trimAddress(
+  //                 encodeAddress(account.address, activeChain?.ss58Prefix),
+  //               )}
+  //               startContent={
+  //                 <Identicon
+  //                   value={account.address}
+  //                   size={40}
+  //                   theme="polkadot"
+  //                   className="hover:cursor-pointer"
+  //                 />
+  //               }
+  //               onClick={() => {
+  //                 setActiveAccount?.(account)
+  //               }}
+  //               aria-label={account.address}
+  //               className={cn(
+  //                 'hover:border-white hover:bg-transparent data-[hover=true]:border-white',
+  //                 {
+  //                   'bg-white/10': activeAccount?.address === account.address,
+  //                 },
+  //               )}
+  //             >
+  //               <span className="truncate text-xs">
+  //                 {account?.name ||
+  //                   trimAddress(
+  //                     encodeAddress(account.address, activeChain?.ss58Prefix),
+  //                   )}
+  //               </span>
+  //             </DropdownItem>
+  //           ))}
+  //         </DropdownSection>
+  //         <DropdownSection title="Actions">
+  //           <DropdownItem
+  //             startContent={
+  //               <UseCases width={20} height={20} stroke="currentColor" />
+  //             }
+  //             key={'logout'}
+  //             value={'logout'}
+  //             aria-label={'logout'}
+  //             onClick={() => {
+  //               disconnect?.()
+  //               setActiveAccount?.(undefined)
+  //               ls.set('userWantsConnection', false)
+  //             }}
+  //             className="hover:border-white hover:bg-transparent data-[hover=true]:border-white"
+  //           >
+  //             Logout
+  //           </DropdownItem>
+  //         </DropdownSection>
+  //       </DropdownMenu>
+  //     </Dropdown>
+  //   </div>
+  // )
 }
 
 export interface AccountNameProps {

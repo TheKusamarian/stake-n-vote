@@ -74,7 +74,7 @@ export default function FormDelegate() {
       : BN_ZERO
   const { freeBalance } = accountBalance || { freeBalance: '0' }
 
-  const delegateToTheKus = async (e) => {
+  const delegateToTheKus = async (e: any) => {
     e.preventDefault()
 
     const target =
@@ -163,7 +163,7 @@ export default function FormDelegate() {
     }
   }
 
-  const delegateMax = (e) => {
+  const delegateMax = (e: any) => {
     e.preventDefault()
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals))
   }
