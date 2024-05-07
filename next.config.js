@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === "production";
-const basePath = isProd ? "/stake-n-vote" : "";
+const isProd = process.env.NODE_ENV === 'production'
+const basePath = isProd ? '/stake-n-vote' : ''
 
 const nextConfig = {
-  basePath: "",
-  output: "export",
-  distDir: "dist",
+  basePath: '',
+  output: 'export',
+  distDir: 'dist',
   images: {
     unoptimized: true,
     path: `${basePath}/_next/image`,
@@ -15,6 +15,6 @@ const nextConfig = {
       fullUrl: true,
     },
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
