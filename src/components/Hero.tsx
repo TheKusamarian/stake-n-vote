@@ -1,18 +1,25 @@
-'use client'
+"use client"
 
-import Image from 'next/image'
+import Image from "next/image"
+import Link from "next/link"
+import { useInkathon } from "@scio-labs/use-inkathon"
+import Stake from "@w3f/polkadot-icons/keyline/Stake"
+import Delegate from "@w3f/polkadot-icons/keyline/Vote"
+import { useParallax } from "react-scroll-parallax"
 
-import { LatestYtVideo } from './latest-yt-video'
-import Stake from '@w3f/polkadot-icons/keyline/Stake'
-import Delegate from '@w3f/polkadot-icons/keyline/Vote'
-import { useParallax } from 'react-scroll-parallax'
-import Link from 'next/link'
-import { Button } from './ui/button'
+import { useApp } from "@/app/app-provider"
+
+import { ChainSwitch } from "./ChainSwitch"
+import { LatestYtVideo } from "./latest-yt-video"
+import { Button } from "./ui/button"
 
 export function Hero() {
   const { ref } = useParallax({
     speed: -10,
   })
+
+  const { activeChain } = useInkathon()
+  const { setIsStakingModalOpen, setIsDelegateModalOpen } = useApp()
 
   return (
     <div className="relative isolate flex flex-col overflow-hidden bg-white lg:flex-row">
@@ -39,7 +46,7 @@ export function Hero() {
           fill="url(#0787a7c5-978c-4f66-83c7-11c213f99cb7)"
         />
       </svg>
-      <div className="max-w-8xl container mx-auto px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
+      <div className="max-w-8xl container mx-auto px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-32">
         <div className="w-full flex-none lg:w-2/5">
           <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             The Kusamarian
@@ -48,27 +55,59 @@ export function Hero() {
             Your #1 news resource on Polkadot. Daily news, insights, and
             interviews with the top minds in the Polkadot ecosystem.
           </p>
-          <div className="mt-10 flex items-center gap-x-6">
-            <Button>
-              <Link href="?feature=stake#features">
-                <Stake stroke="#fff" className="mr-2 inline-block" width={20} />{' '}
-                Stake with us
-              </Link>
-            </Button>
-            <Button>
-              <Link href="?feature=delegate#features">
-                <Delegate
-                  stroke="#fff"
-                  className="mr-2 inline-block"
-                  width={20}
-                />{' '}
-                Delegate to us
-              </Link>
-            </Button>
+          <h2 className="font-bold text-xl mt-16 text-center">
+            Get your assets to work with The Kusamarian!
+          </h2>
+          <p className="mt-6 w-full text-center text-sm font-bold tracking-tight text-gray-600">
+            ↓ Select Network ↓
+          </p>
+          <ChainSwitch className="mt-4" />
+          <p className="mt-4 w-full text-center text-sm font-bold tracking-tight text-gray-600">
+            ↓ Stake + Delegate ↓
+          </p>
+          <div className="mt-4 flex items-center gap-x-6">
+            <div className="h-48 w-1/2 group">
+              <Button
+                className="h-auto w-full p-4 flex flex-col"
+                onClick={() => setIsStakingModalOpen(true)}
+              >
+                <div className="flex items-center justify-center">
+                  <Stake
+                    stroke="#fff"
+                    className="mr-2 inline-block"
+                    width={25}
+                  />{" "}
+                  Stake {activeChain?.tokenSymbol}
+                </div>
+                <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block transition-all">
+                  Stake your assets, earn rewards and secure the Polkadot
+                  network
+                </p>
+              </Button>
+            </div>
+            <div className="h-48 w-1/2 group">
+              <Button
+                className="h-auto w-full p-4 flex flex-col"
+                onClick={() => setIsDelegateModalOpen(true)}
+              >
+                <div className="flex items-center justify-center">
+                  <Delegate
+                    stroke="#fff"
+                    className="mr-2 inline-bloc k"
+                    width={25}
+                  />{" "}
+                  Delegate {activeChain?.tokenSymbol}
+                </div>
+                <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block">
+                  Your Votes matter. Delegate your voting power to us and shape
+                  Polkadot's future
+                </p>
+              </Button>
+            </div>
           </div>
         </div>
         {/* @ts-ignore */}
-        <div className="mt-16 flex-auto lg:ml-16 lg:mt-0" ref={ref}>
+        <div className="mt-16 flex-auto lg:ml-16 lg:mt-" ref={ref}>
           <div className="w-full flex-none sm:max-w-5xl">
             <div className="group relative mt-4 overflow-hidden rounded-xl p-2 lg:mt-0 lg:p-4">
               <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-xl bg-gradient-to-br from-primary-500 to-teal-500 group-hover:animate-spin_right"></div>

@@ -1,8 +1,9 @@
-'use client'
+"use client"
 
-import { Container } from '@/components/Container'
-import { useLatestYt } from '@/hooks/use-latest-yt'
-import LazyYoutubeEmbed from './lazy-yt-embed'
+import { useLatestYt } from "@/hooks/use-latest-yt"
+import { Container } from "@/components/Container"
+
+import LazyYoutubeEmbed from "./lazy-yt-embed"
 
 function LatestVideos() {
   const { data } = useLatestYt()
@@ -12,7 +13,7 @@ function LatestVideos() {
   return (
     <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {videos?.map((video: any) => {
-        const description = video.description.split('\n')[0]
+        const description = video.description.split("\n")[0]
         return (
           <div key={video.id} className="relative">
             <div className="group relative overflow-hidden rounded-md p-2">
@@ -40,7 +41,7 @@ export function SecondaryFeatures() {
     <section
       id="videos"
       aria-label="latest videos from Polkadot ecosystem"
-      className="pb-14 pt-20 sm:pb-20 sm:pt-32 lg:pb-32"
+      className="pb-14 pt-16 sm:pb-20 sm:pt-24 lg:pb-32"
     >
       <Container>
         <div className="mx-auto max-w-2xl md:text-center">

@@ -11,7 +11,7 @@ export async function fetchLatestVideos() {
       throw new Error(`Failed to fetch data: ${response.statusText}`)
     }
     const data = await response.json()
-    console.log('data', data)
+    // console.log('data', data)
 
     const videos = data.items?.map((item: any) => {
       const video = item.snippet

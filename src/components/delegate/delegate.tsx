@@ -33,25 +33,8 @@ export default function DelegateComponent() {
 
   return (
     <>
-      <div className="p-5 text-center">
-        <h1 className="text-xl font-bold">Delegate {tokenSymbol}</h1>
-      </div>
-      <div className="flex flex-1 flex-col items-center justify-center px-10 py-5">
+      <div className="flex flex-1 flex-col">
         {!activeAccount ? <NotConnected /> : <FormDelegate />}
-      </div>
-      <div className="flex items-center justify-center p-2 text-right text-sm text-gray-200">
-        <p className="my-2 text-center text-xs">
-          The Kus Delegate is directed by verified humans from The Kusamarian
-          community <br />
-          <a
-            className="underline"
-            href="https://discord.gg/QumzjDyeY4"
-            target="_blank"
-          >
-            Join our Discord
-          </a>{' '}
-          after you delegate!
-        </p>
       </div>
     </>
   )

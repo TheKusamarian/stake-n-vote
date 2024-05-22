@@ -13,7 +13,6 @@ type Video = {
 export const LatestYtVideo: React.FC = () => {
   const { data } = useLatestYt()
 
-  console.log('video', data?.videos?.[0])
   const video = data?.videos?.[0]
 
   if (!video || !video?.thumbnails) {

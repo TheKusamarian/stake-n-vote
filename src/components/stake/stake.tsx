@@ -27,8 +27,6 @@ export default function StakeComponent() {
   const router = useRouter()
   const { activeChain, activeAccount, api, activeSigner } = useInkathon()
 
-  console.log('stakecomponent active chain', activeChain)
-
   const {
     data: nominators,
     isLoading: isNominatorsLoading,
@@ -103,10 +101,7 @@ export default function StakeComponent() {
     //           )}
     //         </ModalHeader>
     <>
-      <div className="p-5 text-center">
-        <h1 className="text-xl font-bold">Stake {tokenSymbol}</h1>
-      </div>
-      <div className="flex flex-1 flex-col items-center justify-center px-10 py-5">
+      <div className="flex flex-1 flex-col">
         {activeAccount === undefined ? (
           <NotConnected />
         ) : isAccountBalanceLoading ||

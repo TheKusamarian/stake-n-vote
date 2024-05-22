@@ -1,14 +1,15 @@
-'use client'
+"use client"
 
-import { SubstrateChain, UseInkathonProvider } from '@scio-labs/use-inkathon'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { useEffect, useState } from 'react'
-import { ParallaxProvider } from 'react-scroll-parallax'
-import { polkadotRelay } from '@/config/chains'
-import { supportedWallets } from '@/config/wallets'
-import { AppProvider } from './app-provider'
+import { useEffect, useState } from "react"
+import { NextUIProvider } from "@nextui-org/system"
+import { SubstrateChain, UseInkathonProvider } from "@scio-labs/use-inkathon"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { ParallaxProvider } from "react-scroll-parallax"
 
-import { NextUIProvider } from '@nextui-org/system'
+import { polkadotRelay } from "@/config/chains"
+import { supportedWallets } from "@/config/wallets"
+
+import { AppProvider } from "./app-provider"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({

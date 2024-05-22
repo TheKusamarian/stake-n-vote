@@ -1,57 +1,56 @@
-'use client'
+"use client"
 
-import Image from 'next/image'
-import { clsx } from 'clsx'
-import { SubstrateChain, useInkathon } from '@scio-labs/use-inkathon'
-import { kusamaRelay, polkadotRelay, rocoRelay } from '@/config/chains'
-import { isDev } from '@/config/config'
+import Image from "next/image"
+import kusamaLogo from "@/images/kusama.png"
+import polkadotLogo from "@/images/polkadot.svg"
+import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
+import { clsx } from "clsx"
 
-import kusamaLogo from '@/images/kusama.png'
-import polkadotLogo from '@/images/polkadot.svg'
+import { kusamaRelay, polkadotRelay, rocoRelay } from "@/config/chains"
 
 export function ChainSwitch({ className }: { className?: string }) {
   const { activeChain, switchActiveChain } = useInkathon()
-  console.log('activeChain', activeChain?.network === 'Polkadot')
 
   function handleChainChange(chain: SubstrateChain) {
     switchActiveChain?.(chain || polkadotRelay)
   }
 
   return (
-    <div className={clsx('flex justify-center gap-4', className)}>
+    <div className={clsx("flex justify-center gap-4", className)}>
       <button
         className={clsx(
-          'h-24 w-24 rounded-full border-4 border-transparent p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-28 sm:w-28 md:h-32 md:w-32 md:p-3',
+          "h-20 w-20 rounded-full border-4 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
           {
-            'border-white': activeChain?.network === 'Polkadot',
-            'opacity-50': activeChain?.network !== 'Polkadot',
-          },
+            "border-black": activeChain?.network === "Polkadot",
+            "opacity-50 border-transparent":
+              activeChain?.network !== "Polkadot",
+          }
         )}
         onClick={() => handleChainChange(polkadotRelay)}
       >
         <Image
           src={polkadotLogo}
           alt="Polkadot Logo"
-          width={100}
-          height={100}
+          width={180}
+          height={180}
           className="-mt-0.5"
         />
       </button>
       <button
         className={clsx(
-          'h-24 w-24 rounded-full border-4 border-transparent p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-28 sm:w-28 md:h-32 md:w-32 md:p-3',
+          "h-20 w-20 rounded-full border-4 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
           {
-            'border-white': activeChain?.network === 'Kusama',
-            'opacity-50': activeChain?.network !== 'Kusama',
-          },
+            "border-black": activeChain?.network === "Kusama",
+            "opacity-50 border-transparent": activeChain?.network !== "Kusama",
+          }
         )}
         onClick={() => handleChainChange(kusamaRelay)}
       >
         <Image
           src={kusamaLogo}
           alt="Kusama Logo"
-          width={100}
-          height={100}
+          width={180}
+          height={180}
           className="rounded-full"
         />
       </button>
