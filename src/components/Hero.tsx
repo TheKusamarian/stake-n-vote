@@ -77,6 +77,7 @@ export function Hero() {
                     className="mr-2 inline-block"
                     width={25}
                   />{" "}
+                  {/* @ts-ignore */}
                   Stake {activeChain?.tokenSymbol}
                 </div>
                 <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block transition-all">
@@ -96,6 +97,7 @@ export function Hero() {
                     className="mr-2 inline-bloc k"
                     width={25}
                   />{" "}
+                  {/* @ts-ignore */}
                   Delegate {activeChain?.tokenSymbol}
                 </div>
                 <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block">

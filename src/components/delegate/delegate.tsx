@@ -1,21 +1,13 @@
-import { Button } from '@nextui-org/button'
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalProps,
-} from '@nextui-org/modal'
+import { parseBN } from "@/util"
+import { BN_ZERO, formatBalance } from "@polkadot/util"
+import { useInkathon } from "@scio-labs/use-inkathon"
 
-import styles from './modal.module.scss'
-import FormDelegate from './form-delegate'
-import { BN_ZERO, formatBalance } from '@polkadot/util'
-import { NotConnected } from '../not-connected'
-import { useInkathon } from '@scio-labs/use-inkathon'
-import useAccountBalances from '@/hooks/use-account-balance'
-import { CHAIN_CONFIG } from '@/config/config'
-import { parseBN } from '@/util'
+import { CHAIN_CONFIG } from "@/config/config"
+import useAccountBalances from "@/hooks/use-account-balance"
+
+import { NotConnected } from "../not-connected"
+import FormDelegate from "./form-delegate"
+import styles from "./modal.module.scss"
 
 export default function DelegateComponent() {
   const { data: accountBalance, isLoading } = useAccountBalances()
@@ -26,7 +18,7 @@ export default function DelegateComponent() {
     validator: kusValidator,
     tokenSymbol,
     tokenDecimals,
-  } = CHAIN_CONFIG[activeChain?.network || 'Polkadot'] || {}
+  } = CHAIN_CONFIG[activeChain?.network || "Polkadot"] || {}
 
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO }
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals)

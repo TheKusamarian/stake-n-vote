@@ -5,6 +5,7 @@ import { useRouter } from "next/router"
 import { parseBN, trimAddress } from "@/util"
 import { Tooltip } from "@nextui-org/tooltip"
 import { ApiPromise } from "@polkadot/api"
+import { Signer } from "@polkadot/api/types"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
 import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
@@ -90,8 +91,10 @@ export function ModalStake() {
     <Dialog open={isStakingModalOpen} onOpenChange={setIsStakingModalOpen}>
       <DialogContent className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50 text-sm">
         <DialogHeader>
+          {/* @ts-ignore */}
           <DialogTitle>Stake {activeChain?.tokenSymbol} </DialogTitle>
           <DialogDescription>
+            {/* @ts-ignore */}
             Here you can stake your {activeChain?.tokenSymbol} to earn rewards
             and secure the Polkadot network.
           </DialogDescription>
@@ -553,15 +556,15 @@ function ReplaceOneWithKus({
       </p>
 
       <RadioGroup
-        label="Replace the following nominee"
+        // label="Replace the following nominee"
         color="danger"
-        size="sm"
+        // size="sm"
         value={selected}
         onValueChange={setSelected}
-        classNames={{
-          description: "text-white",
-          label: "text-white font-bold",
-        }}
+        // classNames={{
+        //   description: "text-white",
+        //   label: "text-white font-bold",
+        // }}
       >
         {nominators?.map((address) => {
           // const { address, identity } = iden;
@@ -571,6 +574,7 @@ function ReplaceOneWithKus({
               <Link
                 href={`https://${activeChain?.network}.subscan.io/account/${address}`}
                 target="_blank"
+                rel="noreferrer"
                 className="text-white underline"
               >
                 subscan ↗

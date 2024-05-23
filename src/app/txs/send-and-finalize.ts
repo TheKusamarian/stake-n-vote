@@ -1,28 +1,27 @@
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Signer, SubmittableExtrinsic } from "@polkadot/api/types";
-
-import { Header } from "@polkadot/types/interfaces";
-import toast from "react-hot-toast";
+import { ApiPromise, WsProvider } from "@polkadot/api"
+import { Signer, SubmittableExtrinsic } from "@polkadot/api/types"
+import { Header } from "@polkadot/types/interfaces"
+import toast from "react-hot-toast"
 
 export interface SendAndFinalizeResult {
-  status: string;
-  message: string;
-  txHash?: string;
-  events?: any[];
-  blockHeader?: Header;
-  toast?: ToastType;
+  status: string
+  message: string
+  txHash?: string
+  events?: any[]
+  blockHeader?: Header
+  toast?: ToastType
 }
 
 export type ToastType = {
-  title: string;
+  title: string
   messages: {
-    signing: string;
-    entering: string;
-    finalizing: string;
-    success: string;
-    error: string;
-  };
-};
+    signing: string
+    entering: string
+    finalizing: string
+    success: string
+    error: string
+  }
+}
 
 export const DEFAULT_TOAST = {
   title: "Processing Transaction",
@@ -33,7 +32,7 @@ export const DEFAULT_TOAST = {
     success: "Transaction successful",
     error: "Oh no!",
   },
-};
+}
 
 export async function sendAndFinalize(
   api: ApiPromise | undefined,
@@ -47,30 +46,30 @@ export async function sendAndFinalize(
     return {
       status: "error",
       message: "Missing api, signer or address",
-    };
+    }
   }
 
-  await api.isReady;
+  await api.isReady
 
-  let toastId: string | undefined = undefined;
-  let success = false;
-  let included = [];
-  let blockHeader: Header | undefined = undefined;
+  let toastId: string | undefined = undefined
+  let success = false
+  let included = []
+  let blockHeader: Header | undefined = undefined
 
-  const { messages } = toastConfig;
+  const { messages } = toastConfig
 
   if (toastConfig) {
     toastId = toast.loading(messages.signing, {
       // @ts-ignore
       title: toast.title,
       className: "toaster",
-    });
+    })
   }
 
   let res: SendAndFinalizeResult = {
     status: "error",
     message: "Transaction failed",
-  };
+  }
 
   try {
     if (api && tx && signer && address) {
@@ -78,29 +77,29 @@ export async function sendAndFinalize(
         address,
         { signer },
         async (result) => {
-          const { status, dispatchError, events = [], txHash } = result;
-          console.log("Transaction status:", status);
+          const { status, dispatchError, events = [], txHash } = result
+          console.log("Transaction status:", status)
           if (status.isReady) {
             if (toastId) {
               toast.loading(messages.entering, {
                 id: toastId,
-              });
+              })
             }
           } else if (status.isInBlock) {
-            success = dispatchError ? false : true;
-            const signedBlock = await api?.rpc.chain.getBlock(status.asInBlock);
-            blockHeader = signedBlock?.block.header;
-            included = [...events];
+            success = dispatchError ? false : true
+            const signedBlock = await api?.rpc.chain.getBlock(status.asInBlock)
+            blockHeader = signedBlock?.block.header
+            included = [...events]
             if (toastId) {
               toast.loading(messages.finalizing, {
                 id: toastId,
                 duration: undefined,
-              });
+              })
             }
           } else if (status.isFinalized) {
             console.log(
               `Transaction included at blockHash ${status.asFinalized}`
-            );
+            )
             // events.forEach(({ phase, event: { data, method, section } }) => {
             //   // console.log(`\t' ${phase}: ${section}.${method}:: ${data}`)
             // });
@@ -110,31 +109,31 @@ export async function sendAndFinalize(
                 // for module errors, we have the section indexed, lookup
                 const decoded = api?.registry.findMetaError(
                   dispatchError.asModule
-                );
-                const { docs, name, section } = decoded || {};
+                )
+                const { docs, name, section } = decoded || {}
 
                 res = {
                   status: "error",
                   message: docs?.join(" ") || "Unknown error",
-                };
+                }
 
-                console.trace("dispatch error", decoded);
+                console.trace("dispatch error", decoded)
               } else {
                 // Other, CannotLookup, BadOrigin, no extra info
 
                 res = {
                   status: "error",
                   message: dispatchError.toString(),
-                };
+                }
               }
               toast.error(res.message, {
                 // @ts-ignore
                 title: messages.error,
                 className: "toaster",
                 id: toastId,
-              });
+              })
 
-              console.error(`${messages.error}: ${res.message}`);
+              console.error(`${messages.error}: ${res.message}`)
             } else {
               // console.log(
               //   "finalized and no dispatch error, toasting with id",
@@ -146,7 +145,7 @@ export async function sendAndFinalize(
                   title: toast.title,
                   id: toastId,
                   duration: 4000,
-                });
+                })
               }
 
               res = {
@@ -155,31 +154,31 @@ export async function sendAndFinalize(
                 events,
                 txHash: txHash.toString(),
                 blockHeader,
-              };
+              }
             }
           }
         }
-      );
+      )
     }
   } catch (error) {
-    console.log(error);
+    console.log(error)
     toast.error(`${error}`, {
       // @ts-ignore
       title: toast.title,
       className: "toaster",
       id: toastId,
-    });
+    })
 
-    console.error(`${messages.error}: ${res.message}`);
+    console.error(`${messages.error}: ${res.message}`)
 
     res = {
       status: "error",
       message: "Transaction failed",
-    };
+    }
 
-    cb?.(res);
+    cb?.(res)
   }
 
   // console.log("returning from sendAdnFinalize", res);
-  return res;
+  return res
 }

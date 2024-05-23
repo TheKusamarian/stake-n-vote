@@ -574,6 +574,7 @@ function ReplaceOneWithKus({
               <Link
                 href={`https://${activeChain?.network}.subscan.io/account/${address}`}
                 target="_blank"
+                rel="noreferrer"
                 className="text-white underline"
               >
                 subscan ↗
