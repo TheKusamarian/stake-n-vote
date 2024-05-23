@@ -32,6 +32,9 @@ importers:
       '@polkadot/react-identicon':
         specifier: ^3.6.5
         version: 3.6.6(@polkadot/keyring@12.6.2(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2))(@polkadot/networks@12.6.2)(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2)(react-dom@18.3.1(react@18.3.1))(react-is@16.13.1)(react@18.3.1)
+      '@polkadot/types':
+        specifier: ^11.1.1
+        version: 11.1.1
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -83,6 +86,9 @@ importers:
       interfaces:
         specifier: link:@polkadot/types/interfaces
         version: link:@polkadot/types/interfaces
+      interfaces@latest:
+        specifier: link:@polkadot/types/interfaces@latest
+        version: link:@polkadot/types/interfaces@latest
       localstorage-slim:
         specifier: ^2.7.1
         version: 2.7.1
