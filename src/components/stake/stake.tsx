@@ -1,27 +1,28 @@
-import { RadioGroup, Radio } from '@nextui-org/radio'
+import { Dispatch, SetStateAction, useCallback, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { parseBN, trimAddress } from "@/util"
+import { Radio, RadioGroup } from "@nextui-org/radio"
+import { Tooltip } from "@nextui-org/tooltip"
+import { ApiPromise } from "@polkadot/api"
+import { InjectedAccount } from "@polkadot/extension-inject/types"
+import { Signer } from "@polkadot/types/types"
+import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
+import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 
-import { useAccountNominators } from '@/hooks/use-account-nominations'
-import { CHAIN_CONFIG } from '@/config/config'
-import useAccountBalances from '@/hooks/use-account-balance'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
-import { bondAndNominateTx, joinPool, nominateTx } from '@/app/txs/txs'
-import { ApiPromise } from '@polkadot/api'
-import { useStakingMetrics } from '@/hooks/use-min-nominator-bond'
-import { BN, BN_ZERO, bnToBn } from '@polkadot/util'
-import { parseBN, trimAddress } from '@/util'
-import Link from 'next/link'
-import { Tooltip } from '@nextui-org/tooltip'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { NotConnected } from '../not-connected'
-import { SubstrateChain, useInkathon } from '@scio-labs/use-inkathon'
-import { kusamaRelay, polkadotRelay } from '@/config/chains'
-import { InjectedAccount } from '@polkadot/extension-inject/types'
-import { Signer } from '@polkadot/types/types'
-import { Loader } from '../loader'
-import { Label } from '../ui/label'
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
+import { kusamaRelay, polkadotRelay } from "@/config/chains"
+import { CHAIN_CONFIG } from "@/config/config"
+import useAccountBalances from "@/hooks/use-account-balance"
+import { useAccountNominators } from "@/hooks/use-account-nominations"
+import { useStakingMetrics } from "@/hooks/use-min-nominator-bond"
+import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs"
+
+import { Loader } from "../loader"
+import { NotConnected } from "../not-connected"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 
 export default function StakeComponent() {
   const router = useRouter()
@@ -45,8 +46,8 @@ export default function StakeComponent() {
   } = useStakingMetrics()
 
   const { minNominatorBond, minimumActiveStake } = stakingMetrics || {
-    minNominatorBond: '0',
-    minimumActiveStake: '0',
+    minNominatorBond: "0",
+    minimumActiveStake: "0",
   }
 
   const {
@@ -54,7 +55,7 @@ export default function StakeComponent() {
     validator: kusValidator,
     tokenSymbol,
     tokenDecimals,
-  } = CHAIN_CONFIG[activeChain?.network || 'Polkadot'] || {}
+  } = CHAIN_CONFIG[activeChain?.network || "Polkadot"] || {}
 
   const { freeBalance } = accountBalance || { freeBalance: BN_ZERO }
   const humanFreeBalance = parseBN(freeBalance, tokenDecimals)
@@ -66,7 +67,7 @@ export default function StakeComponent() {
       : BN_ZERO
 
   const polkadotMinNominatorBond = bnToBn(minimumActiveStake).addn(
-    tokenDecimals * 100,
+    tokenDecimals * 100
   )
 
   const amountSmallerThanMinNominatorBond =
@@ -113,8 +114,8 @@ export default function StakeComponent() {
           <Loader />
         ) : nominators?.length === 0 ? (
           <>
-            {freeBalance.toString() === '0' ||
-            freeBalance.toString() === '00' ||
+            {freeBalance.toString() === "0" ||
+            freeBalance.toString() === "00" ||
             (activeChain === kusamaRelay &&
               freeBalance.lt(bnToBn(minNominatorBond))) ? (
               <NoFunds
@@ -164,7 +165,7 @@ export default function StakeComponent() {
         ) : (
           <>
             <p>
-              Something went wrong{' '}
+              Something went wrong{" "}
               <a
                 className="cursor-pointer text-danger"
                 onClick={() => router.refresh()}
@@ -178,12 +179,13 @@ export default function StakeComponent() {
       </div>
       {showSupported && (
         <div className="flex items-center justify-end p-2 text-right text-sm text-gray-200">
-          supported by{' '}
+          supported by{" "}
           {activeChain === polkadotRelay && (
             <a
               className="pl-1"
               href="https://twitter.com/dev1_sik"
               target="_blank"
+              rel="noreferrer"
             >
               <Image src="sik.png" alt="sik staking" width={45} height={45} />
             </a>
@@ -194,7 +196,7 @@ export default function StakeComponent() {
           stakeAmount ? (
             <>
               <span className="px-1">+</span>
-              <a href="https://talisman.xyz" target="_blank">
+              <a href="https://talisman.xyz" target="_blank" rel="noreferrer">
                 <Image
                   src="talisman.svg"
                   alt="talisman nomination pool"
@@ -207,7 +209,11 @@ export default function StakeComponent() {
           ) : (
             <>
               {activeChain === kusamaRelay && (
-                <a href="https://twitter.com/LuckyFridayLabs" target="_blank">
+                <a
+                  href="https://twitter.com/LuckyFridayLabs"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <Image
                     src="lucky.png"
                     alt="lucky friday staking"
@@ -260,7 +266,7 @@ function NoFunds({
             width={120}
             height={50}
           />
-        </a>{' '}
+        </a>{" "}
         or
         <a href="https://banxa.com/">
           <Image
@@ -314,11 +320,11 @@ function MaybeAddToPool({
       const poolToJoin = CHAIN_CONFIG[activeChain.network].poolId
 
       console.log(
-        'activeChain aaa',
+        "activeChain aaa",
         poolToJoin,
         activeChain,
         activeChain?.network,
-        CHAIN_CONFIG,
+        CHAIN_CONFIG
       )
 
       if (!poolToJoin) {
@@ -330,15 +336,15 @@ function MaybeAddToPool({
         signer,
         activeAccount?.address,
         stakeBalance,
-        poolToJoin,
+        poolToJoin
       )
     },
-    [activeChain],
+    [activeChain]
   )
 
   const bondAndNominate = async () => {
     const targets =
-      CHAIN_CONFIG[activeChain?.network || 'Polkadot'].validator_set
+      CHAIN_CONFIG[activeChain?.network || "Polkadot"].validator_set
 
     const amount = bnToBn(stakeAmount)
 
@@ -347,7 +353,7 @@ function MaybeAddToPool({
       signer,
       activeAccount?.address,
       targets,
-      amount,
+      amount
     )
   }
 
@@ -498,7 +504,7 @@ function AddKusToSet({
             api,
             signer,
             activeAccount?.address,
-            nominators.concat(validator),
+            nominators.concat(validator)
           )
         }}
         className="mt-4"
@@ -536,7 +542,7 @@ function ReplaceOneWithKus({
   const handleReplace = () => {
     if (selected) {
       const newTargets = nominators.map((item) =>
-        item === selected ? validator : item,
+        item === selected ? validator : item
       )
       nominate(newTargets)
     }
@@ -556,8 +562,8 @@ function ReplaceOneWithKus({
         value={selected}
         onValueChange={setSelected}
         classNames={{
-          description: 'text-white',
-          label: 'text-white font-bold',
+          description: "text-white",
+          label: "text-white font-bold",
         }}
       >
         {nominators?.map((address) => {
