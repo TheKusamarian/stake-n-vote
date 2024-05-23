@@ -11,7 +11,6 @@ import {
   allSubstrateWallets,
   useInkathon,
 } from "@scio-labs/use-inkathon"
-import ls from "localstorage-slim"
 
 import { ModalDelegate } from "@/components/delegate/modal-delegate"
 import { ModalStake } from "@/components/stake/modal-stake"
@@ -75,54 +74,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
     return () => clearTimeout(timer) // Cleanup to avoid memory leaks
   }, [isEffectTrue])
-
-  // useEffect(() => {
-  //   const userWantsConnection = ls.get("userWantsConnection")
-  //   const activeAccountAddress = ls.get("activeAccount")
-  //   if (userWantsConnection) {
-  //     connect?.()
-  //   }
-  //   if (activeAccountAddress) {
-  //     console.log("active account from ls", activeAccountAddress)
-  //     const account = accounts?.find((a) => a.address === activeAccountAddress)
-  //     console.log("account from ls", account)
-  //     if (account) {
-  //       _setActiveAccount?.(account)
-  //     }
-  //   }
-  // }, [activeExtension, _setActiveAccount, accounts, connect])
-
-  // useEffect(() => {
-  //   const activeExtensionId = ls.get("activeExtension")
-  //   let activeExtension: SubstrateWallet | undefined
-
-  //   if (activeExtensionId) {
-  //     console.log(
-  //       "ls get activeExtension:",
-  //       activeExtensionId,
-  //       allSubstrateWallets
-  //     )
-  //     activeExtension = allSubstrateWallets.find(
-  //       (w) => w.id === activeExtensionId
-  //     )
-  //     setActiveExtension?.(activeExtension)
-  //     connect?.(activeChain, activeExtension)
-  //   }
-  // }, [activeExtension, connect, activeChain, setActiveExtension, accounts])
-
-  // useEffect(() => {
-  //   console.log("accounts changed", accounts)
-  //   const activeWalletAddress = ls.get("activeAccount")
-  //   let activeAccountAddress: string | undefined
-  //   setActiveAccount?.(accounts?.find((a) => a.address === activeWalletAddress))
-  // }, [accounts, setActiveAccount])
-
-  // useEffect(() => {
-  //   if (activeExtension) {
-  //     ls.set("activeExtension", activeExtension.name)
-  //     console.log("ls set activeExtension", activeExtension)
-  //   }
-  // }, [activeExtension])
 
   return (
     <AppContext.Provider

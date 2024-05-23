@@ -1,0 +1,3 @@
+[submodule "use-inkathon"]
+	path = use-inkathon
+	url = git@github.com:niklasp/use-inkathon.git
