@@ -48,8 +48,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3(@types/react-dom@18.3.0)(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@scio-labs/use-inkathon':
-        specifier: file:./use-inkathon
-        version: file:use-inkathon(@nightlylabs/wallet-selector-polkadot@0.2.6(@polkadot/util@12.6.2))(@polkadot/api-contract@11.1.1)(@polkadot/api@11.1.1)(@polkadot/extension-inject@0.47.5(@polkadot/api@11.1.1)(@polkadot/util@12.6.2))(@polkadot/keyring@12.6.2(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2))(@polkadot/types@11.1.1)(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: github:niklasp/use-inkathon#build
+        version: https://codeload.github.com/niklasp/use-inkathon/tar.gz/6bf27182cef946259b473b4c91b0229bab537102(@nightlylabs/wallet-selector-polkadot@0.2.6(@polkadot/util@12.6.2))(@polkadot/api-contract@11.1.1)(@polkadot/api@11.1.1)(@polkadot/extension-inject@0.47.5(@polkadot/api@11.1.1)(@polkadot/util@12.6.2))(@polkadot/keyring@12.6.2(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2))(@polkadot/types@11.1.1)(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tailwindcss/forms':
         specifier: ^0.5.3
         version: 0.5.7(tailwindcss@3.4.3)
@@ -2118,8 +2118,9 @@ packages:
   '@rushstack/eslint-patch@1.10.3':
     resolution: {integrity: sha512-qC/xYId4NMebE6w/V33Fh9gWxLgURiNYgVNObbJl2LZv0GUUItCcCqC5axQSwRaAgaxl2mELq1rMzlswaQ0Zxg==}
 
-  '@scio-labs/use-inkathon@file:use-inkathon':
-    resolution: {directory: use-inkathon, type: directory}
+  '@scio-labs/use-inkathon@https://codeload.github.com/niklasp/use-inkathon/tar.gz/6bf27182cef946259b473b4c91b0229bab537102':
+    resolution: {tarball: https://codeload.github.com/niklasp/use-inkathon/tar.gz/6bf27182cef946259b473b4c91b0229bab537102}
+    version: 0.10.0
     engines: {node: '>=18 <=20', pnpm: '>=8'}
     peerDependencies:
       '@nightlylabs/wallet-selector-polkadot': '>=0.1.10'
@@ -7312,7 +7313,7 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.3': {}
 
-  '@scio-labs/use-inkathon@file:use-inkathon(@nightlylabs/wallet-selector-polkadot@0.2.6(@polkadot/util@12.6.2))(@polkadot/api-contract@11.1.1)(@polkadot/api@11.1.1)(@polkadot/extension-inject@0.47.5(@polkadot/api@11.1.1)(@polkadot/util@12.6.2))(@polkadot/keyring@12.6.2(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2))(@polkadot/types@11.1.1)(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@scio-labs/use-inkathon@https://codeload.github.com/niklasp/use-inkathon/tar.gz/6bf27182cef946259b473b4c91b0229bab537102(@nightlylabs/wallet-selector-polkadot@0.2.6(@polkadot/util@12.6.2))(@polkadot/api-contract@11.1.1)(@polkadot/api@11.1.1)(@polkadot/extension-inject@0.47.5(@polkadot/api@11.1.1)(@polkadot/util@12.6.2))(@polkadot/keyring@12.6.2(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2))(@polkadot/types@11.1.1)(@polkadot/util-crypto@12.6.2(@polkadot/util@12.6.2))(@polkadot/util@12.6.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@nightlylabs/wallet-selector-polkadot': 0.2.6(@polkadot/util@12.6.2)
       '@polkadot/api': 11.1.1
