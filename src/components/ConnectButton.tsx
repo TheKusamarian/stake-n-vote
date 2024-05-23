@@ -3,7 +3,7 @@
 import { FC, useEffect, useState } from "react"
 import Link from "next/link"
 import { WalletIcon } from "@heroicons/react/24/outline"
-import { cn } from "@nextui-org/system"
+import { cn } from "@nextui-org/react"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
 import Identicon from "@polkadot/react-identicon"
 import { encodeAddress } from "@polkadot/util-crypto"
