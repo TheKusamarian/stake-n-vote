@@ -21,8 +21,10 @@ export function ModalDelegate() {
     <Dialog open={isDelegateModalOpen} onOpenChange={setIsDelegateModalOpen}>
       <DialogContent className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50">
         <DialogHeader>
+          {/* @ts-ignore */}
           <DialogTitle>Delegate {activeChain?.tokenSymbol} </DialogTitle>
           <DialogDescription>
+            {/* @ts-ignore */}
             Here you can delegate your {activeChain?.tokenSymbol} to us and
             shape the future of Polkadot.
           </DialogDescription>
