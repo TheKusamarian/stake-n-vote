@@ -100,7 +100,7 @@ export function Hero() {
                 </div>
                 <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block">
                   Your Votes matter. Delegate your voting power to us and shape
-                  Polkadot's future
+                  Polkadot&apos;s future
                 </p>
               </Button>
             </div>

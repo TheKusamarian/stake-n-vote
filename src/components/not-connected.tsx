@@ -7,15 +7,21 @@ export function NotConnected() {
         className="underline"
         href="https://www.talisman.xyz/download"
         target="_blank"
+        rel="noreferrer"
       >
         Talisman Browser Extension
-      </a>{' '}
+      </a>{" "}
       (Desktop) <br />
       or
-      <a className="underline" href="https://novawallet.io/" target="_blank">
-        {' '}
+      <a
+        className="underline"
+        href="https://novawallet.io/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {" "}
         Nova Wallet
-      </a>{' '}
+      </a>{" "}
       (Mobile) and then connect!
     </p>
   )
