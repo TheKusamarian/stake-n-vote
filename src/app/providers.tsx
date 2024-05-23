@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { NextUIProvider } from "@nextui-org/react"
 import { SubstrateChain, UseInkathonProvider } from "@scio-labs/use-inkathon"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ParallaxProvider } from "react-scroll-parallax"
@@ -27,7 +28,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <AppProvider>
-          <ParallaxProvider>{children}</ParallaxProvider>
+          <NextUIProvider>
+            <ParallaxProvider>{children}</ParallaxProvider>
+          </NextUIProvider>
         </AppProvider>
       </QueryClientProvider>
     </UseInkathonProvider>
