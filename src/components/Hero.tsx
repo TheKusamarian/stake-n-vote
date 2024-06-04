@@ -55,38 +55,56 @@ export function Hero() {
             Your #1 news resource on Polkadot. Daily news, insights, and
             interviews with the top minds in the Polkadot ecosystem.
           </p>
-          <h2 className="font-bold text-xl mt-16 text-center">
+
+          <p className="mt-6 text-lg leading-8 text-gray-600">
+            We are also running validators on Polkadot and Kusama. You can
+            earn&nbsp;
+            <span className="font-extrabold">ca. 16.5% APY</span> by staking
+            natively with us.
+          </p>
+          <p className="mt-6 text-lg leading-8 text-gray-600">
+            Your votes matter. Delegate your voting power to us and shape
+            Polkadot&apos;s future
+          </p>
+          {/* <h2 className="font-bold text-xl mt-16 text-center">
             Get your assets to work with The Kusamarian!
           </h2>
           <p className="mt-6 w-full text-center text-sm font-bold tracking-tight text-gray-600">
             ↓ Select Network ↓
-          </p>
-          <ChainSwitch className="mt-4" />
-          <p className="mt-4 w-full text-center text-sm font-bold tracking-tight text-gray-600">
+          </p> */}
+          {/* <ChainSwitch className="mt-4" /> */}
+          {/* <p className="mt-4 w-full text-center text-sm font-bold tracking-tight text-gray-600">
             ↓ Stake + Delegate ↓
-          </p>
+          </p> */}
           <div className="mt-4 flex items-center gap-x-6">
-            <div className="h-48 w-1/2 group">
-              <Button
-                className="h-auto w-full p-4 flex flex-col"
-                onClick={() => setIsStakingModalOpen(true)}
-              >
-                <div className="flex items-center justify-center">
-                  <Stake
-                    stroke="#fff"
-                    className="mr-2 inline-block"
-                    width={25}
-                  />{" "}
-                  {/* @ts-ignore */}
-                  Stake {activeChain?.tokenSymbol}
-                </div>
-                <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block transition-all">
+            <div className="h-48 group w-full">
+              <Link href="#stake-and-delegate">
+                <Button
+                  className="h-auto w-full p-4 flex flex-col"
+                  // onClick={() => setIsStakingModalOpen(true)}
+                >
+                  <div className="flex items-center justify-center">
+                    <Stake
+                      stroke="#fff"
+                      className="mr-2 inline-block"
+                      width={25}
+                    />{" "}
+                    {/* @ts-ignore */}
+                    Stake + Delegate {activeChain?.tokenSymbol}
+                    <Delegate
+                      stroke="#fff"
+                      className="mx-2 inline-bloc k"
+                      width={25}
+                    />
+                  </div>
+                  {/* <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block transition-all">
                   Stake your assets, earn rewards and secure the Polkadot
                   network
-                </p>
-              </Button>
+                </p> */}
+                </Button>
+              </Link>
             </div>
-            <div className="h-48 w-1/2 group">
+            {/* <div className="h-48 w-1/2 group">
               <Button
                 className="h-auto w-full p-4 flex flex-col"
                 onClick={() => setIsDelegateModalOpen(true)}
@@ -97,7 +115,6 @@ export function Hero() {
                     className="mr-2 inline-bloc k"
                     width={25}
                   />{" "}
-                  {/* @ts-ignore */}
                   Delegate {activeChain?.tokenSymbol}
                 </div>
                 <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block">
@@ -105,7 +122,7 @@ export function Hero() {
                   Polkadot&apos;s future
                 </p>
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* @ts-ignore */}

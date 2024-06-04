@@ -187,7 +187,7 @@ export default function StakeComponent() {
               target="_blank"
               rel="noreferrer"
             >
-              <Image src="sik.png" alt="sik staking" width={45} height={45} />
+              <Image src="sik.png" alt="sik staking" width={50} height={50} />
             </a>
           )}
           {amountSmallerThanMinNominatorBond &&
@@ -217,9 +217,9 @@ export default function StakeComponent() {
                   <Image
                     src="lucky.png"
                     alt="lucky friday staking"
-                    width={50}
-                    height={57}
-                    className="pl-2 brightness-200 grayscale"
+                    width={60}
+                    height={70}
+                    className="pl-2"
                   />
                 </a>
               )}

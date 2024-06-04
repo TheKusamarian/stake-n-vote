@@ -16,9 +16,9 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        {/* <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
           <PrimaryFeatures />
-        </Suspense> */}
+        </Suspense>
         <SecondaryFeatures />
         <CallToAction />
         {/* <Faqs /> */}

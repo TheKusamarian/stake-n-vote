@@ -101,7 +101,8 @@ export function ModalStake() {
         </DialogHeader>
         <>
           <div className="flex flex-1 flex-col">
-            {activeAccount === undefined ? (
+            <Success />
+            {/* {activeAccount === undefined ? (
               <NotConnected />
             ) : isAccountBalanceLoading ||
               isNominatorsLoading ||
@@ -173,20 +174,26 @@ export function ModalStake() {
                   .
                 </p>
               </>
-            )}
+            )} */}
           </div>
         </>
         <DialogFooter>
           <div className="flex items-center justify-end text-right text-xs">
-            supported by{" "}
             {activeChain === polkadotRelay && (
               <a
-                className="pl-1"
+                className="pl-1 flex flex-row items-center"
                 href="https://twitter.com/dev1_sik"
                 target="_blank"
                 rel="noreferrer"
               >
-                <Image src="sik.png" alt="sik staking" width={45} height={45} />
+                supported by{" "}
+                <Image
+                  src="sik.png"
+                  alt="sik staking"
+                  width={45}
+                  height={45}
+                  className="invert"
+                />
               </a>
             )}
             {amountSmallerThanMinNominatorBond &&
@@ -212,13 +219,15 @@ export function ModalStake() {
                     href="https://twitter.com/LuckyFridayLabs"
                     target="_blank"
                     rel="noreferrer"
+                    className="pl-1 flex flex-row items-center"
                   >
+                    supported by{" "}
                     <Image
                       src="lucky.png"
                       alt="lucky friday staking"
                       width={50}
                       height={57}
-                      className="pl-2 brightness-200 grayscale"
+                      className="pl-2"
                     />
                   </a>
                 )}
@@ -232,15 +241,20 @@ export function ModalStake() {
 }
 
 function Success() {
+  const { setIsStakingModalOpen, setIsDelegateModalOpen } = useApp()
   return (
     <>
-      <p>Looks like you&apos;re already staking with The Kus!</p>
+      <p className="text-lg font-semibold">
+        🔥 Looks like you&apos;re already staking with The Kus!
+      </p>
       {/* <Button color="success" size="lg">
           Manage your stake
         </Button> */}
 
       <Link color="danger" href="?feature=delegate#features" scroll={false}>
-        <Button className="mt-4">Delegate voting power</Button>
+        <Button className="mt-4" onClick={() => setIsDelegateModalOpen(true)}>
+          Now delegate your voting power
+        </Button>
       </Link>
     </>
   )
@@ -342,7 +356,8 @@ function MaybeAddToPool({
     [activeChain]
   )
 
-  const bondAndNominate = async () => {
+  const bondAndNominate = async (e: any) => {
+    e.preventDefault()
     const targets =
       CHAIN_CONFIG[activeChain?.network || "Polkadot"].validator_set
 
@@ -407,6 +422,7 @@ function MaybeAddToPool({
         <Button
           onClick={stakeMax}
           variant="outline"
+          className="h-10 border-2"
           // isDisabled={!isAccountBalanceSuccess}
         >
           Stake Max

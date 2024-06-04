@@ -24,8 +24,9 @@ export function ModalDelegate() {
           <DialogTitle>Delegate {activeChain?.tokenSymbol} </DialogTitle>
           <DialogDescription>
             {/* @ts-ignore */}
-            Here you can delegate your {activeChain?.tokenSymbol} to us and
-            shape the future of Polkadot.
+            Staying up to date with the latest governance proposals is hard.
+            Here you can delegate your {activeChain?.tokenSymbol} to us and we
+            will vote on your behalf.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

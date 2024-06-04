@@ -8,7 +8,13 @@ import { clsx } from "clsx"
 
 import { kusamaRelay, polkadotRelay, rocoRelay } from "@/config/chains"
 
-export function ChainSwitch({ className }: { className?: string }) {
+export function ChainSwitch({
+  className,
+  buttonClasses,
+}: {
+  className?: string
+  buttonClasses?: string
+}) {
   const { activeChain, switchActiveChain } = useInkathon()
 
   function handleChainChange(chain: SubstrateChain) {
@@ -19,12 +25,13 @@ export function ChainSwitch({ className }: { className?: string }) {
     <div className={clsx("flex justify-center gap-4", className)}>
       <button
         className={clsx(
-          "h-20 w-20 rounded-full border-4 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
+          "h-20 w-20 rounded-full border-2 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
           {
-            "border-black": activeChain?.network === "Polkadot",
+            "border-white": activeChain?.network === "Polkadot",
             "opacity-50 border-transparent":
               activeChain?.network !== "Polkadot",
-          }
+          },
+          buttonClasses
         )}
         onClick={() => handleChainChange(polkadotRelay)}
       >
@@ -38,11 +45,12 @@ export function ChainSwitch({ className }: { className?: string }) {
       </button>
       <button
         className={clsx(
-          "h-20 w-20 rounded-full border-4 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
+          "h-20 w-20 rounded-full border-2 p-2 transition-all hover:rotate-6 hover:scale-105 hover:outline-2 sm:h-20 sm:w-20 md:h-24 md:w-24 md:p-2.5",
           {
-            "border-black": activeChain?.network === "Kusama",
+            "border-white": activeChain?.network === "Kusama",
             "opacity-50 border-transparent": activeChain?.network !== "Kusama",
-          }
+          },
+          buttonClasses
         )}
         onClick={() => handleChainChange(kusamaRelay)}
       >

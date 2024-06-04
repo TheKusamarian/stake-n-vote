@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border border-transparent from-primary-500 focus-visible:outline-primary-500 bg-left-bottom flex items-center rounded-md bg-gradient-to-r to-teal-500 bg-[length:300%] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-500 hover:bg-right-bottom focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 hover:border-white",
+          "border-2 from-primary-500 focus-visible:outline-primary-500 bg-left-bottom flex items-center rounded-md bg-gradient-to-r to-teal-500 bg-[length:300%] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-500 hover:bg-right-bottom focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 hover:border-white",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:

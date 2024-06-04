@@ -1,28 +1,34 @@
-'use client'
+"use client"
 
-import { Select, SelectItem } from '@nextui-org/select'
-import { Slider } from '@nextui-org/slider'
-import { useState } from 'react'
-import { sendDelegateTx } from '@/app/txs/txs'
-import { BN_ZERO, bnToBn } from '@polkadot/util'
+import { useState } from "react"
+import { findChangedItem, parseBN } from "@/util"
+import { Slider } from "@nextui-org/slider"
+import { BN_ZERO, bnToBn } from "@polkadot/util"
+import { useInkathon } from "@scio-labs/use-inkathon"
+
+import { kusamaRelay } from "@/config/chains"
 import {
   CHAIN_CONFIG,
   KUSAMA_DELEGATOR,
   POLKADOT_DELEGATOR,
-} from '@/config/config'
+} from "@/config/config"
+import useAccountBalances from "@/hooks/use-account-balance"
+import { Track, useTracks } from "@/hooks/use-tracks"
+import { sendDelegateTx } from "@/app/txs/txs"
 
-import { KusamaIcon, PolkadotIcon } from '../../icons'
-import { useInkathon } from '@scio-labs/use-inkathon'
-import { useTracks } from '@/hooks/use-tracks'
-import useAccountBalances from '@/hooks/use-account-balance'
-import { kusamaRelay } from '@/config/chains'
-import { findChangedItem, parseBN } from '@/util'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { Switch } from '../ui/switch'
+import MultipleSelectorControlled from "../TrackSelector"
+import TrackSelector from "../TrackSelector"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Label } from "../ui/label"
+import { Option } from "../ui/multiple-selector"
+import { Switch } from "../ui/switch"
 
 const ALL_TRACKS_ID = 9999
+const ALL_TRACKS_OPTION = {
+  value: ALL_TRACKS_ID.toString(),
+  label: "All Tracks",
+}
 
 export type State = {
   errors?: {
@@ -36,7 +42,7 @@ export type State = {
 export function submitDelegation(prevState: State, formData: FormData) {
   return {
     errors: {
-      status: ['Delegation Failed!'],
+      status: ["Delegation Failed!"],
     },
     message: null,
   }
@@ -51,28 +57,28 @@ export default function FormDelegate() {
   } = useAccountBalances()
 
   const { data: trackOptions } = useTracks() || []
-  const ALL_TRACKS = trackOptions?.map((track) => track.id.toString()) || [
-    ALL_TRACKS_ID.toString(),
-  ]
+  const ALL_TRACKS = trackOptions || []
+
+  console.log("all tracks", ALL_TRACKS)
 
   const [amount, setAmount] = useState(1)
-  const [tracks, setTracks] = useState(new Set<string>(ALL_TRACKS))
+  const [tracks, setTracks] = useState(ALL_TRACKS)
   const [isAllSelected, setIsAllSelected] = useState(true)
 
   const { activeAccount, activeSigner, activeChain, api } = useInkathon()
-  const activeChainConfig = CHAIN_CONFIG[activeChain?.network || 'Polkadot']
+  const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"]
 
   const { tokenSymbol, tokenDecimals } = activeChainConfig
 
   const [conviction, setConviction] = useState<number>(
-    activeChain === kusamaRelay ? 1 : 3,
+    activeChain === kusamaRelay ? 1 : 3
   )
 
   const delegateBalance =
     !isNaN(amount) && amount !== 0
       ? bnToBn(amount * Math.pow(10, tokenDecimals))
       : BN_ZERO
-  const { freeBalance } = accountBalance || { freeBalance: '0' }
+  const { freeBalance } = accountBalance || { freeBalance: "0" }
 
   const delegateToTheKus = async (e: any) => {
     e.preventDefault()
@@ -80,22 +86,20 @@ export default function FormDelegate() {
     const target =
       activeChain === kusamaRelay ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR
 
-    let tracksArray = Array.from(tracks)
+    // let tracksArray = Array.from(tracks)
 
-    if (tracksArray.includes(ALL_TRACKS_ID.toString())) {
-      tracksArray = ALL_TRACKS
+    if (tracks.includes(ALL_TRACKS_OPTION)) {
+      setTracks(ALL_TRACKS)
     }
-
-    // setTracks(new Set([ALL_TRACKS_ID.toString()]));
 
     const tx = await sendDelegateTx(
       api,
       activeSigner,
       activeAccount?.address,
-      tracksArray,
+      tracks.map((track) => track.value),
       target,
       conviction,
-      delegateBalance,
+      delegateBalance
     )
   }
 
@@ -104,62 +108,69 @@ export default function FormDelegate() {
   const marks = [
     {
       value: 0,
-      label: '0.1x',
-      description: 'No lockup',
+      label: "0.1x",
+      description: "No lockup",
     },
     {
       value: 1,
-      label: '1x',
-      description: 'Locked for 7 days',
+      label: "1x",
+      description: "Locked for 7 days",
     },
     {
       value: 2,
-      label: '2x',
-      description: 'Locked for 14 days',
+      label: "2x",
+      description: "Locked for 14 days",
     },
     {
       value: 3,
-      label: '3x',
-      description: 'Locked for 28 days',
+      label: "3x",
+      description: "Locked for 28 days",
     },
     {
       value: 4,
-      label: '4x',
-      description: 'Locked for 56 days',
+      label: "4x",
+      description: "Locked for 56 days",
     },
     {
       value: 5,
-      label: '5x',
-      description: 'Locked for 112 days',
+      label: "5x",
+      description: "Locked for 112 days",
     },
     {
       value: 6,
-      label: '6x',
-      description: 'Locked for 224 days',
+      label: "6x",
+      description: "Locked for 224 days",
     },
   ]
 
-  const handleSelectionChange = (selectedTracks: Set<string>) => {
+  const handleSelectionChange = (selectedTracks: Option[]) => {
     const changedItem = findChangedItem(tracks, selectedTracks)
 
-    if (changedItem.includes(ALL_TRACKS_ID.toString())) {
-      if (selectedTracks.has(ALL_TRACKS_ID.toString())) {
+    console.log("changedItem", changedItem)
+
+    if (changedItem.value === ALL_TRACKS_ID.toString()) {
+      if (selectedTracks.includes(ALL_TRACKS_OPTION)) {
         // If ALL_TRACKS_ID was selected, set tracks to only contain ALL_TRACKS_ID
-        setTracks(new Set([ALL_TRACKS_ID.toString()]))
+        setTracks([ALL_TRACKS_OPTION])
       } else {
         // If ALL_TRACKS_ID was deselected, remove it and keep the other tracks
-        selectedTracks.delete(ALL_TRACKS_ID.toString())
-        setTracks(new Set(selectedTracks))
+        selectedTracks = selectedTracks.filter(
+          (track) => track !== ALL_TRACKS_OPTION
+        )
+
+        setTracks(selectedTracks)
       }
     } else {
       // For other tracks, if ALL_TRACKS_ID is in the set and more tracks are selected, remove ALL_TRACKS_ID
       if (
-        selectedTracks.has(ALL_TRACKS_ID.toString()) &&
-        selectedTracks.size > 1
+        selectedTracks.includes(ALL_TRACKS_OPTION) &&
+        selectedTracks.length > 1
       ) {
-        selectedTracks.delete(ALL_TRACKS_ID.toString())
+        selectedTracks = selectedTracks.filter(
+          (track) => track !== ALL_TRACKS_OPTION
+        )
       }
-      setTracks(new Set(selectedTracks))
+      setTracks(selectedTracks)
     }
   }
 
@@ -168,10 +179,7 @@ export default function FormDelegate() {
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals))
   }
 
-  const trackOptionsWithAll = [
-    { id: ALL_TRACKS_ID, name: 'All Tracks' },
-    ...(trackOptions || []),
-  ]
+  const trackOptionsWithAll = [ALL_TRACKS_OPTION, ...(trackOptions || [])]
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5">
@@ -184,30 +192,11 @@ export default function FormDelegate() {
         </div>
 
         {!isAllSelected && (
-          <Select
-            label="Tracks"
-            placeholder="Select Tracks"
-            selectionMode="multiple"
-            size="sm"
-            classNames={{
-              mainWrapper: 'lg:max-w-2xl',
-              trigger: 'bg-white',
-              listbox: 'bg-white',
-              description: 'text-gray-100',
-            }}
-            description="Select the governance tracks you want to delegate"
-            selectedKeys={tracks}
-            // @ts-ignore
-            onSelectionChange={handleSelectionChange}
-          >
-            {trackOptionsWithAll.map((track) => {
-              return (
-                <SelectItem key={track.id} value={track.id}>
-                  {track.name}
-                </SelectItem>
-              )
-            })}
-          </Select>
+          <TrackSelector
+            options={trackOptionsWithAll || []}
+            value={tracks}
+            onChange={handleSelectionChange}
+          />
         )}
       </div>
 
@@ -254,6 +243,7 @@ export default function FormDelegate() {
             <Button
               onClick={delegateMax}
               variant="outline"
+              className="h-10 border-2"
               // isDisabled={!isAccountBalanceSuccess}
             >
               Delegate Max
@@ -287,8 +277,8 @@ export default function FormDelegate() {
           }
           className="max-w-full font-bold"
           classNames={{
-            track: 'bg-default-100 font-normal',
-            value: 'font-normal',
+            track: "bg-default-100 font-normal",
+            value: "font-normal",
           }}
         />
       </div>
@@ -298,7 +288,7 @@ export default function FormDelegate() {
           onClick={delegateToTheKus}
           // isDisabled={!isAccountBalanceSuccess}
         >
-          Delegate {effectiveVotes} {effectiveVotes !== 1 ? 'Votes' : 'Vote'}
+          Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
         </Button>
       </div>
     </form>

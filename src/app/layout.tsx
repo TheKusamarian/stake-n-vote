@@ -1,31 +1,31 @@
-import { Inter, Lexend } from 'next/font/google'
-import clsx from 'clsx'
+import { Inter, Lexend } from "next/font/google"
+import clsx from "clsx"
 
-import '@/styles/globals.scss'
-import { type Metadata } from 'next'
-import { Providers } from './providers'
-import Script from 'next/script'
+import "@/styles/globals.scss"
+import { type Metadata } from "next"
+import Script from "next/script"
 
-import '@polkadot/api-augment'
+import { Providers } from "./providers"
+import "@polkadot/api-augment"
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - The Kusamarian',
-    default: 'The Kusamarian - Independet News Resource for Polkadot',
+    template: "%s - The Kusamarian",
+    default: "The Kusamarian - Independet News Resource for Polkadot",
   },
-  description: 'Latest news. Staking. Delegating',
+  description: "Latest news. Staking. Delegating",
 }
 
 const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
+  subsets: ["latin"],
+  // display: "swap",
+  variable: "--font-inter",
 })
 
 const lexend = Lexend({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-lexend',
+  subsets: ["latin"],
+  // display: "swap",
+  variable: "--font-lexend",
 })
 
 export default function RootLayout({
@@ -37,9 +37,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={clsx(
-        'h-full scroll-smooth bg-white antialiased',
+        "h-full scroll-smooth bg-white antialiased",
         inter.variable,
-        lexend.variable,
+        lexend.variable
       )}
     >
       <body className="flex h-full flex-col">
