@@ -23,8 +23,8 @@ export function ModalDelegate() {
           {/* @ts-ignore */}
           <DialogTitle>Delegate {activeChain?.tokenSymbol} </DialogTitle>
           <DialogDescription>
-            {/* @ts-ignore */}
             Staying up to date with the latest governance proposals is hard.
+            {/* @ts-ignore */}
             Here you can delegate your {activeChain?.tokenSymbol} to us and we
             will vote on your behalf.
           </DialogDescription>
