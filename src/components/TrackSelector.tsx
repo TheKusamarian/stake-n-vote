@@ -15,9 +15,6 @@ const TrackSelector = ({
 }) => {
   return (
     <div className="flex w-full flex-col gap-5">
-      {/* <p className="text-primary">
-        Your selection: {value.map((val) => val.label).join(", ")}
-      </p> */}
       <MultipleSelector
         value={value}
         onChange={onChange}

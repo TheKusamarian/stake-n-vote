@@ -1,11 +1,12 @@
-import Link from 'next/link'
+import Image from "next/image"
+import Link from "next/link"
+import logo from "@/images/logos/kusamarian.png"
 
-import { Container } from '@/components/Container'
-import { NavLink } from '@/components/NavLink'
-import Image from 'next/image'
-import logo from '@/images/logos/kusamarian.png'
-import { config } from '@/config/site'
-import { DiscordIcon, YoutubeIcon } from '../icons'
+import { config } from "@/config/site"
+import { Container } from "@/components/Container"
+import { NavLink } from "@/components/NavLink"
+
+import { DiscordIcon, YoutubeIcon } from "../icons"
 
 export function Footer() {
   return (
@@ -15,15 +16,15 @@ export function Footer() {
           <Image
             src={logo}
             alt="the kusamarian"
-            className="mx-auto h-12 w-auto"
+            className="mx-auto h-12 w-auto hover:animate-spin_right"
           />
-          <nav className="mt-10 text-sm" aria-label="quick links">
+          {/* <nav className="mt-10 text-sm" aria-label="quick links">
             <div className="-my-1 flex justify-center gap-x-6">
               <NavLink href="#features">Features</NavLink>
               <NavLink href="#testimonials">Testimonials</NavLink>
               <NavLink href="#pricing">Pricing</NavLink>
             </div>
-          </nav>
+          </nav> */}
         </div>
         <div className="flex flex-col items-center border-t border-slate-400/10 py-10 text-slate-500 sm:flex-row-reverse sm:justify-between">
           <div className="flex gap-x-6">

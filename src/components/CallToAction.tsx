@@ -1,9 +1,9 @@
-import Image from 'next/image'
+import Image from "next/image"
+import { XIcon, YoutubeIcon } from "@/icons"
+import backgroundImage from "@/images/background-call-to-action.jpg"
 
-import { Button } from '@/components/Button'
-import { Container } from '@/components/Container'
-import backgroundImage from '@/images/background-call-to-action.jpg'
-import { XIcon, YoutubeIcon } from '@/icons'
+import { Button } from "@/components/Button"
+import { Container } from "@/components/Container"
 
 export function CallToAction() {
   return (
@@ -21,11 +21,22 @@ export function CallToAction() {
             Polkadot ecosystem by subscribing to our channels.
           </p>
           <div className="mt-10 flex justify-center">
-            <Button href="/register" color="white" className="mr-2 ">
+            <Button
+              href="https://www.youtube.com/@TheKusamarian?sub_confirmation=1
+"
+              target="_blank"
+              color="white"
+              className="mr-2 "
+            >
               <YoutubeIcon className="mr-2" />
               YouTube
             </Button>
-            <Button href="/register" color="white" className="">
+            <Button
+              href="https://x.com/intent/follow?developer.twitter.com%2F=&region=follow_link&screen_name=TheKusamarian"
+              target="_blank"
+              color="white"
+              className=""
+            >
               <XIcon className="mr-2" size={16} /> / Twitter
             </Button>
           </div>

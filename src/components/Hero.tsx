@@ -52,19 +52,18 @@ export function Hero() {
             The Kusamarian
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Your #1 news resource on Polkadot. Daily news, insights, and
-            interviews with the top minds in the Polkadot ecosystem.
+            The #1 news resource on DOT. Daily news, insights & interviews with
+            the top minds in the Polkadot ecosystem.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            We are also running validators on Polkadot and Kusama. You can
-            earn&nbsp;
-            <span className="font-extrabold">ca. 16.5% APY</span> by staking
-            natively with us.
+            Stake with us to earn{" "}
+            <span className="font-extrabold">~16.5% APY</span> with native
+            staking - safe & secure!
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Your votes matter. Delegate your voting power to us and shape
-            Polkadot&apos;s future
+            Your DOT vote matters! Delegate your vote to The Kus and shape
+            Polkadot&apos;s future!
           </p>
           {/* <h2 className="font-bold text-xl mt-16 text-center">
             Get your assets to work with The Kusamarian!

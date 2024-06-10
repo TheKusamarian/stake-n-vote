@@ -1,5 +1,6 @@
 "use client"
 
+import { ALL } from "dns"
 import { useState } from "react"
 import { findChangedItem, parseBN } from "@/util"
 import { Slider } from "@nextui-org/slider"
@@ -16,7 +17,6 @@ import useAccountBalances from "@/hooks/use-account-balance"
 import { Track, useTracks } from "@/hooks/use-tracks"
 import { sendDelegateTx } from "@/app/txs/txs"
 
-import MultipleSelectorControlled from "../TrackSelector"
 import TrackSelector from "../TrackSelector"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -24,11 +24,11 @@ import { Label } from "../ui/label"
 import { Option } from "../ui/multiple-selector"
 import { Switch } from "../ui/switch"
 
-const ALL_TRACKS_ID = 9999
-const ALL_TRACKS_OPTION = {
-  value: ALL_TRACKS_ID.toString(),
-  label: "All Tracks",
-}
+// const ALL_TRACKS_ID = 9999
+// const ALL_TRACKS_OPTION = {
+//   value: ALL_TRACKS_ID.toString(),
+//   label: "All Tracks",
+// }
 
 export type State = {
   errors?: {
@@ -56,10 +56,8 @@ export default function FormDelegate() {
     isSuccess: isAccountBalanceSuccess,
   } = useAccountBalances()
 
-  const { data: trackOptions } = useTracks() || []
-  const ALL_TRACKS = trackOptions || []
-
-  console.log("all tracks", ALL_TRACKS)
+  const { data: trackOptions, isLoading: allTracksLoading } = useTracks()
+  const ALL_TRACKS = trackOptions
 
   const [amount, setAmount] = useState(1)
   const [tracks, setTracks] = useState(ALL_TRACKS)
@@ -86,24 +84,24 @@ export default function FormDelegate() {
     const target =
       activeChain === kusamaRelay ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR
 
-    // let tracksArray = Array.from(tracks)
-
-    if (tracks.includes(ALL_TRACKS_OPTION)) {
-      setTracks(ALL_TRACKS)
-    }
-
     const tx = await sendDelegateTx(
       api,
       activeSigner,
+      activeChain,
       activeAccount?.address,
-      tracks.map((track) => track.value),
+      tracks?.map((track) => track.value),
       target,
       conviction,
       delegateBalance
     )
+
+    console.log("tx result", tx)
   }
 
-  const effectiveVotes = conviction !== 0 ? amount * conviction : amount * 0.1
+  const effectiveVotes =
+    conviction !== 0
+      ? (amount * conviction).toFixed(2)
+      : (amount * 0.1).toFixed(2)
 
   const marks = [
     {
@@ -143,49 +141,58 @@ export default function FormDelegate() {
     },
   ]
 
-  const handleSelectionChange = (selectedTracks: Option[]) => {
-    const changedItem = findChangedItem(tracks, selectedTracks)
+  // const handleSelectionChange = (selectedTracks: Option[]) => {
+  //   const changedItem = findChangedItem(tracks, selectedTracks)
 
-    console.log("changedItem", changedItem)
+  //   console.log("changedItem", changedItem)
+  //   console.log("ALL_TRACKS_ID", ALL_TRACKS_ID.toString())
 
-    if (changedItem.value === ALL_TRACKS_ID.toString()) {
-      if (selectedTracks.includes(ALL_TRACKS_OPTION)) {
-        // If ALL_TRACKS_ID was selected, set tracks to only contain ALL_TRACKS_ID
-        setTracks([ALL_TRACKS_OPTION])
-      } else {
-        // If ALL_TRACKS_ID was deselected, remove it and keep the other tracks
-        selectedTracks = selectedTracks.filter(
-          (track) => track !== ALL_TRACKS_OPTION
-        )
+  //   if (changedItem.value === ALL_TRACKS_ID.toString()) {
+  //     if (selectedTracks.includes(ALL_TRACKS_OPTION)) {
+  //       // If ALL_TRACKS_ID was selected, set tracks to only contain ALL_TRACKS_ID
+  //       setTracks([ALL_TRACKS_OPTION])
+  //     } else {
+  //       // If ALL_TRACKS_ID was deselected, remove it and keep the other tracks
+  //       selectedTracks = selectedTracks.filter(
+  //         (track) => track !== ALL_TRACKS_OPTION
+  //       )
 
-        setTracks(selectedTracks)
-      }
-    } else {
-      // For other tracks, if ALL_TRACKS_ID is in the set and more tracks are selected, remove ALL_TRACKS_ID
-      if (
-        selectedTracks.includes(ALL_TRACKS_OPTION) &&
-        selectedTracks.length > 1
-      ) {
-        selectedTracks = selectedTracks.filter(
-          (track) => track !== ALL_TRACKS_OPTION
-        )
-      }
-      setTracks(selectedTracks)
-    }
-  }
+  //       setTracks(selectedTracks)
+  //     }
+  //   } else {
+  //     // For other tracks, if ALL_TRACKS_ID is in the set and more tracks are selected, remove ALL_TRACKS_ID
+  //     if (
+  //       selectedTracks.includes(ALL_TRACKS_OPTION) &&
+  //       selectedTracks.length > 1
+  //     ) {
+  //       selectedTracks = selectedTracks.filter(
+  //         (track) => track !== ALL_TRACKS_OPTION
+  //       )
+  //     }
+  //     setTracks(selectedTracks)
+  //   }
+  // }
 
   const delegateMax = (e: any) => {
     e.preventDefault()
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals))
   }
 
-  const trackOptionsWithAll = [ALL_TRACKS_OPTION, ...(trackOptions || [])]
+  // const trackOptionsWithAll = [ALL_TRACKS_OPTION, ...(trackOptions || [])]
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5">
       <div className="flex flex-col gap-2">
         <div className="flex items-center space-x-2">
-          <Switch checked={isAllSelected} onCheckedChange={setIsAllSelected} />
+          <Switch
+            checked={isAllSelected}
+            onCheckedChange={(val) => {
+              if (val) {
+                setTracks(ALL_TRACKS)
+              }
+              setIsAllSelected(val)
+            }}
+          />
           <Label htmlFor="airplane-mode" className="font-bold">
             Delegate Votes for all Governance Tracks
           </Label>
@@ -193,9 +200,9 @@ export default function FormDelegate() {
 
         {!isAllSelected && (
           <TrackSelector
-            options={trackOptionsWithAll || []}
+            options={trackOptions || []}
             value={tracks}
-            onChange={handleSelectionChange}
+            onChange={setTracks}
           />
         )}
       </div>
@@ -230,10 +237,11 @@ export default function FormDelegate() {
                 id="amount"
                 type="number"
                 min={0}
+                step={0.1}
                 // max={}
                 placeholder="Enter Delegation Amount"
                 value={amount.toString()}
-                onChange={(e) => setAmount(parseInt(e.target.value))}
+                onChange={(e) => setAmount(parseFloat(e.target.value))}
                 className="text-black"
               />
             </div>
@@ -244,20 +252,11 @@ export default function FormDelegate() {
               onClick={delegateMax}
               variant="outline"
               className="h-10 border-2"
-              // isDisabled={!isAccountBalanceSuccess}
+              disabled={!isAccountBalanceSuccess}
             >
               Delegate Max
             </Button>
           </div>
-          {/* <Button
-            onClick={delegateMax}
-            className="bg-transparent! h-12 border border-2 border-white px-4 hover:bg-white/10"
-            size="sm"
-            variant={'outlined'}
-            isDisabled={!isAccountBalanceSuccess}
-          >
-            Delegate Max
-          </Button> */}
         </div>
       </div>
       <div className="flex w-full max-w-full flex-col gap-6">
@@ -286,7 +285,7 @@ export default function FormDelegate() {
         <Button
           className="w-full"
           onClick={delegateToTheKus}
-          // isDisabled={!isAccountBalanceSuccess}
+          disabled={!isAccountBalanceSuccess || allTracksLoading}
         >
           Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
         </Button>
