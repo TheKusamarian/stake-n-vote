@@ -57,14 +57,16 @@ export async function sendDelegateTx(
 export async function nominateTx(
   api: ApiPromise | undefined,
   signer: Signer | undefined,
+  activeChain: SubstrateChain | undefined,
   address: string | undefined,
   targets: string[]
 ) {
   const tx = api?.tx.staking.nominate(targets)
-  const res = await sendAndFinalize({
+  const res = await sendAndFinalize3({
     api,
     tx,
     signer,
+    activeChain,
     address,
     toastConfig: {
       ...DEFAULT_TOAST,
@@ -89,7 +91,7 @@ export async function bondAndNominateTx(
     api?.tx.staking.nominate(targets),
   ])
 
-  const res = await sendAndFinalize({ api, tx, signer, address })
+  const res = await sendAndFinalize3({ api, tx, signer, address })
   return res
 }
 
@@ -101,6 +103,6 @@ export async function joinPool(
   poolId: number
 ) {
   const tx = api?.tx.nominationPools.join(amount, poolId)
-  const res = await sendAndFinalize({ api, tx, signer, address })
+  const res = await sendAndFinalize3({ api, tx, signer, address })
   return res
 }

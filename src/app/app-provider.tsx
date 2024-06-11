@@ -24,6 +24,8 @@ interface AppContextType {
   setIsDelegateModalOpen: (isOpen: boolean) => void
   activeExtension: SubstrateWallet | undefined
   setActiveExtension: (wallet: SubstrateWallet | undefined) => void
+  connectDropdownOpen: boolean
+  setConnectDropdownOpen: (isOpen: boolean) => void
   // activeWallet: string | null
   // setActiveWallet: (wallet: string | null) => void
 }
@@ -35,6 +37,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isEffectTrue, setIsEffectTrue] = useState(false)
   const [isStakingModalOpen, _setIsStakingModalOpen] = useState(false)
   const [isDelegateModalOpen, _setIsDelegateModalOpen] = useState(false)
+  const [connectDropdownOpen, setConnectDropdownOpen] = useState(false)
   const [activeExtension, setActiveExtension] = useState<
     SubstrateWallet | undefined
   >(undefined)
@@ -85,6 +88,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setIsDelegateModalOpen,
         activeExtension,
         setActiveExtension,
+        connectDropdownOpen,
+        setConnectDropdownOpen,
         // activeWallet,
         // setActiveWallet,
       }}

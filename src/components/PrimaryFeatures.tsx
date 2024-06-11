@@ -8,14 +8,11 @@ import { useInkathon } from "@scio-labs/use-inkathon"
 import Customize from "@w3f/polkadot-icons/keyline/Settings"
 import Stake from "@w3f/polkadot-icons/keyline/Stake"
 import Delegate from "@w3f/polkadot-icons/keyline/Vote"
-import clsx from "clsx"
 
 import { Container } from "@/components/Container"
 import { useApp } from "@/app/app-provider"
 
 import { ChainSwitch } from "./ChainSwitch"
-import DelegateComponent from "./delegate/delegate"
-import StakeComponent from "./stake/stake"
 import { Button } from "./ui/button"
 
 const features = [
@@ -40,9 +37,13 @@ const features = [
 ]
 
 export function PrimaryFeatures() {
-  const { activeChain } = useInkathon()
+  const { activeChain, activeAccount } = useInkathon()
   const searchParams = useSearchParams()
-  const { setIsStakingModalOpen, setIsDelegateModalOpen } = useApp()
+  const {
+    setIsStakingModalOpen,
+    setIsDelegateModalOpen,
+    setConnectDropdownOpen,
+  } = useApp()
   const router = useRouter()
   let [tabOrientation, setTabOrientation] = useState<"horizontal" | "vertical">(
     "horizontal"
@@ -109,7 +110,13 @@ export function PrimaryFeatures() {
           <div className="h-48 w-1/2 md:w-1/3 group">
             <Button
               className="h-auto w-full p-4 flex flex-col"
-              onClick={() => setIsStakingModalOpen(true)}
+              onClick={() => {
+                if (activeAccount) {
+                  setIsStakingModalOpen(true)
+                } else {
+                  setConnectDropdownOpen(true)
+                }
+              }}
             >
               <div className="flex items-center justify-center">
                 <Stake stroke="#fff" className="mr-2 inline-block" width={25} />{" "}

@@ -78,29 +78,6 @@ export default function StakeComponent() {
   const showSupported = !freeBalance.eq(BN_ZERO)
 
   return (
-    // <Modal
-    //   isOpen={isOpen}
-    //   onOpenChange={onOpenChange}
-    //   className={styles.modal}
-    //   size="2xl"
-    //   scrollBehavior="inside"
-    //   backdrop="blur"
-    // >
-    //   <ModalContent className={styles.modal}>
-    //     {(onClose) => (
-    //       <>
-    //         <ModalHeader className="flex flex-col gap-1">
-    //           {activeAccount ? (
-    //             <>
-    //               Stake {tokenSymbol} with Kus Validation{' '}
-    //               <span className="text-xs text-gray-300">
-    //                 ({humanFreeBalance.toFixed(2)} {tokenSymbol} available)
-    //               </span>
-    //             </>
-    //           ) : (
-    //             'No account found'
-    //           )}
-    //         </ModalHeader>
     <>
       <div className="flex flex-1 flex-col">
         {activeAccount === undefined ? (
@@ -195,7 +172,7 @@ export default function StakeComponent() {
           activeChain === polkadotRelay &&
           stakeAmount ? (
             <>
-              <span className="px-1">+</span>
+              <span className="px-1"></span>
               <a href="https://talisman.xyz" target="_blank" rel="noreferrer">
                 <Image
                   src="talisman.svg"

@@ -42,7 +42,7 @@ export async function sendAndFinalize3(config: {
   signer: Signer | undefined
   address: string | undefined
   toastConfig?: ToastType
-  activeChain: SubstrateChain | undefined
+  activeChain?: SubstrateChain | undefined
   statusCb?: Callback<ISubmittableResult>
   cb?: (res: any) => void
 }): Promise<SendAndFinalizeResult> {

@@ -54,7 +54,12 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     setActiveAccount,
   } = useInkathon()
 
-  const { isEffectTrue, setActiveExtension } = useApp()
+  const {
+    isEffectTrue,
+    setActiveExtension,
+    connectDropdownOpen,
+    setConnectDropdownOpen,
+  } = useApp()
 
   // Sort installed wallets first
   // Sort installed wallets first
@@ -90,7 +95,11 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
   if (!activeAccount) {
     return (
       <DropdownMenu
-        onOpenChange={(open) => open && ls.set("userWantsConnection", true)}
+        open={connectDropdownOpen}
+        onOpenChange={(open) => {
+          open && ls.set("userWantsConnection", true)
+          setConnectDropdownOpen?.(open)
+        }}
       >
         <DropdownMenuTrigger
           className={cn(buttonVariants(), { "animate-wiggle": isEffectTrue })}
