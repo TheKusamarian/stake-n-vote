@@ -1,36 +1,15 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react"
-import Image from "next/image"
+import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { parseBN, trimAddress } from "@/util"
-import { Tooltip } from "@nextui-org/tooltip"
+import { trimAddress } from "@/util"
 import { ApiPromise } from "@polkadot/api"
 import { Signer } from "@polkadot/api/types"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
 import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 
-import { kusamaRelay, polkadotRelay } from "@/config/chains"
-import { CHAIN_CONFIG } from "@/config/config"
-import useAccountBalances from "@/hooks/use-account-balance"
-import { useAccountNominators } from "@/hooks/use-account-nominations"
-import { useStakingMetrics } from "@/hooks/use-min-nominator-bond"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useApp } from "@/app/app-provider"
-import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs"
+import { nominateTx } from "@/app/txs/txs"
 
-import { Loader } from "../loader"
-import { NotConnected } from "../not-connected"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 
 export function ReplaceOneWithKus({
@@ -54,7 +33,13 @@ export function ReplaceOneWithKus({
   // console.log("in modal: identities", identities);
 
   const nominate = async (targets: string[]) => {
-    const tx = await nominateTx(api, signer, activeAccount?.address, targets)
+    const tx = await nominateTx(
+      api,
+      signer,
+      activeChain,
+      activeAccount?.address,
+      targets
+    )
   }
 
   const handleReplace = () => {
@@ -73,19 +58,8 @@ export function ReplaceOneWithKus({
         Validation
       </p>
 
-      <RadioGroup
-        // label="Replace the following nominee"
-        color="danger"
-        // size="sm"
-        value={selected}
-        onValueChange={setSelected}
-        // classNames={{
-        //   description: "text-white",
-        //   label: "text-white font-bold",
-        // }}
-      >
+      <RadioGroup color="danger" value={selected} onValueChange={setSelected}>
         {nominators?.map((address) => {
-          // const { address, identity } = iden;
           return (
             <RadioGroupItem value={address} key={address}>
               <span className="text-white">{trimAddress(address, 12)} | </span>

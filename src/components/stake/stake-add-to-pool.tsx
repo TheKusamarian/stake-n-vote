@@ -24,10 +24,12 @@ export function MaybeAddToPool({
   activeAccount,
   minNominatorBond,
   minimumActiveStake,
+  minPoolJoinBond,
   stakeAmount,
   setStakeAmount,
   stakeBalance,
   amountSmallerThanMinNominatorBond,
+  amountSmallerThanMinPoolJoinBond,
 }: {
   api: ApiPromise | undefined
   signer: Signer | undefined
@@ -38,10 +40,12 @@ export function MaybeAddToPool({
   activeAccount: InjectedAccount | null
   minNominatorBond: any
   minimumActiveStake: any
+  minPoolJoinBond: any
   stakeAmount: number | undefined
   setStakeAmount: Dispatch<SetStateAction<number | undefined>>
   stakeBalance: BN
   amountSmallerThanMinNominatorBond: boolean
+  amountSmallerThanMinPoolJoinBond: boolean
 }) {
   const joinNominationPool = useCallback(
     async (e: any) => {
@@ -66,10 +70,13 @@ export function MaybeAddToPool({
       const tx = await joinPool(
         api,
         signer,
+        activeChain,
         activeAccount?.address,
         stakeBalance,
         poolToJoin
       )
+
+      console.log("tx", tx)
     },
     [activeChain]
   )
@@ -104,7 +111,9 @@ export function MaybeAddToPool({
 
   const isDisabled =
     activeChain === polkadotRelay
-      ? stakeBalance.lte(BN_ZERO) || stakeBalance.gt(accountBalance.freeBalance)
+      ? stakeBalance.lte(BN_ZERO) ||
+        stakeBalance.gt(accountBalance.freeBalance) ||
+        stakeBalance.lt(minPoolJoinBond)
       : stakeBalance.lt(minNominatorBond) ||
         stakeBalance.gt(accountBalance.freeBalance)
 
@@ -147,7 +156,7 @@ export function MaybeAddToPool({
         </Button>
       </div>
 
-      {amountSmallerThanMinNominatorBond && kusamaRelay ? (
+      {amountSmallerThanMinNominatorBond ? (
         <>
           <Tooltip
             content={`Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}

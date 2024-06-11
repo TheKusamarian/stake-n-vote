@@ -7,11 +7,9 @@ import { Toaster as Sonner } from "sonner"
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
-
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      theme={"light"}
       className="toaster group"
       toastOptions={{
         classNames: {
@@ -30,6 +28,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           <Loader2 className="animate-spin text-gray-800 h-[20px] w-[20px]" />
         ),
       }}
+      pauseWhenPageIsHidden={true}
       {...props}
     />
   )

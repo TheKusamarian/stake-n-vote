@@ -14,10 +14,12 @@ export function useStakeCalculations({
   stakingMetrics: any
   stakeAmount: number | undefined
 }) {
-  const { minNominatorBond, minimumActiveStake } = stakingMetrics || {
-    minNominatorBond: "0",
-    minimumActiveStake: "0",
-  }
+  const { minNominatorBond, minimumActiveStake, minPoolJoinBond } =
+    stakingMetrics || {
+      minNominatorBond: "0",
+      minimumActiveStake: "0",
+      minPoolJoinBond: "0",
+    }
 
   const {
     maxNominators,
@@ -42,10 +44,15 @@ export function useStakeCalculations({
       ? stakeBalance.lt(bnToBn(minimumActiveStake))
       : stakeBalance.lt(polkadotMinNominatorBond)
 
+  const amountSmallerThanMinPoolJoinBond = stakeBalance.lt(
+    bnToBn(minPoolJoinBond)
+  )
+
   const showSupported = !freeBalance.eq(BN_ZERO)
 
   return {
     minNominatorBond,
+    minPoolJoinBond,
     minimumActiveStake,
     tokenSymbol,
     tokenDecimals,
@@ -53,6 +60,7 @@ export function useStakeCalculations({
     humanFreeBalance,
     stakeBalance,
     amountSmallerThanMinNominatorBond,
+    amountSmallerThanMinPoolJoinBond,
     showSupported,
     maxNominators,
     kusValidator,

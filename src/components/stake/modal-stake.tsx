@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import talisman from "@/public/talisman.svg"
 
 import { kusamaRelay, polkadotRelay } from "@/config/chains"
 import { Button } from "@/components/ui/button"
@@ -36,6 +37,8 @@ export function ModalStake() {
     isLoading,
   } = useStakeData()
 
+  console.log("stakingMetrics", stakingMetrics)
+
   const {
     minNominatorBond,
     minimumActiveStake,
@@ -44,10 +47,12 @@ export function ModalStake() {
     freeBalance,
     humanFreeBalance,
     amountSmallerThanMinNominatorBond,
+    amountSmallerThanMinPoolJoinBond,
     showSupported,
     maxNominators,
     kusValidator,
     stakeBalance,
+    minPoolJoinBond,
   } = useStakeCalculations({
     activeChain,
     accountBalance,
@@ -59,7 +64,7 @@ export function ModalStake() {
     <Dialog open={isStakingModalOpen} onOpenChange={setIsStakingModalOpen}>
       <DialogContent
         className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50 text-sm"
-        isLoading={true}
+        isLoading={false}
       >
         {isLoading && (
           <div className="inset-0 bg-white/80 absolute flex justify-center items-center z-10">
@@ -67,8 +72,10 @@ export function ModalStake() {
           </div>
         )}
         <DialogHeader>
+          {/* @ts-ignore */}
           <DialogTitle>Stake {activeChain?.tokenSymbol}</DialogTitle>
           <DialogDescription>
+            {/* @ts-ignore */}
             Here you can stake your {activeChain?.tokenSymbol} to earn rewards
             and secure the Polkadot network.
           </DialogDescription>
@@ -92,6 +99,8 @@ export function ModalStake() {
             kusValidator,
             maxNominators,
             amountSmallerThanMinNominatorBond,
+            amountSmallerThanMinPoolJoinBond,
+            minPoolJoinBond,
           })}
         </div>
         <DialogFooter>
@@ -114,6 +123,7 @@ function renderStakeContent(props: {
   nominators: any
   freeBalance: any
   minNominatorBond: any
+  minPoolJoinBond: any
   tokenSymbol: any
   tokenDecimals: any
   api: any
@@ -127,12 +137,14 @@ function renderStakeContent(props: {
   kusValidator: any
   maxNominators: any
   amountSmallerThanMinNominatorBond: any
+  amountSmallerThanMinPoolJoinBond: any
 }) {
   const {
     activeAccount,
     nominators,
     freeBalance,
     minNominatorBond,
+    minPoolJoinBond,
     tokenSymbol,
     tokenDecimals,
     api,
@@ -146,6 +158,7 @@ function renderStakeContent(props: {
     kusValidator,
     maxNominators,
     amountSmallerThanMinNominatorBond,
+    amountSmallerThanMinPoolJoinBond,
   } = props
 
   if (!activeAccount) {
@@ -171,11 +184,13 @@ function renderStakeContent(props: {
           accountBalance={accountBalance}
           activeAccount={activeAccount}
           minNominatorBond={minNominatorBond}
+          minPoolJoinBond={minPoolJoinBond}
           minimumActiveStake={minimumActiveStake}
           stakeAmount={stakeAmount}
           stakeBalance={stakeBalance}
           setStakeAmount={setStakeAmount}
           amountSmallerThanMinNominatorBond={amountSmallerThanMinNominatorBond}
+          amountSmallerThanMinPoolJoinBond={amountSmallerThanMinPoolJoinBond}
         />
       )
     }
@@ -261,9 +276,9 @@ function renderFooter({
               <Image
                 src="talisman.svg"
                 alt="talisman nomination pool"
-                width={90}
+                width={120}
                 height={35}
-                className="pl-2 invert"
+                className="pl-2"
               />
             </a>
           </>

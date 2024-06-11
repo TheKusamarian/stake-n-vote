@@ -201,7 +201,7 @@ export default function FormDelegate() {
         {!isAllSelected && (
           <TrackSelector
             options={trackOptions || []}
-            value={tracks}
+            value={tracks || []}
             onChange={setTracks}
           />
         )}
@@ -287,7 +287,7 @@ export default function FormDelegate() {
           onClick={delegateToTheKus}
           disabled={!isAccountBalanceSuccess || allTracksLoading}
         >
-          Delegate {effectiveVotes} {effectiveVotes !== 1 ? "Votes" : "Vote"}
+          Delegate {effectiveVotes} {effectiveVotes !== "1" ? "Votes" : "Vote"}
         </Button>
       </div>
     </form>

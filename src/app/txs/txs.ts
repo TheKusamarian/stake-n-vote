@@ -5,11 +5,7 @@ import { SubstrateChain } from "@scio-labs/use-inkathon"
 import { ToastType } from "react-hot-toast"
 import { toast } from "sonner"
 
-import {
-  DEFAULT_TOAST,
-  sendAndFinalize,
-  sendAndFinalize3,
-} from "./send-and-finalize"
+import { DEFAULT_TOAST, sendAndFinalize3 } from "./send-and-finalize"
 
 export async function sendDelegateTx(
   api: ApiPromise | undefined,
@@ -98,11 +94,12 @@ export async function bondAndNominateTx(
 export async function joinPool(
   api: ApiPromise | undefined,
   signer: Signer | undefined,
+  activeChain: SubstrateChain | undefined,
   address: string | undefined,
   amount: BN,
   poolId: number
 ) {
   const tx = api?.tx.nominationPools.join(amount, poolId)
-  const res = await sendAndFinalize3({ api, tx, signer, address })
+  const res = await sendAndFinalize3({ api, tx, signer, address, activeChain })
   return res
 }
