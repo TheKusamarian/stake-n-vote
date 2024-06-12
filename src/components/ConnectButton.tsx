@@ -18,6 +18,7 @@ import ls from "localstorage-slim"
 import { ArrowUpRight, CheckCircle, ChevronDown } from "lucide-react"
 
 import { supportedWallets } from "@/config/wallets"
+import useStakingInfo from "@/hooks/use-staking-info"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,7 +36,9 @@ import { useApp } from "@/app/app-provider"
 //   DropdownSection,
 //   DropdownTrigger,
 // } from '@nextui-org/dropdown'
-import { trimAddress } from "../util"
+import { parseBN, trimAddress } from "../util"
+import StakingInfoBadge from "./stake/stake-info-badge"
+import { Badge } from "./ui/badge"
 import { Button, buttonVariants } from "./ui/button"
 
 export interface ConnectButtonProps {
@@ -61,6 +64,9 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     setConnectDropdownOpen,
   } = useApp()
 
+  const { data: stakingInfo, isLoading, error } = useStakingInfo()
+  console.log("stakingInfo", stakingInfo)
+
   // Sort installed wallets first
   // Sort installed wallets first
   const [browserWallets] = useState([
@@ -75,22 +81,6 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
         !isWalletInstalled(w)
     ),
   ])
-
-  // useEffect(() => {
-  //   const userWantsConnection = ls.get("userWantsConnection")
-  //   const activeAccountAddress = ls.get("activeAccount")
-  //   if (userWantsConnection) {
-  //     connect?.()
-  //   }
-  //   if (activeAccountAddress) {
-  //     console.log("active account from ls", activeAccountAddress)
-  //     const account = accounts?.find((a) => a.address === activeAccountAddress)
-  //     console.log("account from ls", account)
-  //     if (account) {
-  //       _setActiveAccount?.(account)
-  //     }
-  //   }
-  // }, [accounts])
 
   if (!activeAccount) {
     return (
@@ -182,22 +172,14 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
           {(accounts || []).map((account) => (
             <DropdownMenuItem
               key={account.address}
-              // description={trimAddress(
-              //   encodeAddress(account.address, activeChain?.ss58Prefix),
-              // )}
-              // startContent={
-
-              // }
               onClick={() => {
                 setActiveAccount?.(account)
               }}
               aria-label={account.address}
-              className={cn(
-                "hover:border-white hover:bg-transparent data-[hover=true]:border-white",
-                {
-                  "bg-white/10": activeAccount?.address === account.address,
-                }
-              )}
+              className={cn("border-2 border-transparent", {
+                " border-primary-500":
+                  activeAccount?.address === account.address,
+              })}
             >
               <div className="flex flex-row items-center">
                 <Identicon
@@ -207,7 +189,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
                   className="mr-2 hover:cursor-pointer"
                 />
                 <div className="flex flex-col">
-                  <span className="text truncate">
+                  <span className="text truncate font-bold">
                     {account?.name ||
                       trimAddress(
                         encodeAddress(account.address, activeChain?.ss58Prefix)
@@ -220,6 +202,17 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
                       )}
                     </span>
                   )}
+                  {/* {activeAccount?.address === account.address && ( */}
+                  <StakingInfoBadge
+                    className=""
+                    withValidator={
+                      stakingInfo?.[account.address]?.withValidator
+                    }
+                    inPool={stakingInfo?.[account.address]?.inPool}
+                    isLoading={isLoading}
+                    error={error}
+                  />
+                  {/* )} */}
                 </div>
               </div>
             </DropdownMenuItem>

@@ -99,7 +99,8 @@ export async function joinPool(
   amount: BN,
   poolId: number
 ) {
-  const tx = api?.tx.nominationPools.join(amount, poolId)
+  console.log("joinPool", amount, poolId)
+  const tx = api?.tx.nominationPools.join(amount.toString(), poolId)
   const res = await sendAndFinalize3({ api, tx, signer, address, activeChain })
   return res
 }

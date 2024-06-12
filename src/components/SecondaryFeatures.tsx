@@ -7,7 +7,7 @@ import LazyYoutubeEmbed from "./lazy-yt-embed"
 
 function LatestVideos() {
   const { data } = useLatestYt()
-  const videos = data?.videos?.slice(1, 7)
+  const videos = data?.videos?.slice(0, 6)
 
   // return <pre>{JSON.stringify(videos, null, 2)}</pre>
   return (

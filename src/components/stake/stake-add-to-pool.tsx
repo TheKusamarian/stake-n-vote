@@ -55,6 +55,9 @@ export function MaybeAddToPool({
       }
       const poolToJoin = CHAIN_CONFIG[activeChain.network].poolId
 
+      console.log("stakeBalance", stakeBalance.toNumber())
+      console.log("stakeAmount", stakeAmount)
+
       console.log(
         "activeChain aaa",
         poolToJoin,
