@@ -17,7 +17,7 @@ const StakingInfoBadge = ({
   withValidator: BN | undefined
   inPool: BN | undefined
   isLoading?: boolean
-  error?: Error
+  error?: Error | null
 }) => {
   const { activeChain } = useInkathon()
 
@@ -41,12 +41,15 @@ const StakingInfoBadge = ({
   if (isStakingWithValidator) {
     return (
       <div className={badgeClass}>
-        Staking{" "}
+        Staking
         {formatBalance(withValidator, {
           withUnit: false,
+          // @ts-ignore
           decimals: activeChain?.tokenDecimals,
+          // @ts-ignore
           forceUnit: activeChain?.tokenSymbol,
         }).slice(0, -2)}{" "}
+        {/*@ts-ignore */}
         {activeChain?.tokenSymbol}
       </div>
     )
@@ -58,16 +61,22 @@ const StakingInfoBadge = ({
         Staking{" "}
         {formatBalance(inPool, {
           withUnit: false,
+          // @ts-ignore
           decimals: activeChain?.tokenDecimals,
+          // @ts-ignore
           forceUnit: activeChain?.tokenSymbol,
         }).slice(0, -2)}{" "}
+        {/*@ts-ignore */}
         {activeChain?.tokenSymbol} in pool
       </div>
     )
   }
 
   return (
-    <div className={badgeClass}>Not staking {activeChain?.tokenSymbol} yet</div>
+    <div className={badgeClass}>
+      {/*@ts-ignore */}
+      Not staking {activeChain?.tokenSymbol} yet
+    </div>
   )
 }
 
