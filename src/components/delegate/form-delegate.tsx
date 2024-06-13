@@ -1,7 +1,7 @@
 "use client"
 
 import { ALL } from "dns"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { findChangedItem, parseBN } from "@/util"
 import { Slider } from "@nextui-org/slider"
 import { BN_ZERO, bnToBn } from "@polkadot/util"
@@ -62,6 +62,10 @@ export default function FormDelegate() {
   const [amount, setAmount] = useState(1)
   const [tracks, setTracks] = useState(ALL_TRACKS)
   const [isAllSelected, setIsAllSelected] = useState(true)
+
+  useEffect(() => {
+    setTracks(trackOptions || [])
+  }, [trackOptions])
 
   const { activeAccount, activeSigner, activeChain, api } = useInkathon()
   const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"]
