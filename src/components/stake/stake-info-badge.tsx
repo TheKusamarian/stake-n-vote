@@ -41,7 +41,7 @@ const StakingInfoBadge = ({
   if (isStakingWithValidator) {
     return (
       <div className={badgeClass}>
-        Staking
+        Staking{" "}
         {formatBalance(withValidator, {
           withUnit: false,
           // @ts-ignore
