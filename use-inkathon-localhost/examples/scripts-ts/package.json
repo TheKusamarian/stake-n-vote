@@ -1,0 +1,28 @@
+{
+  "name": "scripts-ts-example",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "script": "f() { tsx ./src/$1; }; f \"$@\"",
+    "dev": "pnpm run script index",
+    "type-check": "tsc --pretty --noEmit"
+  },
+  "dependencies": {
+    "@polkadot/api": "^10.12.6",
+    "@polkadot/api-contract": "^10.12.6",
+    "@polkadot/util-crypto": "^12.6.2",
+    "@scio-labs/use-inkathon": "workspace:*"
+  },
+  "devDependencies": {
+    "@polkadot/types": "^10.12.6",
+    "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "@typescript-eslint/parser": "^7.6.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.4"
+  }
+}

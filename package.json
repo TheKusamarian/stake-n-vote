@@ -34,7 +34,7 @@
     "@radix-ui/react-radio-group": "^1.1.3",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
-    "@scio-labs/use-inkathon": "github:niklasp/use-inkathon#build",
+    "@scio-labs/use-inkathon": "file:./use-inkathon-localhost",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "^20.10.8",
     "@types/react": "^18.2.47",
