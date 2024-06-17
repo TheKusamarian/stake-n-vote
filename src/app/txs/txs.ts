@@ -1,5 +1,5 @@
 import { ApiPromise } from "@polkadot/api"
-import { Signer } from "@polkadot/api/types"
+import { Signer } from "@polkadot/types/types/extrinsic"
 import { BN } from "@polkadot/util"
 import { SubstrateChain } from "@scio-labs/use-inkathon"
 import { ToastType } from "react-hot-toast"
@@ -9,7 +9,7 @@ import { DEFAULT_TOAST, sendAndFinalize3 } from "./send-and-finalize"
 
 export async function sendDelegateTx(
   api: ApiPromise | undefined,
-  signer: Signer | undefined,
+  signer: any,
   activeChain: SubstrateChain | undefined,
   address: string | undefined,
   tracks: string[] = ["0"],
@@ -52,7 +52,7 @@ export async function sendDelegateTx(
 
 export async function nominateTx(
   api: ApiPromise | undefined,
-  signer: Signer | undefined,
+  signer: any,
   activeChain: SubstrateChain | undefined,
   address: string | undefined,
   targets: string[]
@@ -77,7 +77,7 @@ export async function nominateTx(
 
 export async function bondAndNominateTx(
   api: ApiPromise | undefined,
-  signer: Signer | undefined,
+  signer: any,
   address: string | undefined,
   targets: string[],
   amount: BN
@@ -93,7 +93,7 @@ export async function bondAndNominateTx(
 
 export async function joinPool(
   api: ApiPromise | undefined,
-  signer: Signer | undefined,
+  signer: any,
   activeChain: SubstrateChain | undefined,
   address: string | undefined,
   amount: BN,

@@ -1,3 +1,4 @@
+import "@polkadot/api-augment"
 import { ApiPromise } from "@polkadot/api"
 import { encodeAddress } from "@polkadot/keyring"
 import { BN, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"

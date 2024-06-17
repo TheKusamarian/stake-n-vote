@@ -1,8 +1,8 @@
-import { useQuery } from 'react-query'
-import { ApiPromise } from '@polkadot/api'
-import { BN, BN_ZERO, formatBalance, bnToBn } from '@polkadot/util'
-import { encodeAddress } from '@polkadot/keyring'
-import { useInkathon } from '@scio-labs/use-inkathon'
+import { ApiPromise } from "@polkadot/api"
+import { encodeAddress } from "@polkadot/keyring"
+import { BN, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"
+import { useInkathon } from "@scio-labs/use-inkathon"
+import { useQuery } from "react-query"
 
 interface Balances {
   freeBalance: BN
@@ -11,9 +11,9 @@ interface Balances {
 
 async function fetchBalances(
   api: ApiPromise | undefined,
-  address: string | undefined,
+  address: string | undefined
 ): Promise<Balances> {
-  console.log('fetchBalances', address)
+  console.log("fetchBalances", address)
 
   if (!api || !address) {
     return {
@@ -23,10 +23,10 @@ async function fetchBalances(
   }
 
   const account = await api?.query.system.account(address)
-  const freeBalance = account ? account.data.free.toString() : '0'
+  const freeBalance = account ? account.data.free.toString() : "0"
 
   const staking = await api?.query.staking.ledger(address)
-  const stakedBalance = staking?.isSome ? staking.unwrap().active : '0'
+  const stakedBalance = staking?.isSome ? staking.unwrap().active : "0"
 
   return {
     freeBalance: bnToBn(freeBalance),
@@ -44,11 +44,11 @@ function useAccountBalances() {
       : undefined
 
   return useQuery<Balances, Error>(
-    ['accountBalances', activeChain],
+    ["accountBalances", activeChain],
     () => fetchBalances(api, userAddress),
     {
       enabled: !!api && !!userAddress, // Only run if an address is provided
-    },
+    }
   )
 }
 

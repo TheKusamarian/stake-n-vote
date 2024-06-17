@@ -6,7 +6,8 @@ import { type Metadata } from "next"
 import Script from "next/script"
 
 import { Providers } from "./providers"
-import "@polkadot/api-augment"
+import "@polkadot/api-augment/kusama"
+import "@polkadot/api-augment/polkadot"
 import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {

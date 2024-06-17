@@ -90,6 +90,7 @@ export async function sendAndFinalize3(config: {
       const unsub = await tx.signAndSend(
         address,
         { signer },
+        // @ts-ignore
         (result: ISubmittableResult) => {
           statusCb?.(result)
           const { status, dispatchError, events = [], txHash } = result
