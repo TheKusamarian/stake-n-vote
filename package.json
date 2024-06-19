@@ -47,7 +47,7 @@
     "framer-motion": "^11.0.28",
     "localstorage-slim": "^2.7.1",
     "lucide-react": "^0.368.0",
-    "next": "^14.2.1",
+    "next": "latest",
     "next-themes": "^0.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
