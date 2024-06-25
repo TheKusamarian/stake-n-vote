@@ -1,4 +1,5 @@
 import { Inter, Lexend } from "next/font/google"
+import { GoogleAnalytics } from "@next/third-parties/google"
 import clsx from "clsx"
 
 import "@/styles/globals.scss"
@@ -57,6 +58,7 @@ export default function RootLayout({
         </Script>
       </body>
       <Toaster />
+      <GoogleAnalytics gaId="G-7RG8GF0LMC" />
     </html>
   )
 }
