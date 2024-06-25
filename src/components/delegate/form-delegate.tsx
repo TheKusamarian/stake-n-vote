@@ -17,6 +17,8 @@ import useAccountBalances from "@/hooks/use-account-balance"
 import { Track, useTracks } from "@/hooks/use-tracks"
 import { sendDelegateTx } from "@/app/txs/txs"
 
+import { AmountInput } from "../AmountInput"
+import { AvailableBalance } from "../AvailableBalance"
 import TrackSelector from "../TrackSelector"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -98,8 +100,6 @@ export default function FormDelegate() {
       conviction,
       delegateBalance
     )
-
-    console.log("tx result", tx)
   }
 
   const effectiveVotes =
@@ -145,44 +145,10 @@ export default function FormDelegate() {
     },
   ]
 
-  // const handleSelectionChange = (selectedTracks: Option[]) => {
-  //   const changedItem = findChangedItem(tracks, selectedTracks)
-
-  //   console.log("changedItem", changedItem)
-  //   console.log("ALL_TRACKS_ID", ALL_TRACKS_ID.toString())
-
-  //   if (changedItem.value === ALL_TRACKS_ID.toString()) {
-  //     if (selectedTracks.includes(ALL_TRACKS_OPTION)) {
-  //       // If ALL_TRACKS_ID was selected, set tracks to only contain ALL_TRACKS_ID
-  //       setTracks([ALL_TRACKS_OPTION])
-  //     } else {
-  //       // If ALL_TRACKS_ID was deselected, remove it and keep the other tracks
-  //       selectedTracks = selectedTracks.filter(
-  //         (track) => track !== ALL_TRACKS_OPTION
-  //       )
-
-  //       setTracks(selectedTracks)
-  //     }
-  //   } else {
-  //     // For other tracks, if ALL_TRACKS_ID is in the set and more tracks are selected, remove ALL_TRACKS_ID
-  //     if (
-  //       selectedTracks.includes(ALL_TRACKS_OPTION) &&
-  //       selectedTracks.length > 1
-  //     ) {
-  //       selectedTracks = selectedTracks.filter(
-  //         (track) => track !== ALL_TRACKS_OPTION
-  //       )
-  //     }
-  //     setTracks(selectedTracks)
-  //   }
-  // }
-
   const delegateMax = (e: any) => {
     e.preventDefault()
     setAmount(parseBN(freeBalance?.toString(), tokenDecimals))
   }
-
-  // const trackOptionsWithAll = [ALL_TRACKS_OPTION, ...(trackOptions || [])]
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5">
@@ -212,56 +178,20 @@ export default function FormDelegate() {
       </div>
 
       <div className="flex w-full max-w-full flex-row gap-3">
-        <div className="flex w-full gap-2">
-          {/* <Input
-            size="sm"
-            type="number"
-            label="Amount"
-            placeholder="Enter Delegation Amount"
-            classNames={{ description: 'text-foreground-600' }}
-            value={amount.toString()}
-            onChange={(e) => setAmount(parseInt(e.target.value))}
-            endContent={
-              <>
-                {tokenSymbol}
-                {activeChain === kusamaRelay ? (
-                  <KusamaIcon className="pl-1 pt-1" />
-                ) : (
-                  <PolkadotIcon className="pl-1 pt-1" />
-                )}
-              </>
-            }
-          /> */}
-          <div className="flex w-full max-w-sm items-end space-x-2">
-            <div>
-              <Label htmlFor="amount" className="font-bold">
-                Delegation Amount
-              </Label>
-              <Input
-                id="amount"
-                type="number"
-                min={0}
-                step={0.1}
-                // max={}
-                placeholder="Enter Delegation Amount"
-                value={amount.toString()}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
-                className="text-black"
-              />
-            </div>
-            <span className="flex h-10 w-12 items-center pr-4 text-sm font-bold">
-              {tokenSymbol}
-            </span>
-            <Button
-              onClick={delegateMax}
-              variant="outline"
-              className="h-10 border-2"
-              disabled={!isAccountBalanceSuccess}
-            >
-              Delegate Max
-            </Button>
-          </div>
-        </div>
+        <AmountInput
+          label="Delegation Amount"
+          value={amount.toString()}
+          onChange={(e) => setAmount(parseFloat(e.target.value))}
+        >
+          <Button
+            onClick={delegateMax}
+            variant="outline"
+            className="h-10 border-2 flex-0 bg-default-100 hover:bg-pink-200"
+            disabled={!isAccountBalanceSuccess}
+          >
+            Delegate Max
+          </Button>
+        </AmountInput>
       </div>
       <div className="flex w-full max-w-full flex-col gap-6">
         <Slider

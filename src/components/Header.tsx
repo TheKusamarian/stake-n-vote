@@ -1,17 +1,14 @@
-'use client'
+"use client"
 
-import { Fragment, useState } from 'react'
-import Link from 'next/link'
-import { Dialog, Popover, Transition } from '@headlessui/react'
-import clsx from 'clsx'
+import { Fragment, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import logo from "@/images/logos/kusamarian.png"
+import { Dialog, Popover, Transition } from "@headlessui/react"
+import { Bars3Icon, WalletIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import clsx from "clsx"
 
-import Image from 'next/image'
-
-import logo from '@/images/logos/kusamarian.png'
-import { Bars3Icon } from '@heroicons/react/24/outline'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { WalletIcon } from '@heroicons/react/24/outline'
-import { ConnectButton } from './ConnectButton'
+import { ConnectButton } from "./ConnectButton"
 
 function MobileNavLink({
   href,
@@ -39,15 +36,15 @@ function MobileNavIcon({ open }: { open: boolean }) {
       <path
         d="M0 1H14M0 7H14M0 13H14"
         className={clsx(
-          'origin-center transition',
-          open && 'scale-90 opacity-0',
+          "origin-center transition",
+          open && "scale-90 opacity-0"
         )}
       />
       <path
         d="M2 2L12 12M12 2L2 12"
         className={clsx(
-          'origin-center transition',
-          !open && 'scale-90 opacity-0',
+          "origin-center transition",
+          !open && "scale-90 opacity-0"
         )}
       />
     </svg>
@@ -103,8 +100,8 @@ function MobileNavigation() {
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigation = [
-    { name: 'Stake', href: '?feature=stake#features' },
-    { name: 'Delegate', href: '?feature=delegate#features' },
+    { name: "Stake", href: "?feature=stake#features" },
+    { name: "Delegate", href: "?feature=delegate#features" },
   ]
 
   return (
@@ -113,7 +110,7 @@ export function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8"
         aria-label="Global"
       >
-        <div className="flex flex-1">
+        {/* <div className="flex flex-1">
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <Link
@@ -135,13 +132,13 @@ export function Header() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-        </div>
+        </div> */}
         <a href="/" className="-m-1.5 p-1.5 hover:animate-spin_right">
           <span className="sr-only">The Kusamarian</span>
           <Image
             src={logo}
             alt="the kusamarian"
-            className="inline-block w-12 w-12"
+            className="inline-block w-auto h-12"
           />
         </a>
         <div className="flex flex-1 justify-end">

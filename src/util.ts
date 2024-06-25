@@ -1,4 +1,4 @@
-import { BN } from "@polkadot/util"
+import { BN, formatBalance } from "@polkadot/util"
 
 export const trimAddress = (
   address: string | undefined,
@@ -33,6 +33,20 @@ export function parseBN(bnValue: BN | string, decimals: number): number {
 
   // Return the result, parsed as a float and fixed to 2 decimal places
   return parseFloat(formattedValue)
+}
+
+export const humanReadableBalance = (
+  balance: BN | string | undefined,
+  decimals: number | undefined = 12,
+  withUnit: string | boolean | undefined = true
+): string => {
+  return formatBalance(balance, {
+    decimals,
+    forceUnit: "-",
+    withSi: true,
+    withAll: false,
+    withUnit,
+  })
 }
 
 export function findChangedItem<T>(arr1: T[], arr2: T[]): T {

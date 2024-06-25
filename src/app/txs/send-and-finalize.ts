@@ -36,7 +36,7 @@ export const DEFAULT_TOAST = {
   },
 }
 
-export async function sendAndFinalize3(config: {
+export async function sendAndFinalize(config: {
   api: ApiPromise | undefined
   tx: SubmittableExtrinsic<"promise"> | undefined
   signer: Signer | undefined

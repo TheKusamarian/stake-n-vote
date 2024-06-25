@@ -5,7 +5,7 @@ import { SubstrateChain } from "@scio-labs/use-inkathon"
 import { ToastType } from "react-hot-toast"
 import { toast } from "sonner"
 
-import { DEFAULT_TOAST, sendAndFinalize3 } from "./send-and-finalize"
+import { DEFAULT_TOAST, sendAndFinalize } from "./send-and-finalize"
 
 export async function sendDelegateTx(
   api: ApiPromise | undefined,
@@ -17,8 +17,6 @@ export async function sendDelegateTx(
   conviction: number,
   value: BN
 ) {
-  console.log("track in tx", tracks)
-
   if (tracks.length === 0 || !api || !signer || !address) {
     return
   }
@@ -29,8 +27,9 @@ export async function sendDelegateTx(
 
   const tx = api?.tx.utility.batchAll(txs)
 
-  const res = await sendAndFinalize3({
+  const res = await sendAndFinalize({
     api,
+
     tx,
     signer,
     address,
@@ -45,8 +44,6 @@ export async function sendDelegateTx(
     },
   })
 
-  console.log("sendDelegateTx res", res)
-
   return res
 }
 
@@ -58,7 +55,7 @@ export async function nominateTx(
   targets: string[]
 ) {
   const tx = api?.tx.staking.nominate(targets)
-  const res = await sendAndFinalize3({
+  const res = await sendAndFinalize({
     api,
     tx,
     signer,
@@ -78,6 +75,7 @@ export async function nominateTx(
 export async function bondAndNominateTx(
   api: ApiPromise | undefined,
   signer: any,
+  activeChain: SubstrateChain | undefined,
   address: string | undefined,
   targets: string[],
   amount: BN
@@ -87,7 +85,22 @@ export async function bondAndNominateTx(
     api?.tx.staking.nominate(targets),
   ])
 
-  const res = await sendAndFinalize3({ api, tx, signer, address })
+  const res = await sendAndFinalize({
+    api,
+    tx,
+    signer,
+    address,
+    activeChain,
+    toastConfig: {
+      ...DEFAULT_TOAST,
+      // @ts-ignore
+      title: `Staking ${activeChain?.tokenSymbol}`,
+      messages: {
+        ...DEFAULT_TOAST.messages,
+        success: "Staking successful",
+      },
+    },
+  })
   return res
 }
 
@@ -99,8 +112,7 @@ export async function joinPool(
   amount: BN,
   poolId: number
 ) {
-  console.log("joinPool", amount, poolId)
   const tx = api?.tx.nominationPools.join(amount.toString(), poolId)
-  const res = await sendAndFinalize3({ api, tx, signer, address, activeChain })
+  const res = await sendAndFinalize({ api, tx, signer, address, activeChain })
   return res
 }

@@ -10,11 +10,12 @@ import {
 } from "@/components/ui/dialog"
 import { useApp } from "@/app/app-provider"
 
-import DelegateComponent from "./delegate"
+import { NotConnected } from "../not-connected"
+import FormDelegate from "./form-delegate"
 
 export function ModalDelegate() {
   const { isDelegateModalOpen, setIsDelegateModalOpen } = useApp()
-  const { activeChain } = useInkathon()
+  const { activeChain, activeAccount } = useInkathon()
 
   return (
     <Dialog open={isDelegateModalOpen} onOpenChange={setIsDelegateModalOpen}>
@@ -30,7 +31,9 @@ export function ModalDelegate() {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <DelegateComponent />
+          <div className="flex flex-1 flex-col">
+            {!activeAccount ? <NotConnected /> : <FormDelegate />}
+          </div>
         </div>
         <DialogFooter className="flex-row justify-center sm:justify-center text-center">
           <p className="text-xs">

@@ -37,8 +37,6 @@ export function ModalStake() {
     isLoading,
   } = useStakeData()
 
-  console.log("stakingMetrics", stakingMetrics)
-
   const {
     minNominatorBond,
     minimumActiveStake,
@@ -176,13 +174,7 @@ function renderStakeContent(props: {
     } else {
       return (
         <MaybeAddToPool
-          tokenSymbol={tokenSymbol}
-          tokenDecimals={tokenDecimals}
-          api={api}
           signer={activeSigner}
-          activeChain={activeChain}
-          accountBalance={accountBalance}
-          activeAccount={activeAccount}
           minNominatorBond={minNominatorBond}
           minPoolJoinBond={minPoolJoinBond}
           minimumActiveStake={minimumActiveStake}
