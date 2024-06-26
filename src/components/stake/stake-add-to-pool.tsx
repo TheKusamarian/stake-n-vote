@@ -62,18 +62,6 @@ export function MaybeAddToPool({
     }
     const poolToJoin = CHAIN_CONFIG[activeChain.network].poolId
 
-    console.log("poolToJoin", poolToJoin)
-    console.log("stakeBalance", stakeBalance.toNumber())
-    console.log("stakeAmount", stakeAmount)
-
-    console.log(
-      "activeChain aaa",
-      poolToJoin,
-      activeChain,
-      activeChain?.network,
-      CHAIN_CONFIG
-    )
-
     if (!poolToJoin) {
       return
     }
@@ -86,8 +74,6 @@ export function MaybeAddToPool({
       stakeBalance,
       poolToJoin
     )
-
-    console.log("tx", tx)
   }
 
   const bondAndNominate = async (e: any) => {
@@ -107,7 +93,19 @@ export function MaybeAddToPool({
 
   const stakeMax = (e: any) => {
     e.preventDefault()
-    setStakeAmount(parseBN(freeBalance?.toString(), tokenDecimals))
+
+    let maxStake: BN
+    if (activeChain === polkadotRelay) {
+      if (freeBalance.gtn(Math.pow(10, tokenDecimals))) {
+        maxStake = freeBalance.sub(bnToBn(Math.pow(10, tokenDecimals)))
+      } else {
+        maxStake = BN_ZERO
+      }
+    } else {
+      maxStake = freeBalance
+    }
+
+    setStakeAmount(parseBN(maxStake?.toString(), tokenDecimals))
   }
 
   const humanReadableMinNominatorBond = parseBN(minNominatorBond, tokenDecimals)

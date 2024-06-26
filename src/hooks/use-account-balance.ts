@@ -13,8 +13,6 @@ async function fetchBalances(
   api: ApiPromise | undefined,
   address: string | undefined
 ): Promise<Balances> {
-  console.log("fetchBalances", address)
-
   if (!api || !address) {
     return {
       freeBalance: BN_ZERO,

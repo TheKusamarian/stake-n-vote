@@ -65,7 +65,6 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
   } = useApp()
 
   const { data: stakingInfo, isLoading, error } = useStakingInfo()
-  console.log("stakingInfo", stakingInfo)
 
   // Sort installed wallets first
   // Sort installed wallets first
