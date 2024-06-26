@@ -24,10 +24,11 @@ export function ModalDelegate() {
           {/* @ts-ignore */}
           <DialogTitle>Delegate {activeChain?.tokenSymbol} </DialogTitle>
           <DialogDescription>
-            Staying up to date with the latest governance proposals is hard.
+            Overwhelmed by OpenGov? Delegate your
             {/* @ts-ignore */}
-            Here you can delegate your {activeChain?.tokenSymbol} to us and we
-            will vote on your behalf.
+            {activeChain?.tokenSymbol} &amp; join the KusDAO{" "}
+            <br className="hidden md:block" />
+            or let us handle it!
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -37,7 +38,7 @@ export function ModalDelegate() {
         </div>
         <DialogFooter className="flex-row justify-center sm:justify-center text-center">
           <p className="text-xs">
-            The Kus Delegate is directed by verified humans from The Kusamarian
+            The Kus Delegate is directed by verified humans from The Kus
             community <br />
             <a
               className="underline"

@@ -15,7 +15,7 @@ export function Footer() {
         <div className="py-16">
           <Image
             src={logo}
-            alt="the kusamarian"
+            alt="the kus"
             className="mx-auto h-12 w-auto hover:animate-spin_right"
           />
           {/* <nav className="mt-10 text-sm" aria-label="quick links">
@@ -71,8 +71,8 @@ export function Footer() {
             </Link>
           </div>
           <p className="mt-6 text-sm text-slate-500 sm:mt-0">
-            Copyright &copy; {new Date().getFullYear()} The Kusamarian. All
-            rights reserved.
+            Copyright &copy; {new Date().getFullYear()} The Kus. All rights
+            reserved.
           </p>
         </div>
       </Container>

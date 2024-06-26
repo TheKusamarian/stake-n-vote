@@ -49,8 +49,8 @@ export function SecondaryFeatures() {
             Latest Videos
           </h2>
           <p className="mt-4 text-lg tracking-tight text-slate-700">
-            Because there is so much happening on Polkadot, we have a lot of
-            news to share. Here are some of the latest updates.
+            Too much happening with DOT? We got you covered with our latest
+            updates!
           </p>
         </div>
         <LatestVideos />

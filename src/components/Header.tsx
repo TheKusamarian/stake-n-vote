@@ -134,10 +134,10 @@ export function Header() {
           </div>
         </div> */}
         <a href="/" className="-m-1.5 p-1.5 hover:animate-spin_right">
-          <span className="sr-only">The Kusamarian</span>
+          <span className="sr-only">The Kus</span>
           <Image
             src={logo}
-            alt="the kusamarian"
+            alt="the kus"
             className="inline-block w-auto h-12"
           />
         </a>

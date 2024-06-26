@@ -13,8 +13,8 @@ import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: {
-    template: "%s - The Kusamarian",
-    default: "The Kusamarian - Independet News Resource for Polkadot",
+    template: "%s - The Kus",
+    default: "The Kus - Independet News Resource for Polkadot",
   },
   description: "Latest news. Staking. Delegating",
 }

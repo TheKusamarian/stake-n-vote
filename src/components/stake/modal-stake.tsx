@@ -343,7 +343,7 @@ function NoFunds({
           />
         </a>
       </div>
-      <p className="mt-4">to start staking with the Kusamarian</p>
+      <p className="mt-4">to start staking with the Kus</p>
     </>
   )
 }

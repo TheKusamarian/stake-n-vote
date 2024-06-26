@@ -17,8 +17,7 @@ export function CallToAction() {
             Subscribe to our Channels
           </h2>
           <p className="mt-4 text-lg tracking-tight text-white">
-            Always stay up to date with the latest news and updates from the
-            Polkadot ecosystem by subscribing to our channels.
+            Be the first to know when you subscribe & follow our channels.
           </p>
           <div className="mt-10 flex justify-center">
             <Button

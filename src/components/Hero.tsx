@@ -48,8 +48,8 @@ export function Hero() {
       </svg>
       <div className="max-w-8xl container mx-auto px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-32">
         <div className="w-full flex-none lg:w-2/5">
-          <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            The Kusamarian
+          <h1 className="mt-16 lg:mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+            The Kus
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             The #1 news resource on DOT. Daily news, insights & interviews with
@@ -65,18 +65,8 @@ export function Hero() {
             Your DOT vote matters! Delegate your vote to The Kus and shape
             Polkadot&apos;s future!
           </p>
-          {/* <h2 className="font-bold text-xl mt-16 text-center">
-            Get your assets to work with The Kusamarian!
-          </h2>
-          <p className="mt-6 w-full text-center text-sm font-bold tracking-tight text-gray-600">
-            ↓ Select Network ↓
-          </p> */}
-          {/* <ChainSwitch className="mt-4" /> */}
-          {/* <p className="mt-4 w-full text-center text-sm font-bold tracking-tight text-gray-600">
-            ↓ Stake + Delegate ↓
-          </p> */}
           <div className="mt-4 flex items-center gap-x-6">
-            <div className="h-48 group w-full">
+            <div className="h-24 lg:h-48 group w-full">
               <Link href="#stake-and-delegate">
                 <Button
                   className="h-auto w-full p-4 flex flex-col"
