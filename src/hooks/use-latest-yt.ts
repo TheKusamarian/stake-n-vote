@@ -1,8 +1,7 @@
 import { useQuery } from "react-query"
 
-export async function fetchLatestVideos() {
-  const playlistId = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ" // Replace with your actual playlist ID
-  const apiKey = "AIzaSyDxUpBqBVU7GSTYpDLuBZsHv0222gRF2Pg"
+export async function fetchLatestVideos(playlistId: string) {
+  const apiKey = process.env.YOUTUBE_API_KEY
   const apiUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=10&key=${apiKey}`
 
   try {
@@ -56,8 +55,10 @@ export async function fetchLatestVideos() {
   }
 }
 
-export function useLatestYt() {
-  return useQuery<any>(["latest-yt"], fetchLatestVideos, {
+export function useLatestYt(
+  playlistId: string = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
+) {
+  return useQuery<any>(["latest-yt"], () => fetchLatestVideos(playlistId), {
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
   })
 }
