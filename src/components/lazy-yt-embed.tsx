@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import { PlayCircleIcon } from "@heroicons/react/24/solid"
 
+import { stopAllYouTubeVideos } from "@/lib/stop-all-yt"
 import { cn } from "@/lib/utils"
 
 const LazyYoutubeEmbed = ({
@@ -18,10 +19,11 @@ const LazyYoutubeEmbed = ({
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
 
   const handleVideoLoad = () => {
+    stopAllYouTubeVideos()
     setIsVideoLoaded(true)
   }
 
-  const videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+  const videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`
 
   return (
     <div
