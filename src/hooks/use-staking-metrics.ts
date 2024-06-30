@@ -1,9 +1,8 @@
+"use client"
+
 import { encodeAddress } from "@polkadot/keyring"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
-
-import { polkadotRelay } from "@/config/chains"
-import { CHAIN_CONFIG } from "@/config/config"
 
 // Custom hook
 export function useStakingMetrics() {

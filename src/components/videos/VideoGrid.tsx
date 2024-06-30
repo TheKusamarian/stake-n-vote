@@ -1,17 +1,18 @@
-"use client"
+import { cn } from "../../lib/utils"
+import LazyYoutubeEmbed from "../lazy-yt-embed"
 
-import { useLatestYt } from "@/hooks/use-latest-yt"
-import { Container } from "@/components/Container"
-
-import LazyYoutubeEmbed from "./lazy-yt-embed"
-
-function LatestVideos() {
-  const { data } = useLatestYt()
-  const videos = data?.videos?.slice(0, 6)
-
+export function VideoGrid({
+  videos,
+  className,
+}: {
+  videos: any
+  className?: string
+}) {
   // return <pre>{JSON.stringify(videos, null, 2)}</pre>
   return (
-    <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      className={cn(className, "mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3")}
+    >
       {videos?.map((video: any) => {
         const description = video.description.split("\n")[0]
         return (
@@ -33,28 +34,5 @@ function LatestVideos() {
         )
       })}
     </div>
-  )
-}
-
-export function SecondaryFeatures() {
-  return (
-    <section
-      id="videos"
-      aria-label="latest videos from Polkadot ecosystem"
-      className="pb-14 pt-16 sm:pb-20 sm:pt-24 lg:pb-32"
-    >
-      <Container>
-        <div className="mx-auto max-w-2xl md:text-center">
-          <h2 className="font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
-            Latest Videos
-          </h2>
-          <p className="mt-4 text-lg tracking-tight text-slate-700">
-            Too much happening with DOT? We got you covered with our latest
-            updates!
-          </p>
-        </div>
-        <LatestVideos />
-      </Container>
-    </section>
   )
 }

@@ -1,3 +1,5 @@
+"use client"
+
 import "@polkadot/api-augment"
 import { ApiPromise } from "@polkadot/api"
 import { encodeAddress } from "@polkadot/keyring"

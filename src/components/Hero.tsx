@@ -7,19 +7,15 @@ import Stake from "@w3f/polkadot-icons/keyline/Stake"
 import Delegate from "@w3f/polkadot-icons/keyline/Vote"
 import { useParallax } from "react-scroll-parallax"
 
-import { useApp } from "@/app/app-provider"
-
-import { ChainSwitch } from "./ChainSwitch"
 import { LatestYtVideo } from "./latest-yt-video"
 import { Button } from "./ui/button"
 
-export function Hero() {
+export function Hero({ video }: { video: any }) {
   const { ref } = useParallax({
     speed: -10,
   })
 
   const { activeChain } = useInkathon()
-  const { setIsStakingModalOpen, setIsDelegateModalOpen } = useApp()
 
   return (
     <div className="relative isolate flex flex-col overflow-hidden bg-white lg:flex-row">
@@ -86,32 +82,9 @@ export function Hero() {
                       width={25}
                     />
                   </div>
-                  {/* <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block transition-all">
-                  Stake your assets, earn rewards and secure the Polkadot
-                  network
-                </p> */}
                 </Button>
               </Link>
             </div>
-            {/* <div className="h-48 w-1/2 group">
-              <Button
-                className="h-auto w-full p-4 flex flex-col"
-                onClick={() => setIsDelegateModalOpen(true)}
-              >
-                <div className="flex items-center justify-center">
-                  <Delegate
-                    stroke="#fff"
-                    className="mr-2 inline-bloc k"
-                    width={25}
-                  />{" "}
-                  Delegate {activeChain?.tokenSymbol}
-                </div>
-                <p className="whitespace-normal font-normal text-sm mt-2 hidden group-hover:block">
-                  Your Votes matter. Delegate your voting power to us and shape
-                  Polkadot&apos;s future
-                </p>
-              </Button>
-            </div> */}
           </div>
         </div>
         {/* @ts-ignore */}
@@ -119,14 +92,14 @@ export function Hero() {
           <div className="w-full flex-none sm:max-w-5xl">
             <div className="group relative mt-4 overflow-hidden rounded-xl p-2 lg:mt-0 lg:p-4">
               <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-xl bg-gradient-to-br from-primary-500 to-teal-500 group-hover:animate-spin_right"></div>
-              <LatestYtVideo />
+              <LatestYtVideo video={video} />
             </div>
             <div className="mt-8 w-full text-center text-sm font-semibold">
               <div>
                 The latest on Polkadot <span aria-hidden="true">↑</span>
               </div>
               <Button className="mt-4 bg-white" variant="outline">
-                <Link href="#videos">
+                <Link href="#the-kus">
                   👀 View even more <span aria-hidden="true"> ↓</span>
                 </Link>
               </Button>

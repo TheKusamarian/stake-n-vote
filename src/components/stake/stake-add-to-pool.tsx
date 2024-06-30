@@ -1,3 +1,5 @@
+"use client"
+
 import { Dispatch, SetStateAction, useCallback, useState } from "react"
 import { parseBN, trimAddress } from "@/util"
 import { Tooltip } from "@nextui-org/tooltip"
@@ -56,7 +58,6 @@ export function MaybeAddToPool({
 
   const joinNominationPool = async (e: any) => {
     e.preventDefault()
-    console.log("joinNominationPool", activeChain?.network, api, signer)
     if (!activeChain || !activeChain?.network || !api || !signer) {
       return
     }

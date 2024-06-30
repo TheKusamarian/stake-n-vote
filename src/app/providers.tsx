@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { NextUIProvider } from "@nextui-org/react"
-import { SubstrateChain, UseInkathonProvider } from "@scio-labs/use-inkathon"
+import { UseInkathonProvider } from "@scio-labs/use-inkathon"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ParallaxProvider } from "react-scroll-parallax"
 

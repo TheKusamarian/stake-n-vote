@@ -1,3 +1,5 @@
+"use client"
+
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import {

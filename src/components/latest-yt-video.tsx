@@ -1,20 +1,6 @@
-'use client'
+import LazyYoutubeEmbed from "./lazy-yt-embed"
 
-import { useLatestYt } from '@/hooks/use-latest-yt'
-import LazyYoutubeEmbed from './lazy-yt-embed'
-
-type Video = {
-  id: string
-  title: string
-  thumbnailUrl: string
-  previewUrl: string
-}
-
-export const LatestYtVideo: React.FC = () => {
-  const { data } = useLatestYt()
-
-  const video = data?.videos?.[0]
-
+export const LatestYtVideo = ({ video }: { video: any }) => {
   if (!video || !video?.thumbnails) {
     return <div className="aspect-video w-full">Loading</div>
   }

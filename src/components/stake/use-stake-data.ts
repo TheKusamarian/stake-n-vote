@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { useInkathon } from "@scio-labs/use-inkathon"
 

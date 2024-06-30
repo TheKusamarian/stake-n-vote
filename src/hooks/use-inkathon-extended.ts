@@ -1,3 +1,5 @@
+"use client"
+
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 
 import { CHAIN_CONFIG } from "@/config/config"

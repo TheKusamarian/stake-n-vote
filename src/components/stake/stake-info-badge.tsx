@@ -1,3 +1,5 @@
+"use client"
+
 import React from "react"
 import { BN, formatBalance } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"

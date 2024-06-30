@@ -1,26 +1,30 @@
 import { Suspense } from "react"
 
+import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/CallToAction"
-import { Faqs } from "@/components/Faqs"
 import { Footer } from "@/components/Footer"
 import { Header } from "@/components/Header"
 import { Hero } from "@/components/Hero"
-import { Pricing } from "@/components/Pricing"
 import { PrimaryFeatures } from "@/components/PrimaryFeatures"
-import { SecondaryFeatures } from "@/components/SecondaryFeatures"
-import { Testimonials } from "@/components/Testimonials"
+import { SectionSpaceMonkeys } from "@/components/sections/section-space-monkeys"
+import { SectionTheKus } from "@/components/sections/section-the-kus"
 
-export default function Home() {
+const THE_KUS_PLAYLIST_ID = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
+
+export default async function Home() {
+  const data = await fetchLatestVideos(THE_KUS_PLAYLIST_ID)
+
   return (
     <>
       <Header />
       <main>
-        <Hero />
+        <Hero video={data?.videos?.[0]} />
         <Suspense fallback={<div>Loading...</div>}>
           <PrimaryFeatures />
         </Suspense>
-        <SecondaryFeatures />
+        <SectionTheKus data={data} />
         <CallToAction />
+        <SectionSpaceMonkeys />
         {/* <Faqs /> */}
       </main>
       <Footer />

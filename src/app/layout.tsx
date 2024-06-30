@@ -1,5 +1,5 @@
 import { Inter, Lexend } from "next/font/google"
-import { GoogleAnalytics } from "@next/third-parties/google"
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google"
 import clsx from "clsx"
 
 import "@/styles/globals.scss"

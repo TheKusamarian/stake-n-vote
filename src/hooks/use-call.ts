@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { AnyFunction } from "@polkadot/types/types"
 import { useInkathon } from "@scio-labs/use-inkathon"
