@@ -22,11 +22,11 @@ export function PrimaryFeatures() {
     <section
       id="stake-and-delegate"
       aria-label="Staking and Delegating"
-      className="relative overflow-hidden bg-gradient-to-br from-primary-500 to-teal-500 pb-28 pt-20 sm:py-32"
+      className="relative overflow-hidden bg-gradient-to-br from-primary-500 to-teal-500 md:pb-10 pt-20 sm:py-32"
     >
       <Container className="b relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
-          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
+          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl text-center">
             Get your assets to work with The Kus!
           </h2>
           <p className="mt-12 w-full text-center text-sm tracking-tight text-white">
