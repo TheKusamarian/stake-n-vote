@@ -28,7 +28,9 @@ export async function SectionSpaceMonkeys() {
           <VideoGrid
             videos={data?.videos}
             className=""
-            classNames={{ item: "bg-white/80" }}
+            classNames={{
+              item: "backdrop-blur-md bg-transparent text-white border border-gray-900 shadow-xl",
+            }}
           />
         </Suspense>
       </div>

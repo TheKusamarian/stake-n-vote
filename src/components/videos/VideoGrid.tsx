@@ -34,7 +34,7 @@ export function VideoGrid({
               />
             </div>
             <div className="p-4 mt-2 flex flex-col items-center justify-center">
-              <h3 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 leading-tight dark:text-white">
+              <h3 className="mb-2 text-2xl font-bold tracking-tight leading-tight">
                 {video.title}
               </h3>
               <p className="mb-2 mt-2 text-sm leading-normal">{description}</p>
