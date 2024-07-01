@@ -24,7 +24,7 @@ export default async function Home() {
         </Suspense>
         <SectionTheKus data={data} />
         <CallToAction />
-        <SectionSpaceMonkeys />
+        {/* <SectionSpaceMonkeys /> */}
         {/* <Faqs /> */}
       </main>
       <Footer />
