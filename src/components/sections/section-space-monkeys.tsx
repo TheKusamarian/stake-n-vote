@@ -20,12 +20,16 @@ export async function SectionSpaceMonkeys() {
         layout="fill"
         className="absolute inset-0 object-cover opacity-60"
       />
-      <div className="container mx-auto px-4 z-1">
-        <h2 className="text-5xl font-bold text-purple-400 text-center mb-14 mix-blend-difference">
+      <div className="container mx-auto px-4 z-1 mb-10">
+        <h2 className="text-5xl font-bold text-purple-400 text-center mt-8 mb-20 mix-blend-difference">
           Space Monkeys Podcast
         </h2>
         <Suspense fallback={<VideoGridSkeleton />}>
-          <VideoGrid videos={data?.videos} className="text-white" />
+          <VideoGrid
+            videos={data?.videos}
+            className=""
+            classNames={{ item: "bg-white/80" }}
+          />
         </Suspense>
       </div>
     </section>
