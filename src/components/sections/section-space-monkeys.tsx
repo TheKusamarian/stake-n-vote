@@ -20,10 +20,14 @@ export async function SectionSpaceMonkeys() {
         layout="fill"
         className="absolute inset-0 object-cover opacity-60"
       />
-      <div className="container mx-auto px-4 z-1 mb-10">
-        <h2 className="text-5xl font-bold text-purple-400 text-center mt-8 mb-20 mix-blend-difference">
+      <div className="container mx-auto px-4 z-1 mb-10 text-white relative">
+        <h2 className="text-5xl font-bold text-center mb-4">
           Space Monkeys Podcast
         </h2>
+        <p className="text-center mb-16">
+          Big Brains blasting off on Blockchain tech, regulation & adoption on
+          this weekly podcast!
+        </p>
         <Suspense fallback={<VideoGridSkeleton />}>
           <VideoGrid
             videos={data?.videos}
