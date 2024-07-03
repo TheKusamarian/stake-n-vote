@@ -9,7 +9,7 @@ import { PrimaryFeatures } from "@/components/PrimaryFeatures"
 import { SectionSpaceMonkeys } from "@/components/sections/section-space-monkeys"
 import { SectionTheKus } from "@/components/sections/section-the-kus"
 
-export const revalidate = 86400 // revalidate at most every 24 hours
+export const revalidate = 10800 // revalidate at most every 3 hours
 
 const THE_KUS_PLAYLIST_ID = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
 
