@@ -10,7 +10,7 @@ import { useApp } from "@/app/app-provider"
 import { ChainSwitch } from "./ChainSwitch"
 import { Button } from "./ui/button"
 
-export function PrimaryFeatures() {
+export default function PrimaryFeatures() {
   const { activeChain, activeAccount } = useInkathon()
   const {
     setIsStakingModalOpen,

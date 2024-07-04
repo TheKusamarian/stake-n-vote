@@ -1,13 +1,22 @@
 import { Suspense } from "react"
+import dynamic from "next/dynamic"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/CallToAction"
 import { Footer } from "@/components/Footer"
 import { Header } from "@/components/Header"
 import { Hero } from "@/components/Hero"
-import { PrimaryFeatures } from "@/components/PrimaryFeatures"
-import { SectionSpaceMonkeys } from "@/components/sections/section-space-monkeys"
-import { SectionTheKus } from "@/components/sections/section-the-kus"
+
+// Dynamically import non-critical components
+const PrimaryFeatures = dynamic(() => import("@/components/PrimaryFeatures"), {
+  suspense: true,
+})
+const SectionSpaceMonkeys = dynamic(
+  () => import("@/components/sections/section-space-monkeys")
+)
+const SectionTheKus = dynamic(
+  () => import("@/components/sections/section-the-kus")
+)
 
 export const revalidate = 10800 // revalidate at most every 3 hours
 

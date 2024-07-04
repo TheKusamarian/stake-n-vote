@@ -9,7 +9,7 @@ import { VideoGridSkeleton } from "../videos/ViedeoGridSkeleton"
 
 const SPACE_MONKEYS_PLAYLIST_ID = "PLtyd7v_I7PGkq7KUe3ep3lFLgKG97Z2AO"
 
-export async function SectionSpaceMonkeys() {
+export default async function SectionSpaceMonkeys() {
   const data = await fetchLatestVideos(SPACE_MONKEYS_PLAYLIST_ID)
 
   return (
