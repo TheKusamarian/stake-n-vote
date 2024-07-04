@@ -17,7 +17,6 @@ export async function SectionSpaceMonkeys() {
       <Image
         src={backgroundImage}
         alt="Space Monkeys Podcast"
-        layout="fill"
         className="absolute inset-0 object-cover opacity-60"
       />
       <div className="container mx-auto px-4 z-1 mb-10 text-white relative">

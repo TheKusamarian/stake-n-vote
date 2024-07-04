@@ -11,10 +11,12 @@ const LazyYoutubeEmbed = ({
   videoId,
   previewImageUrl,
   className,
+  priority,
 }: {
   videoId: string
   previewImageUrl: string
   className?: string
+  priority?: boolean
 }) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
 
@@ -43,6 +45,7 @@ const LazyYoutubeEmbed = ({
           // style={{ aspectRatio: '16 / 9' }}
           width={3000}
           height={1687}
+          priority={priority}
         />
       )}
       {!isVideoLoaded && (

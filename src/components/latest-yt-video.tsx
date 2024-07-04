@@ -9,6 +9,7 @@ export const LatestYtVideo = ({ video }: { video: any }) => {
     <LazyYoutubeEmbed
       previewImageUrl={video?.thumbnails?.maxres?.url}
       videoId={video?.id}
+      priority={true}
     />
   )
 }
