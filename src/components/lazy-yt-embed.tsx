@@ -43,8 +43,8 @@ const LazyYoutubeEmbed = ({
           }`}
           onClick={handleVideoLoad}
           // style={{ aspectRatio: '16 / 9' }}
-          width={3000}
-          height={1687}
+          width={1200}
+          height={675}
           priority={priority}
         />
       )}
