@@ -146,7 +146,7 @@ export function Header() {
         </div>
       </nav>
       <div className="h-[1px] w-full bg-gradient-to-r from-primary-500/30 to-teal-500/30"></div>
-      <Dialog
+      {/* <Dialog
         as="div"
         className="lg:hidden"
         open={mobileMenuOpen}
@@ -194,7 +194,7 @@ export function Header() {
             ))}
           </div>
         </Dialog.Panel>
-      </Dialog>
+      </Dialog> */}
     </header>
   )
 }

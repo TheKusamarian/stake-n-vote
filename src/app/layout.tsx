@@ -22,12 +22,13 @@ export const metadata: Metadata = {
 const inter = Inter({
   subsets: ["latin"],
   // display: "swap",
+  display: "optional",
   variable: "--font-inter",
 })
 
 const lexend = Lexend({
   subsets: ["latin"],
-  // display: "swap",
+  display: "optional",
   variable: "--font-lexend",
 })
 

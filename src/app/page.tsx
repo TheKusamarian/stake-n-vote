@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
+import Head from "next/head"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/CallToAction"
@@ -24,9 +25,15 @@ const THE_KUS_PLAYLIST_ID = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
 
 export default async function Home() {
   const data = await fetchLatestVideos(THE_KUS_PLAYLIST_ID)
+  const lcpImageUrl = data?.videos?.[0]?.thumbnails?.maxres?.url
 
   return (
     <>
+      <Head>
+        {lcpImageUrl && (
+          <link rel="preload" href={lcpImageUrl} as="image" type="image/jpeg" />
+        )}
+      </Head>
       <Header />
       <main>
         <Hero video={data?.videos?.[0]} />
