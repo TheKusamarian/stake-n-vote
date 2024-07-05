@@ -29,7 +29,7 @@ export function VideoGrid({
             <div className="group relative overflow-hidden rounded-t-lg p-2 shadow-sm hover:shadow-xl transition-shadow">
               <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-md bg-gradient-to-br from-primary-500 to-teal-500 p-2 group-hover:animate-spin_right"></div>
               <LazyYoutubeEmbed
-                previewImageUrl={video?.thumbnails?.standard?.url}
+                previewImageUrl={video?.thumbnails?.maxres?.url}
                 videoId={video?.id}
               />
             </div>
