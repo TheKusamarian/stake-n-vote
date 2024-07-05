@@ -110,7 +110,7 @@ export function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8"
         aria-label="Global"
       >
-        {/* <div className="flex flex-1">
+        <div className="flex flex-1">
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <Link
@@ -132,7 +132,7 @@ export function Header() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-        </div> */}
+        </div>
         <a href="/" className="-m-1.5 p-1.5 hover:animate-spin_right">
           <span className="sr-only">The Kus</span>
           <Image

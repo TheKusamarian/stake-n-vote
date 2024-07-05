@@ -250,7 +250,7 @@ function renderFooter({
         >
           supported by{" "}
           <Image
-            src="sik.png"
+            src="/sik.png"
             alt="sik staking"
             width={45}
             height={45}

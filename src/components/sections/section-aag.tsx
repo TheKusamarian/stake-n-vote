@@ -15,17 +15,25 @@ const AAG_PLAYLIST_ID = "PLtyd7v_I7PGkXbJmKojrZ1KXwspR1JkpV"
 export default async function SectionAAG() {
   const data = await fetchLatestVideos(AAG_PLAYLIST_ID)
 
-  function extractGoogleDocsLink(text: string): ReactElement {
-    const googleDocsRegex =
-      /(https?:\/\/)?(docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+\/edit(\?[\w=&]*)?(#[\w=&]*)?)/g
-    const match = text.match(googleDocsRegex)
-    const descLink = match?.[1]
+  const extractGoogleDocsLink = (text: string): React.ReactElement | null => {
+    const regex =
+      /https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+\/edit/g
+    const matches = text.match(regex)
 
-    return (
-      <a href={descLink} className="underline">
-        View the AAGenda
-      </a>
-    )
+    if (matches) {
+      return (
+        <a
+          href={matches[0]}
+          className="underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View the AAGenda
+        </a>
+      )
+    }
+
+    return null
   }
 
   return (
