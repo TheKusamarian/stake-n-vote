@@ -31,8 +31,6 @@ export function VideoGrid({
               <LazyYoutubeEmbed
                 previewImageUrl={video?.thumbnails?.standard?.url}
                 videoId={video?.id}
-                width={640}
-                height={480}
               />
             </div>
             <div className="p-4 mt-2 flex flex-col items-center justify-center">

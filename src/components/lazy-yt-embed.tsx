@@ -12,15 +12,11 @@ const LazyYoutubeEmbed = ({
   previewImageUrl,
   className,
   priority,
-  width = 1200,
-  height = 675,
 }: {
   videoId: string
   previewImageUrl: string
   className?: string
   priority?: boolean
-  width?: number
-  height?: number
 }) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
 
