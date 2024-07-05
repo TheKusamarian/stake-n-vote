@@ -1,19 +1,19 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import Stake from "@w3f/polkadot-icons/keyline/Stake"
 import Delegate from "@w3f/polkadot-icons/keyline/Vote"
-import { useParallax } from "react-scroll-parallax"
+
+// import { useParallax } from "react-scroll-parallax"
 
 import { LatestYtVideo } from "./latest-yt-video"
 import { Button } from "./ui/button"
 
 export function Hero({ video }: { video: any }) {
-  const { ref } = useParallax({
-    speed: -10,
-  })
+  // const { ref } = useParallax({
+  //   speed: -10,
+  // })
 
   const { activeChain } = useInkathon()
 
@@ -88,7 +88,7 @@ export function Hero({ video }: { video: any }) {
           </div>
         </div>
         {/* @ts-ignore */}
-        <div className="mt-16 flex-auto lg:ml-16 lg:mt-" ref={ref}>
+        <div className="mt-16 flex-auto lg:ml-16">
           <div className="w-full flex-none sm:max-w-5xl">
             <div className="group relative mt-4 overflow-hidden rounded-xl p-2 lg:mt-0 lg:p-4">
               <div className="absolute -left-1/2 -top-1/2 h-[200%] w-[200%] origin-center rounded-xl bg-gradient-to-br from-primary-500 to-teal-500 group-hover:animate-spin_right"></div>
