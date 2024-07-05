@@ -1,9 +1,14 @@
 import { Suspense } from "react"
+import Link from "next/link"
+import { YoutubeIcon } from "@/icons"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { VideoGrid } from "@/components/videos/VideoGrid"
 
+import { Button } from "../ui/button"
 import { VideoGridSkeleton } from "../videos/ViedeoGridSkeleton"
+
+const THE_KUS_PLAYLIST_ID = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
 
 export default async function SectionTheKus({ data }: { data: any }) {
   return (
@@ -19,6 +24,17 @@ export default async function SectionTheKus({ data }: { data: any }) {
         <Suspense fallback={<VideoGridSkeleton />}>
           <VideoGrid videos={data?.videos} />
         </Suspense>
+        <div className="flex w-full justify-center mt-8">
+          <Button className="mt-8">
+            <Link
+              className="flex"
+              href={`https://www.youtube.com/playlist?list=${THE_KUS_PLAYLIST_ID}`}
+            >
+              <YoutubeIcon className="mr-2" /> View all Ser, Have ya&apos;
+              Heard? videos on YouTube
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   )
