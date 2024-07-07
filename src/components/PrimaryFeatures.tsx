@@ -26,7 +26,7 @@ export default function PrimaryFeatures() {
     >
       <Container className="b relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
-          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl text-center">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl md:text-5xl text-center">
             Get your assets to work with The Kus!
           </h2>
           <p className="mt-12 w-full text-center text-sm tracking-tight text-white">

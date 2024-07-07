@@ -1,8 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
-import talisman from "@/public/talisman.svg"
+import { useInkathon } from "@scio-labs/use-inkathon"
+import Stake from "@w3f/polkadot-icons/keyline/Stake"
+import Unstake from "@w3f/polkadot-icons/keyline/Unstake"
+import Delegate from "@w3f/polkadot-icons/keyline/Vote"
 
 import { kusamaRelay, polkadotRelay } from "@/config/chains"
+import useStakingInfo from "@/hooks/use-staking-info"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -19,11 +23,18 @@ import { NotConnected } from "../not-connected"
 import { MaybeAddToPool } from "./stake-add-to-pool"
 import { AddKusToSet } from "./stake-add-to-set"
 import { useStakeCalculations } from "./stake-calculations"
+import StakingInfoBadge from "./stake-info-badge"
 import { ReplaceOneWithKus } from "./stake-replace-one"
 import { useStakeData } from "./use-stake-data"
 
 export function ModalStake() {
-  const { isStakingModalOpen, setIsStakingModalOpen } = useApp()
+  const {
+    isStakingModalOpen,
+    setIsStakingModalOpen,
+    isChangeStakeModalOpen,
+    setIsChangeStakeModalOpen,
+  } = useApp()
+
   const {
     activeChain,
     activeAccount,
@@ -250,7 +261,7 @@ function renderFooter({
         >
           supported by{" "}
           <Image
-            src="sik.png"
+            src="/sik.png"
             alt="sik staking"
             width={45}
             height={45}
@@ -284,7 +295,7 @@ function renderFooter({
         >
           supported by{" "}
           <Image
-            src="lucky.png"
+            src="/lucky.png"
             alt="lucky friday staking"
             width={50}
             height={57}
@@ -297,15 +308,50 @@ function renderFooter({
 }
 
 function Success() {
-  const { setIsDelegateModalOpen } = useApp()
+  const { setIsDelegateModalOpen, setIsChangeStakeModalOpen } = useApp()
+  const { data: stakingInfo, isLoading, error } = useStakingInfo()
+  const { activeAccount } = useInkathon()
+
   return (
     <>
-      <p className="text-lg font-semibold">
-        🔥 Looks like you&apos;re already staking with The Kus!
-      </p>
+      {activeAccount && (
+        <div className="bg-gradient-to-br from-teal-600 to-teal-300 rounded-md p-6 mb-4 flex flex-row items-center border-2">
+          <span className="text-3xl mr-4">🔥</span>
+          <div className="text-center w-full">
+            Great! You are already staking
+            <br />
+            <StakingInfoBadge
+              valueOnly={true}
+              className="text-sm text-black inline font-bold rounded-md px-2 py-1 ml-2"
+              withValidator={
+                stakingInfo?.[activeAccount?.address]?.withValidator
+              }
+              inPool={stakingInfo?.[activeAccount?.address]?.inPool}
+              isLoading={isLoading}
+              error={error}
+            />{" "}
+            <br />
+            with the Kus and earning rewards!
+          </div>
+        </div>
+      )}
+      <div className="grid grid-cols-2 gap-2">
+        <Button onClick={() => setIsChangeStakeModalOpen(true)}>
+          <Stake stroke="#fff" className="mr-2 inline-block" width={25} /> Stake
+          More
+        </Button>
+        <Button onClick={() => setIsChangeStakeModalOpen(true)}>
+          <Unstake stroke="#fff" className="mr-2 inline-block" width={25} />{" "}
+          Remove Stake
+        </Button>
+      </div>
       <Link color="danger" href="?feature=delegate#features" scroll={false}>
-        <Button className="mt-4" onClick={() => setIsDelegateModalOpen(true)}>
-          Now delegate your voting power
+        <Button
+          className="mt-4 w-full"
+          onClick={() => setIsDelegateModalOpen(true)}
+        >
+          <Delegate stroke="#fff" className="mr-2 inline-block" width={25} />{" "}
+          Delegate your voting power to the Kus
         </Button>
       </Link>
     </>

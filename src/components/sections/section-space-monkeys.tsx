@@ -13,7 +13,7 @@ export default async function SectionSpaceMonkeys() {
   const data = await fetchLatestVideos(SPACE_MONKEYS_PLAYLIST_ID)
 
   return (
-    <section className="py-16 relative bg-black">
+    <section className="py-16 relative bg-black" id="space-monkeys">
       <Image
         src={backgroundImage}
         alt="Space Monkeys Podcast"

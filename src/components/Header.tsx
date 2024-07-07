@@ -9,6 +9,7 @@ import { Bars3Icon, WalletIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 
 import { ConnectButton } from "./ConnectButton"
+import { FooterLinks } from "./Footer"
 
 function MobileNavLink({
   href,
@@ -100,18 +101,20 @@ function MobileNavigation() {
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigation = [
-    { name: "Stake", href: "?feature=stake#features" },
-    { name: "Delegate", href: "?feature=delegate#features" },
+    { name: "Stake & Delegate", href: "#stake-and-delegate" },
+    { name: "Ser", href: "#the-kus" },
+    { name: "Space Monkeys", href: "#space-monkeys" },
+    { name: "AAG", href: "#aag" },
   ]
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-white/95">
+    <header className="fixed top-0 z-50 w-full bg-white/50 lg:backdrop-blur-lg">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8 backdrop-blur-lg lg:backdrop-blur-none"
         aria-label="Global"
       >
-        {/* <div className="flex flex-1">
-          <div className="hidden lg:flex lg:gap-x-12">
+        <div className="flex flex-1">
+          <div className="hidden lg:flex lg:gap-x-10">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -132,13 +135,13 @@ export function Header() {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-        </div> */}
+        </div>
         <a href="/" className="-m-1.5 p-1.5 hover:animate-spin_right">
           <span className="sr-only">The Kus</span>
           <Image
             src={logo}
             alt="the kus"
-            className="inline-block w-auto h-12"
+            className="inline-block w-auto h-10"
           />
         </a>
         <div className="flex flex-1 justify-end">
@@ -146,14 +149,14 @@ export function Header() {
         </div>
       </nav>
       <div className="h-[1px] w-full bg-gradient-to-r from-primary-500/30 to-teal-500/30"></div>
-      {/* <Dialog
+      <Dialog
         as="div"
         className="lg:hidden"
         open={mobileMenuOpen}
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-10" />
-        <Dialog.Panel className="fixed inset-y-0 left-0 z-10 w-full overflow-y-auto bg-white px-6 py-6">
+        <Dialog.Panel className="fixed inset-y-0 left-0 z-10 w-full overflow-y-auto bg-white px-6 py-10 flex flex-col">
           <div className="flex items-center justify-between">
             <div className="flex flex-1">
               <button
@@ -182,19 +185,21 @@ export function Header() {
               </a>
             </div>
           </div>
-          <div className="mt-6 space-y-2">
+          <div className="mt-6 space-y-2 flex-1">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
                 className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
+          <FooterLinks />
         </Dialog.Panel>
-      </Dialog> */}
+      </Dialog>
     </header>
   )
 }

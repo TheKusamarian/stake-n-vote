@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { cn } from "../lib/utils"
-import { AvailableBalance } from "./AvailableBalance"
+import AvailableBalance from "./AvailableBalance"
 
 export function AmountInput({
   children,

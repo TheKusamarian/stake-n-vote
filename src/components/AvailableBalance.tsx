@@ -1,6 +1,7 @@
 "use client"
 
 import { format } from "url"
+import { memo } from "react"
 import { humanReadableBalance } from "@/util"
 import type { DeriveBalancesAll } from "@polkadot/api-derive/types"
 import type {
@@ -31,8 +32,12 @@ export function AvailableBalance({
     params,
   ])
 
+  const availableBalance = allBalances?.freeBalance.sub(
+    allBalances?.lockedBalance
+  )
+
   const formattedBalance = humanReadableBalance(
-    allBalances?.freeBalance,
+    availableBalance,
     // @ts-ignore
     activeChain?.tokenDecimals,
     // @ts-ignore
@@ -47,3 +52,5 @@ export function AvailableBalance({
     </span>
   )
 }
+
+export default memo(AvailableBalance)
