@@ -142,3 +142,29 @@ export async function stakeMoreTx(
   })
   return res
 }
+
+export async function unstakeTx(
+  api: ApiPromise | undefined,
+  signer: any,
+  activeChain: SubstrateChain | undefined,
+  address: string | undefined,
+  amount: BN
+) {
+  const tx = api?.tx.staking.unbond(amount)
+  const res = await sendAndFinalize({
+    api,
+    tx,
+    signer,
+    address,
+    activeChain,
+    toastConfig: {
+      ...DEFAULT_TOAST,
+      title: `Unstaking ${activeChain?.tokenSymbol}`,
+      messages: {
+        ...DEFAULT_TOAST.messages,
+        success: "Unstaking successful",
+      },
+    },
+  })
+  return res
+}

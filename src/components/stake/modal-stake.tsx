@@ -244,7 +244,7 @@ function renderStakeContent(props: {
   )
 }
 
-function renderFooter({
+export function renderFooter({
   activeChain,
   amountSmallerThanMinNominatorBond,
   nominators,
@@ -336,18 +336,18 @@ function Success() {
         </div>
       )}
       <div className="grid grid-cols-2 gap-2">
-        <Button onClick={() => setIsChangeStakeModalOpen(true)}>
-          <Stake stroke="#fff" className="mr-2 inline-block" width={25} /> Stake
-          More
+        <Button onClick={() => setIsChangeStakeModalOpen(true, "increase")}>
+          <Stake stroke="#fff" className="mr-2 inline-block" width={25} />
+          Stake More
         </Button>
-        <Button onClick={() => setIsChangeStakeModalOpen(true)}>
+        <Button onClick={() => setIsChangeStakeModalOpen(true, "decrease")}>
           <Unstake stroke="#fff" className="mr-2 inline-block" width={25} />{" "}
           Remove Stake
         </Button>
       </div>
       <Link color="danger" href="?feature=delegate#features" scroll={false}>
         <Button
-          className="mt-4 w-full"
+          className="mt-2 w-full"
           onClick={() => setIsDelegateModalOpen(true)}
         >
           <Delegate stroke="#fff" className="mr-2 inline-block" width={25} />{" "}

@@ -24,7 +24,10 @@ interface AppContextType {
   isStakingModalOpen: boolean
   setIsStakingModalOpen: (isOpen: boolean) => void
   isChangeStakeModalOpen: boolean
-  setIsChangeStakeModalOpen: (isOpen: boolean) => void
+  setIsChangeStakeModalOpen: (
+    isOpen: boolean,
+    modalType: "increase" | "decrease"
+  ) => void
   isDelegateModalOpen: boolean
   setIsDelegateModalOpen: (isOpen: boolean) => void
   activeExtension: SubstrateWallet | undefined
@@ -42,6 +45,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isEffectTrue, setIsEffectTrue] = useState(false)
   const [isStakingModalOpen, _setIsStakingModalOpen] = useState(false)
   const [isChangeStakeModalOpen, _setIsChangeStakeModalOpen] = useState(false)
+  const [changeStakeType, setChangeStakeType] = useState<
+    "increase" | "decrease"
+  >("increase")
   const [isDelegateModalOpen, _setIsDelegateModalOpen] = useState(false)
   const [connectDropdownOpen, setConnectDropdownOpen] = useState(false)
   const [activeExtension, setActiveExtension] = useState<
@@ -61,7 +67,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     _setIsDelegateModalOpen(isOpen)
   }
 
-  const setIsChangeStakeModalOpen = (isOpen: boolean) => {
+  const setIsChangeStakeModalOpen = (
+    isOpen: boolean,
+    modalType: "increase" | "decrease"
+  ) => {
+    setChangeStakeType(modalType as "increase" | "decrease")
     _setIsDelegateModalOpen(false)
     _setIsStakingModalOpen(false)
     _setIsChangeStakeModalOpen(isOpen)
@@ -101,7 +111,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       {children}
       <ModalStake />
       <ModalDelegate />
-      <ModalChangeStake />
+      <ModalChangeStake type={changeStakeType} />
     </AppContext.Provider>
   )
 }
