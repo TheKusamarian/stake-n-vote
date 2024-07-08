@@ -18,6 +18,7 @@ const SectionSpaceMonkeys = dynamic(
 const SectionTheKus = dynamic(
   () => import("@/components/sections/section-the-kus")
 )
+const SectionAAG = dynamic(() => import("@/components/sections/section-aag"))
 
 export const revalidate = 10800 // revalidate at most every 3 hours
 
@@ -43,6 +44,7 @@ export default async function Home() {
         <SectionTheKus data={data} />
         <CallToAction />
         <SectionSpaceMonkeys />
+        <SectionAAG />
         {/* <Faqs /> */}
       </main>
       <Footer />

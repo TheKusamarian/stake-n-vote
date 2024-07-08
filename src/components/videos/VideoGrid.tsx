@@ -1,3 +1,5 @@
+import { ReactElement } from "react"
+
 import { cn } from "../../lib/utils"
 import LazyYoutubeEmbed from "../lazy-yt-embed"
 
@@ -5,12 +7,14 @@ export function VideoGrid({
   videos,
   className,
   classNames,
+  descriptionFn = (d) => <>{d.split("\n")[0]}</>,
 }: {
   videos: any
   className?: string
   classNames?: {
     item?: string
   }
+  descriptionFn?: (description: string) => ReactElement | null
 }) {
   // return <pre>{JSON.stringify(videos, null, 2)}</pre>
   return (
@@ -18,7 +22,7 @@ export function VideoGrid({
       className={cn(className, "mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3")}
     >
       {videos?.map((video: any) => {
-        const description = video.description.split("\n")[0]
+        const description = descriptionFn(video.description)
         //remove " Ser, Have ya' Heard?" from title
         video.title = video.title.replace("- Ser, Have ya' Heard?", "")
         return (

@@ -114,7 +114,7 @@ export function Header() {
         aria-label="Global"
       >
         <div className="flex flex-1">
-          <div className="hidden lg:flex lg:gap-x-10">
+          <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               <Link
                 key={item.name}
