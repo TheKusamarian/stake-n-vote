@@ -133,6 +133,7 @@ export async function stakeMoreTx(
     activeChain,
     toastConfig: {
       ...DEFAULT_TOAST,
+      // @ts-ignore
       title: `Staking ${activeChain?.tokenSymbol}`,
       messages: {
         ...DEFAULT_TOAST.messages,
@@ -159,6 +160,7 @@ export async function unstakeTx(
     activeChain,
     toastConfig: {
       ...DEFAULT_TOAST,
+      // @ts-ignore
       title: `Unstaking ${activeChain?.tokenSymbol}`,
       messages: {
         ...DEFAULT_TOAST.messages,

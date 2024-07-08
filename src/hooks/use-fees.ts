@@ -20,7 +20,7 @@ export function useTransactionFee(
     const estimateFee = async () => {
       if (extrinsic && api) {
         try {
-          const info = await extrinsic.paymentInfo(...params)
+          const info = await extrinsic.paymentInfo(params[0])
           if (isMounted) {
             setFee(info.partialFee.toString())
           }
