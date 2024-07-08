@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { cn } from "../lib/utils"
-import { AvailableBalance } from "./AvailableBalance"
+import AvailableBalance from "./AvailableBalance"
+import { StakedBalance } from "./StakedBalance"
 
 export function AmountInput({
   children,
@@ -14,6 +15,7 @@ export function AmountInput({
   label,
   onChange,
   value,
+  info = "available",
   ...rest
 }: {
   children?: React.ReactNode
@@ -21,6 +23,7 @@ export function AmountInput({
   label: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   value: string
+  info?: "available" | "staked"
 }) {
   const { activeChain, activeAccount } = useInkathon()
   // @ts-ignore
@@ -49,10 +52,20 @@ export function AmountInput({
             placeholder="Enter amount"
             {...rest}
           />
-          <AvailableBalance
-            params={activeAccount?.address}
-            className="ml-0.5"
-          />
+          {info === "available" && (
+            <AvailableBalance
+              key={"available-balance"}
+              params={activeAccount?.address}
+              className="ml-0.5"
+            />
+          )}
+          {info === "staked" && (
+            <StakedBalance
+              key={"staked-balance"}
+              params={activeAccount?.address}
+              className="ml-0.5"
+            />
+          )}
         </div>
         <span className="flex h-10 w-12 items-center px-2 text-sm font-bold">
           {tokenSymbol}

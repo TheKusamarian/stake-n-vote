@@ -4,6 +4,7 @@ import React from "react"
 import { BN, formatBalance } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
+import { cn } from "@/lib/utils"
 import useStakingInfo from "@/hooks/use-staking-info"
 
 import { Badge } from "../ui/badge"
@@ -14,16 +15,18 @@ const StakingInfoBadge = ({
   inPool,
   isLoading,
   error,
+  valueOnly = false,
 }: {
   className: string
   withValidator: BN | undefined
   inPool: BN | undefined
   isLoading?: boolean
   error?: Error | null
+  valueOnly?: boolean
 }) => {
   const { activeChain } = useInkathon()
 
-  const badgeClass = `text-xs text-primary-500 ${className}`
+  const badgeClass = cn(`text-xs text-primary-500`, className)
 
   if (isLoading) {
     return <div className={badgeClass}>Loading staking information...</div>
@@ -43,7 +46,7 @@ const StakingInfoBadge = ({
   if (isStakingWithValidator) {
     return (
       <div className={badgeClass}>
-        Staking{" "}
+        {!valueOnly && <>Staking </>}
         {formatBalance(withValidator, {
           withUnit: false,
           // @ts-ignore
@@ -75,10 +78,10 @@ const StakingInfoBadge = ({
   }
 
   return (
-    <div className={badgeClass}>
+    <span className={badgeClass}>
       {/*@ts-ignore */}
       Not staking {activeChain?.tokenSymbol} yet
-    </div>
+    </span>
   )
 }
 

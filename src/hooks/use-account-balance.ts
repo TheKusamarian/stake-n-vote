@@ -2,6 +2,7 @@
 
 import { ApiPromise } from "@polkadot/api"
 import { encodeAddress } from "@polkadot/keyring"
+import { FrameSystemAccountInfo } from "@polkadot/types/lookup"
 import { BN, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
@@ -22,8 +23,11 @@ async function fetchBalances(
     }
   }
 
-  const account = await api?.query.system.account(address)
-  const freeBalance = account ? account.data.free.toString() : "0"
+  const account: FrameSystemAccountInfo = await api?.query.system.account(
+    address
+  )
+  const { free, reserved, frozen } = account.data
+  const freeBalance = account ? free.sub(reserved).sub(frozen).toString() : "0"
 
   const staking = await api?.query.staking.ledger(address)
   const stakedBalance = staking?.isSome ? staking.unwrap().active : "0"

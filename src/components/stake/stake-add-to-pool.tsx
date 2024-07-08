@@ -54,7 +54,9 @@ export function MaybeAddToPool({
     tokenDecimals: 12,
     tokenSymbol: "KSM",
   }
-  const { freeBalance } = accountBalance || { freeBalance: BN_ZERO }
+  const { freeBalance, stakedBalance } = accountBalance || {
+    freeBalance: BN_ZERO,
+  }
 
   const joinNominationPool = async (e: any) => {
     e.preventDefault()

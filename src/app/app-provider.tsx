@@ -14,6 +14,7 @@ import {
 } from "@scio-labs/use-inkathon"
 
 import { ModalDelegate } from "@/components/delegate/modal-delegate"
+import { ModalChangeStake } from "@/components/stake/modal-change-stake"
 import { ModalStake } from "@/components/stake/modal-stake"
 
 // Define the context shape
@@ -22,6 +23,11 @@ interface AppContextType {
   enableEffect: () => void // Changed from toggleEffect to enableEffect for clarity
   isStakingModalOpen: boolean
   setIsStakingModalOpen: (isOpen: boolean) => void
+  isChangeStakeModalOpen: boolean
+  setIsChangeStakeModalOpen: (
+    isOpen: boolean,
+    modalType: "increase" | "decrease"
+  ) => void
   isDelegateModalOpen: boolean
   setIsDelegateModalOpen: (isOpen: boolean) => void
   activeExtension: SubstrateWallet | undefined
@@ -38,6 +44,10 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isEffectTrue, setIsEffectTrue] = useState(false)
   const [isStakingModalOpen, _setIsStakingModalOpen] = useState(false)
+  const [isChangeStakeModalOpen, _setIsChangeStakeModalOpen] = useState(false)
+  const [changeStakeType, setChangeStakeType] = useState<
+    "increase" | "decrease"
+  >("increase")
   const [isDelegateModalOpen, _setIsDelegateModalOpen] = useState(false)
   const [connectDropdownOpen, setConnectDropdownOpen] = useState(false)
   const [activeExtension, setActiveExtension] = useState<
@@ -45,15 +55,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   >(undefined)
   // const [activeWallet, setActiveWallet] = useState<string | null>(null)
 
-  const {
-    connect,
-    accounts,
-    activeAccount,
-    activeExtension: _activeExtension,
-    activeChain,
-    setActiveAccount,
-    // setActiveAccount: _setActiveAccount,
-  } = useInkathon()
+  const { activeExtension: _activeExtension } = useInkathon()
 
   const setIsStakingModalOpen = (isOpen: boolean) => {
     _setIsDelegateModalOpen(false)
@@ -63,6 +65,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const setIsDelegateModalOpen = (isOpen: boolean) => {
     _setIsStakingModalOpen(false)
     _setIsDelegateModalOpen(isOpen)
+  }
+
+  const setIsChangeStakeModalOpen = (
+    isOpen: boolean,
+    modalType: "increase" | "decrease"
+  ) => {
+    setChangeStakeType(modalType as "increase" | "decrease")
+    _setIsDelegateModalOpen(false)
+    _setIsStakingModalOpen(false)
+    _setIsChangeStakeModalOpen(isOpen)
   }
 
   // Function to enable the effect
@@ -88,17 +100,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         setIsStakingModalOpen,
         isDelegateModalOpen,
         setIsDelegateModalOpen,
+        isChangeStakeModalOpen,
+        setIsChangeStakeModalOpen,
         activeExtension,
         setActiveExtension,
         connectDropdownOpen,
         setConnectDropdownOpen,
-        // activeWallet,
-        // setActiveWallet,
       }}
     >
       {children}
       <ModalStake />
       <ModalDelegate />
+      <ModalChangeStake type={changeStakeType} />
     </AppContext.Provider>
   )
 }

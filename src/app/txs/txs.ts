@@ -116,3 +116,55 @@ export async function joinPool(
   const res = await sendAndFinalize({ api, tx, signer, address, activeChain })
   return res
 }
+
+export async function stakeMoreTx(
+  api: ApiPromise | undefined,
+  signer: any,
+  activeChain: SubstrateChain | undefined,
+  address: string | undefined,
+  amount: BN
+) {
+  const tx = api?.tx.staking.bondExtra(amount)
+  const res = await sendAndFinalize({
+    api,
+    tx,
+    signer,
+    address,
+    activeChain,
+    toastConfig: {
+      ...DEFAULT_TOAST,
+      title: `Staking ${activeChain?.tokenSymbol}`,
+      messages: {
+        ...DEFAULT_TOAST.messages,
+        success: "Staking successful",
+      },
+    },
+  })
+  return res
+}
+
+export async function unstakeTx(
+  api: ApiPromise | undefined,
+  signer: any,
+  activeChain: SubstrateChain | undefined,
+  address: string | undefined,
+  amount: BN
+) {
+  const tx = api?.tx.staking.unbond(amount)
+  const res = await sendAndFinalize({
+    api,
+    tx,
+    signer,
+    address,
+    activeChain,
+    toastConfig: {
+      ...DEFAULT_TOAST,
+      title: `Unstaking ${activeChain?.tokenSymbol}`,
+      messages: {
+        ...DEFAULT_TOAST.messages,
+        success: "Unstaking successful",
+      },
+    },
+  })
+  return res
+}

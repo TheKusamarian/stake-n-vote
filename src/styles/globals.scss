@@ -79,3 +79,8 @@
       font-feature-settings: "rlig" 1, "calt" 1;
     }
   }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
