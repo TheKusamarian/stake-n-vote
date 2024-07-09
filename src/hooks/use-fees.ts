@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import type { SubmittableExtrinsic } from "@polkadot/api/types"
-import type { FeeDetails } from "@polkadot/types/interfaces"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 type Params = any[]
