@@ -1,12 +1,16 @@
 import Image from "next/image"
 import Link from "next/link"
+import { BN_ZERO } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import Stake from "@w3f/polkadot-icons/keyline/Stake"
 import Unstake from "@w3f/polkadot-icons/keyline/Unstake"
 import Delegate from "@w3f/polkadot-icons/keyline/Vote"
 
 import { kusamaRelay, polkadotRelay } from "@/config/chains"
-import useStakingInfo from "@/hooks/use-staking-info"
+import { CHAIN_CONFIG } from "@/config/config"
+import useStakingInfo, {
+  useActiveAccountStakingInfo,
+} from "@/hooks/use-staking-info"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -69,6 +73,16 @@ export function ModalStake() {
     stakeAmount,
   })
 
+  const { data: stakingInfo } = useActiveAccountStakingInfo()
+
+  const notStaking = stakingInfo?.amount.eq(BN_ZERO)
+
+  const stakingWithKus =
+    nominators?.includes(kusValidator) ||
+    stakingInfo?.poolId === CHAIN_CONFIG["Polkadot"].poolId
+
+  console.log("stakingWithKus", stakingWithKus)
+
   return (
     <Dialog open={isStakingModalOpen} onOpenChange={setIsStakingModalOpen}>
       <DialogContent
@@ -110,6 +124,8 @@ export function ModalStake() {
             amountSmallerThanMinNominatorBond,
             amountSmallerThanMinPoolJoinBond,
             minPoolJoinBond,
+            stakingWithKus,
+            notStaking,
           })}
         </div>
         <DialogFooter>
@@ -147,6 +163,8 @@ function renderStakeContent(props: {
   maxNominators: any
   amountSmallerThanMinNominatorBond: any
   amountSmallerThanMinPoolJoinBond: any
+  stakingWithKus: boolean
+  notStaking?: boolean
 }) {
   const {
     activeAccount,
@@ -168,16 +186,19 @@ function renderStakeContent(props: {
     maxNominators,
     amountSmallerThanMinNominatorBond,
     amountSmallerThanMinPoolJoinBond,
+    stakingWithKus,
+    notStaking,
   } = props
 
   if (!activeAccount) {
     return <NotConnected />
   }
 
-  if (nominators?.length === 0) {
+  if (notStaking) {
     if (
-      freeBalance.isZero() ||
-      (activeChain === kusamaRelay && freeBalance.lt(minNominatorBond))
+      activeChain === polkadotRelay
+        ? freeBalance.isZero()
+        : freeBalance.lt(minNominatorBond)
     ) {
       return (
         <NoFunds tokenSymbol={tokenSymbol} accountBalance={accountBalance} />
@@ -199,7 +220,7 @@ function renderStakeContent(props: {
     }
   }
 
-  if (nominators?.includes(kusValidator)) {
+  if (stakingWithKus) {
     return <Success />
   }
 

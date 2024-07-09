@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import type { SubmittableExtrinsic } from "@polkadot/api/types"
-import type { FeeDetails } from "@polkadot/types/interfaces"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 type Params = any[]
@@ -20,7 +19,7 @@ export function useTransactionFee(
     const estimateFee = async () => {
       if (extrinsic && api) {
         try {
-          const info = await extrinsic.paymentInfo(...params)
+          const info = await extrinsic.paymentInfo(params[0])
           if (isMounted) {
             setFee(info.partialFee.toString())
           }

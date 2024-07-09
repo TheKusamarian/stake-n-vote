@@ -15,6 +15,8 @@ import {
   POLKADOT_DELEGATOR,
 } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
+import { useCall } from "@/hooks/use-call"
+import { useExistentialDeposit } from "@/hooks/use-existential-deposit"
 import { useTransactionFee } from "@/hooks/use-fees"
 import useStakingInfo, {
   useActiveAccountStakingInfo,
@@ -57,7 +59,9 @@ export default function FormAddStake({
 
   const { tokenDecimals, tokenSymbol } = activeChainConfig
 
-  const { data: stakingInfo, isLoading, error } = useActiveAccountStakingInfo()
+  const { data: stakingInfo } = useActiveAccountStakingInfo()
+  const { data: existentialDeposit, isLoading: isEdLoading } =
+    useExistentialDeposit()
 
   const stakeBalance =
     !isNaN(amount) && amount !== 0
@@ -65,11 +69,19 @@ export default function FormAddStake({
       : BN_ZERO
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 
-  const disabled = !isAccountBalanceSuccess || stakeBalance.isZero()
+  const disabled =
+    !isAccountBalanceSuccess || isEdLoading || stakeBalance.isZero()
+
+  const stakingWithValidator = !stakingInfo?.withValidator?.eq(BN_ZERO)
 
   const stakeFee = useTransactionFee(api?.tx.staking.bondExtra(stakeBalance), [
     activeAccount?.address,
   ])
+
+  const bondMoreFee = useTransactionFee(
+    api?.tx.nominationPools.bondExtra({ FreeBalance: stakeBalance }),
+    [activeAccount?.address]
+  )
 
   const stakeFeeValue = stakeFee
     ? parseBN(stakeFee?.toString(), tokenDecimals)
@@ -78,33 +90,67 @@ export default function FormAddStake({
   const stakeMore = async (e: any) => {
     e.preventDefault()
 
-    if (!activeChain || !activeChain?.network || !api || !activeSigner) {
+    if (
+      !activeChain ||
+      !activeChain?.network ||
+      !api ||
+      !activeSigner ||
+      !activeAccount?.address
+    ) {
       return
     }
 
-    const tx = await stakeMoreTx(
-      api,
-      activeSigner,
-      activeChain,
-      activeAccount?.address,
-      stakeBalance
-    )
+    if (stakingWithValidator) {
+      const tx = await stakeMoreTx(
+        api,
+        activeSigner,
+        activeChain,
+        activeAccount?.address,
+        stakeBalance
+      )
+    } else {
+      const tx = await stakeMoreTx(
+        api,
+        activeSigner,
+        activeChain,
+        activeAccount?.address,
+        stakeBalance,
+        true
+      )
+    }
   }
 
   const removeStake = async (e: any) => {
     e.preventDefault()
 
-    if (!activeChain || !activeChain?.network || !api || !activeSigner) {
+    if (
+      !activeChain ||
+      !activeChain?.network ||
+      !api ||
+      !activeSigner ||
+      !activeAccount?.address
+    ) {
       return
     }
 
-    const tx = await unstakeTx(
-      api,
-      activeSigner,
-      activeChain,
-      activeAccount?.address,
-      stakeBalance
-    )
+    if (stakingWithValidator) {
+      const tx = await unstakeTx(
+        api,
+        activeSigner,
+        activeChain,
+        activeAccount.address,
+        stakeBalance
+      )
+    } else {
+      const tx = await unstakeTx(
+        api,
+        activeSigner,
+        activeChain,
+        activeAccount.address,
+        stakeBalance,
+        true
+      )
+    }
   }
 
   const changeStake = (e: any) => {
@@ -117,9 +163,22 @@ export default function FormAddStake({
 
   const stakeOrUnstakeMax = (e: any) => {
     e.preventDefault()
+    if (isEdLoading) {
+      return
+    }
+
     if (type === "increase") {
       const balance = bnToBn(freeBalance).gt(BN_ZERO) ? freeBalance : BN_ZERO
-      setAmount(parseBN(balance?.toString(), tokenDecimals))
+      const fees = stakingWithValidator ? stakeFee : bondMoreFee
+
+      const notSpendable = bnToBn(fees).add(existentialDeposit!)
+
+      const maxValue =
+        fees && bnToBn(freeBalance).gt(bnToBn(fees))
+          ? balance.sub(notSpendable)
+          : BN_ZERO
+
+      setAmount(parseBN(maxValue?.toString(), tokenDecimals))
     } else {
       const balance = bnToBn(stakingInfo?.amount)
       setAmount(parseBN(balance?.toString(), tokenDecimals))

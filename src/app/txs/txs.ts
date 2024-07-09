@@ -122,9 +122,13 @@ export async function stakeMoreTx(
   signer: any,
   activeChain: SubstrateChain | undefined,
   address: string | undefined,
-  amount: BN
+  amount: BN,
+  fromPool: boolean = false
 ) {
-  const tx = api?.tx.staking.bondExtra(amount)
+  const tx = fromPool
+    ? api?.tx.nominationPools.bondExtra({ FreeBalance: amount })
+    : api?.tx.staking.bondExtra(amount)
+
   const res = await sendAndFinalize({
     api,
     tx,
@@ -133,6 +137,7 @@ export async function stakeMoreTx(
     activeChain,
     toastConfig: {
       ...DEFAULT_TOAST,
+      // @ts-ignore
       title: `Staking ${activeChain?.tokenSymbol}`,
       messages: {
         ...DEFAULT_TOAST.messages,
@@ -147,10 +152,14 @@ export async function unstakeTx(
   api: ApiPromise | undefined,
   signer: any,
   activeChain: SubstrateChain | undefined,
-  address: string | undefined,
-  amount: BN
+  address: string,
+  amount: BN,
+  fromPool: boolean = false
 ) {
-  const tx = api?.tx.staking.unbond(amount)
+  const tx = fromPool
+    ? api?.tx.nominationPools.unbond(address, amount)
+    : api?.tx.staking.unbond(amount)
+
   const res = await sendAndFinalize({
     api,
     tx,
@@ -159,6 +168,7 @@ export async function unstakeTx(
     activeChain,
     toastConfig: {
       ...DEFAULT_TOAST,
+      // @ts-ignore
       title: `Unstaking ${activeChain?.tokenSymbol}`,
       messages: {
         ...DEFAULT_TOAST.messages,
