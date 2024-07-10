@@ -65,8 +65,7 @@ export default async function SectionAAG() {
               className="flex"
               href={`https://www.youtube.com/playlist?list=${AAG_PLAYLIST_ID}`}
             >
-              <YoutubeIcon className="mr-2" /> View all Attempts on Governance
-              videos on YouTube
+              <YoutubeIcon className="mr-2" /> View all AAG videos on YouTube
             </Link>
           </Button>
         </div>

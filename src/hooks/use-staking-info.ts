@@ -36,9 +36,6 @@ async function fetchStakingInfo(
     const withValidator = stakingInfo.isSome ? stakingInfo.unwrap().active : "0"
     const inPool = poolMemberInfo.isSome ? poolMemberInfo.unwrap().points : "0"
 
-    // console.log("stakingInfo", stakingInfo.toJSON())
-    // console.log("poolMemberInfo", poolMemberInfo.toJSON())
-
     return {
       address,
       withValidator: bnToBn(withValidator),
