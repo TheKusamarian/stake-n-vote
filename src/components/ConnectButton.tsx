@@ -29,13 +29,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useApp } from "@/app/app-provider"
 
-// import {
-//   Dropdown,
-//   DropdownItem,
-//   DropdownMenu,
-//   DropdownSection,
-//   DropdownTrigger,
-// } from '@nextui-org/dropdown'
 import { parseBN, trimAddress } from "../util"
 import StakingInfoBadge from "./stake/stake-info-badge"
 import { Badge } from "./ui/badge"
@@ -67,14 +60,13 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
   const { data: stakingInfo, isLoading, error } = useStakingInfo()
 
   // Sort installed wallets first
-  // Sort installed wallets first
   const [browserWallets] = useState([
-    ...allSubstrateWallets.filter(
+    ...supportedWallets.filter(
       (w) =>
         w.platforms.includes(SubstrateWalletPlatform.Browser) &&
         isWalletInstalled(w)
     ),
-    ...allSubstrateWallets.filter(
+    ...supportedWallets.filter(
       (w) =>
         w.platforms.includes(SubstrateWalletPlatform.Browser) &&
         !isWalletInstalled(w)

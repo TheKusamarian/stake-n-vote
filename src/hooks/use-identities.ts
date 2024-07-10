@@ -1,38 +1,39 @@
-// import { useQuery } from 'react-query'
+import { useInkathon } from "@scio-labs/use-inkathon"
+import { useQuery } from "react-query"
 
-// // Custom hook
-// export function useIdentities(addresses: string[]) {
-//   const { api, chainConfig, activeChain } = useChain()
+// Custom hook
+export function useIdentities(addresses: string[]) {
+  const { api, activeChain } = useInkathon()
 
-//   const fetchIdentities = async () => {
-//     // Fetch identities for the provided addresses
-//     const identities = await api?.query.identity.identityOf.multi(addresses)
+  const fetchIdentities = async () => {
+    const promises = addresses.map((address) => {
+      return api?.derive.accounts.info(address)
+    })
 
-//     if (!identities) {
-//       return addresses.map((address) => {
-//         return {
-//           address,
-//           identity: null,
-//         }
-//       })
-//     }
+    const results = await Promise.all(promises)
 
-//     // Map the results to the desired format
-//     const result = addresses.map((address, index) => {
-//       return {
-//         address: address,
-//         identity: identities[index].unwrapOr(null)?.toHuman(),
-//       }
-//     })
+    if (!results) {
+      return addresses.map((address) => {
+        return {
+          address,
+          identity: null,
+        }
+      })
+    }
 
-//     return result
-//   }
+    return results.map((result, index) => {
+      return {
+        address: addresses[index],
+        identity: result?.identity,
+      }
+    })
+  }
 
-//   return useQuery(
-//     ['minNominatorBond', activeChain],
-//     async () => fetchIdentities(),
-//     {
-//       enabled: !!api,
-//     },
-//   )
-// }
+  return useQuery(
+    ["minNominatorBond", activeChain],
+    async () => fetchIdentities(),
+    {
+      enabled: !!api,
+    }
+  )
+}

@@ -6,12 +6,13 @@ import { trimAddress } from "@/util"
 import { ApiPromise } from "@polkadot/api"
 import { Signer } from "@polkadot/api/types"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
-import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 
 import { Button } from "@/components/ui/button"
 import { nominateTx } from "@/app/txs/txs"
 
+import { useIdentities } from "../../hooks/use-identities"
+import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 
 export function ReplaceOneWithKus({
@@ -31,8 +32,8 @@ export function ReplaceOneWithKus({
 }) {
   const [selected, setSelected] = useState<string | undefined>()
 
-  // const { data: identities } = useIdentities(nominators);
-  // console.log("in modal: identities", identities);
+  const { data: identities } = useIdentities(nominators)
+  console.log("in modal: identities", identities)
 
   const nominate = async (targets: string[]) => {
     const tx = await nominateTx(
@@ -62,18 +63,27 @@ export function ReplaceOneWithKus({
 
       <RadioGroup color="danger" value={selected} onValueChange={setSelected}>
         {nominators?.map((address) => {
+          const identity = identities?.find((i) => i.address === address)
           return (
-            <RadioGroupItem value={address} key={address}>
-              <span className="text-white">{trimAddress(address, 12)} | </span>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value={address} key={address} />
+              <Label htmlFor="r1">
+                {identity?.identity
+                  ? `${identity.identity.displayParent || ""} ${
+                      identity.identity.display
+                    }`
+                  : trimAddress(address, 12)}{" "}
+                |
+              </Label>
               <Link
                 href={`https://${activeChain?.network}.subscan.io/account/${address}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-white underline"
+                className="underline"
               >
                 subscan ↗
               </Link>
-            </RadioGroupItem>
+            </div>
           )
         })}
       </RadioGroup>

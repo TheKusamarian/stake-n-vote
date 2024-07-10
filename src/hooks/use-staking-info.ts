@@ -3,6 +3,7 @@
 import "@polkadot/api-augment"
 import { ApiPromise } from "@polkadot/api"
 import { encodeAddress } from "@polkadot/keyring"
+import { staking } from "@polkadot/types/interfaces/definitions"
 import { BN, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
@@ -10,6 +11,7 @@ import { useQuery } from "react-query"
 interface Balance {
   withValidator: BN
   inPool: BN
+  poolId: number | undefined
   amount: BN
 }
 
@@ -38,6 +40,9 @@ async function fetchStakingInfo(
       address,
       withValidator: bnToBn(withValidator),
       inPool: bnToBn(inPool),
+      poolId: poolMemberInfo.isSome
+        ? poolMemberInfo.unwrap().poolId.toNumber()
+        : undefined,
       amount: bnToBn(withValidator).eq(BN_ZERO)
         ? bnToBn(inPool)
         : bnToBn(withValidator),
@@ -50,10 +55,13 @@ async function fetchStakingInfo(
 
   const results = await Promise.all(addresses.map(fetchInfoForAddress))
 
-  return results.reduce((acc, { address, withValidator, inPool, amount }) => {
-    acc[address] = { withValidator, inPool, amount }
-    return acc
-  }, {} as Balances)
+  return results.reduce(
+    (acc, { address, withValidator, inPool, poolId, amount }) => {
+      acc[address] = { withValidator, inPool, amount, poolId }
+      return acc
+    },
+    {} as Balances
+  )
 }
 
 function useStakingInfo() {

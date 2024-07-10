@@ -72,7 +72,7 @@ const StakingInfoBadge = ({
           forceUnit: activeChain?.tokenSymbol,
         }).slice(0, -2)}{" "}
         {/*@ts-ignore */}
-        {activeChain?.tokenSymbol} in pool
+        {activeChain?.tokenSymbol} {!valueOnly && "in pool"}
       </div>
     )
   }
