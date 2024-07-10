@@ -127,7 +127,6 @@ export const allSubstrateWallets: SubstrateWallet[] = [
   talisman,
   polkadotjs,
   nova,
-  alephzeroSigner,
   nightly,
   nightlyConnect,
 ]
