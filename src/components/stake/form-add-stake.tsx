@@ -1,18 +1,14 @@
 "use client"
 
-import { ALL } from "dns"
-import { parse } from "path"
-import { useEffect, useState } from "react"
-import { findChangedItem, parseBN } from "@/util"
-import { Slider } from "@nextui-org/slider"
-import { BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"
+import { useState } from "react"
+import { parseBN } from "@/util"
+import { BN_ZERO, bnToBn,  BN } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay } from "@/config/chains"
 import {
   CHAIN_CONFIG,
-  KUSAMA_DELEGATOR,
-  POLKADOT_DELEGATOR,
+
 } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
 import { useCall } from "@/hooks/use-call"
@@ -65,7 +61,7 @@ export default function FormAddStake({
 
   const stakeBalance =
     !isNaN(amount) && amount !== 0
-      ? bnToBn(amount * Math.pow(10, tokenDecimals))
+    ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 

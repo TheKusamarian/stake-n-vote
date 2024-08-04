@@ -1,4 +1,4 @@
-import { BN, formatBalance } from "@polkadot/util"
+import { BN, formatBalance, BN_ZERO, bnToBn } from "@polkadot/util"
 
 export const trimAddress = (
   address: string | undefined,
@@ -47,6 +47,15 @@ export const humanReadableBalance = (
     withAll: false,
     withUnit,
   })
+}
+
+export function safeToBn(value: number | string | BN): BN {
+  try {
+    return bnToBn(value);
+  } catch (error) {
+    console.error("Conversion to BN failed", error);
+    return BN_ZERO;
+  }
 }
 
 export function findChangedItem<T>(arr1: T[], arr2: T[]): T {

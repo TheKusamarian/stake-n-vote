@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { useApp } from "@/app/app-provider"
 
+import ErrorBoundary from "../ErrorBoundary"
+
 import { NotConnected } from "../not-connected"
 import FormDelegate from "./form-delegate"
 
@@ -22,6 +24,7 @@ export function ModalDelegate() {
   return (
     <Dialog open={isDelegateModalOpen} onOpenChange={setIsDelegateModalOpen}>
       <DialogContent className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50">
+      <ErrorBoundary>
         <DialogHeader>
           {/* @ts-ignore */}
           <DialogTitle>Delegate {activeChain?.tokenSymbol} </DialogTitle>
@@ -53,6 +56,7 @@ export function ModalDelegate() {
             after you delegate!
           </p>
         </DialogFooter>
+        </ErrorBoundary>
       </DialogContent>
     </Dialog>
   )

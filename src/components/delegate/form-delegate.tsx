@@ -2,9 +2,9 @@
 
 import { ALL } from "dns"
 import { useEffect, useState } from "react"
-import { findChangedItem, parseBN } from "@/util"
+import { findChangedItem, parseBN, safeToBn } from "@/util"
 import { Slider } from "@nextui-org/slider"
-import { BN_ZERO, bnToBn } from "@polkadot/util"
+import { BN_ZERO, bnToBn, BN } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay } from "@/config/chains"
@@ -31,6 +31,8 @@ import { Switch } from "../ui/switch"
 //   value: ALL_TRACKS_ID.toString(),
 //   label: "All Tracks",
 // }
+
+const MAX_ALLOWED_DELEGATION = 999999999
 
 export type State = {
   errors?: {
@@ -77,11 +79,12 @@ export default function FormDelegate() {
   const [conviction, setConviction] = useState<number>(
     activeChain === kusamaRelay ? 1 : 3
   )
-
   const delegateBalance =
     !isNaN(amount) && amount !== 0
-      ? bnToBn(amount * Math.pow(10, tokenDecimals))
+      ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
+
+
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 
   const delegateToTheKus = async (e: any) => {
@@ -103,6 +106,7 @@ export default function FormDelegate() {
   }
 
   const effectiveVotes =
+    isNaN(amount) ? 0 :
     conviction !== 0
       ? (amount * conviction).toFixed(2)
       : (amount * 0.1).toFixed(2)
@@ -181,7 +185,9 @@ export default function FormDelegate() {
         <AmountInput
           label="Delegation Amount"
           value={amount.toString()}
-          onChange={(e) => setAmount(parseFloat(e.target.value))}
+          onChange={(e) => {
+            setAmount(parseFloat(e.target.value))
+          }}
         >
           <Button
             onClick={delegateMax}
@@ -219,7 +225,7 @@ export default function FormDelegate() {
         <Button
           className="w-full"
           onClick={delegateToTheKus}
-          disabled={!isAccountBalanceSuccess || allTracksLoading}
+          disabled={!isAccountBalanceSuccess || allTracksLoading || amount === 0}
         >
           Delegate {effectiveVotes} {effectiveVotes !== "1" ? "Votes" : "Vote"}
         </Button>

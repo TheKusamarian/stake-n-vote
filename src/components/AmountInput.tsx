@@ -9,6 +9,10 @@ import { cn } from "../lib/utils"
 import AvailableBalance from "./AvailableBalance"
 import { StakedBalance } from "./StakedBalance"
 
+import { safeToBn } from "@/util"
+
+const MAX_ALLOWED_AMOUNT = 999999999
+
 export function AmountInput({
   children,
   className,
@@ -16,6 +20,7 @@ export function AmountInput({
   onChange,
   value,
   info = "available",
+  max = MAX_ALLOWED_AMOUNT,
   ...rest
 }: {
   children?: React.ReactNode
@@ -24,10 +29,26 @@ export function AmountInput({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   value: string
   info?: "available" | "staked"
+  max?: number
 }) {
   const { activeChain, activeAccount } = useInkathon()
   // @ts-ignore
   const tokenSymbol = activeChain?.tokenSymbol || "Unit"
+
+  // Handle input change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    if (parseFloat(e.target.value) >= MAX_ALLOWED_AMOUNT) {
+      e.target.value = MAX_ALLOWED_AMOUNT.toString();
+      onChange(e);
+      return
+    }
+
+    const inputValueBN = safeToBn(inputValue);
+    e.target.value = inputValueBN.toString();
+    onChange(e);
+  }
 
   return (
     <div
@@ -47,7 +68,7 @@ export function AmountInput({
             min={0}
             step={0.01}
             className="text-black"
-            onChange={onChange}
+            onChange={handleInputChange}
             value={value}
             placeholder="Enter amount"
             {...rest}
