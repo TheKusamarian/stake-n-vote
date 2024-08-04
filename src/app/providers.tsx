@@ -10,6 +10,8 @@ import { supportedWallets } from "@/config/wallets"
 
 import { AppProvider } from "./app-provider"
 
+import ErrorBoundary from "../components/ErrorBoundary"
+
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -20,18 +22,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
   })
 
   return (
-    <UseInkathonProvider
-      appName="The Kus"
-      defaultChain={polkadotRelay}
-      supportedWallets={supportedWallets}
-    >
-      <QueryClientProvider client={queryClient}>
-        <AppProvider>
-          <NextUIProvider>
-            <ParallaxProvider>{children}</ParallaxProvider>
-          </NextUIProvider>
-        </AppProvider>
-      </QueryClientProvider>
-    </UseInkathonProvider>
+    <ErrorBoundary>
+      <UseInkathonProvider
+        appName="The Kus"
+        defaultChain={polkadotRelay}
+        supportedWallets={supportedWallets}
+      >
+        <QueryClientProvider client={queryClient}>
+          <AppProvider>
+            <NextUIProvider>
+              <ParallaxProvider>{children}</ParallaxProvider>
+            </NextUIProvider>
+          </AppProvider>
+        </QueryClientProvider>
+      </UseInkathonProvider>
+    </ErrorBoundary>
   )
 }
