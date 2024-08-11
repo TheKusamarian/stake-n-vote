@@ -3,7 +3,6 @@
 import { FC, useEffect, useState } from "react"
 import Link from "next/link"
 import { WalletIcon } from "@heroicons/react/24/outline"
-import { cn } from "@nextui-org/react"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
 import Identicon from "@polkadot/react-identicon"
 import { encodeAddress } from "@polkadot/util-crypto"
@@ -18,6 +17,7 @@ import ls from "localstorage-slim"
 import { ArrowUpRight, CheckCircle, ChevronDown } from "lucide-react"
 
 import { supportedWallets } from "@/config/wallets"
+import { cn } from "@/lib/utils"
 import useStakingInfo from "@/hooks/use-staking-info"
 import {
   DropdownMenu,

@@ -1,6 +1,5 @@
 "use client"
 
-import { NextUIProvider } from "@nextui-org/react"
 import { UseInkathonProvider } from "@scio-labs/use-inkathon"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ParallaxProvider } from "react-scroll-parallax"
@@ -8,9 +7,8 @@ import { ParallaxProvider } from "react-scroll-parallax"
 import { polkadotRelay } from "@/config/chains"
 import { supportedWallets } from "@/config/wallets"
 
-import { AppProvider } from "./app-provider"
-
 import ErrorBoundary from "../components/ErrorBoundary"
+import { AppProvider } from "./app-provider"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({
@@ -30,9 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       >
         <QueryClientProvider client={queryClient}>
           <AppProvider>
-            <NextUIProvider>
-              <ParallaxProvider>{children}</ParallaxProvider>
-            </NextUIProvider>
+            <ParallaxProvider>{children}</ParallaxProvider>
           </AppProvider>
         </QueryClientProvider>
       </UseInkathonProvider>

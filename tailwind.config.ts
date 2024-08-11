@@ -2,14 +2,9 @@ import headlessuiPlugin from "@headlessui/tailwindcss"
 import formsPlugin from "@tailwindcss/forms"
 import { type Config } from "tailwindcss"
 
-const { nextui } = require("@nextui-org/react")
-
 export default {
   darkMode: ["class"],
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem" }],
@@ -40,9 +35,15 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "spin-slow": "spinner-spin 1.3s ease infinite",
+        "border-spin": "border-spin 7s linear infinite",
       },
 
       keyframes: {
+        "border-spin": {
+          "100%": {
+            transform: "rotate(-360deg)",
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -122,26 +123,5 @@ export default {
       },
     },
   },
-  plugins: [
-    formsPlugin,
-    headlessuiPlugin,
-    require("tailwindcss-animate"),
-    nextui({
-      themes: {
-        light: {
-          // ...
-          colors: {
-            danger: "#e60079",
-          },
-        },
-        dark: {
-          // ...
-          colors: {
-            danger: "#e60079",
-          },
-        },
-        // ... custom themes
-      },
-    }),
-  ],
+  plugins: [formsPlugin, headlessuiPlugin, require("tailwindcss-animate")],
 } satisfies Config

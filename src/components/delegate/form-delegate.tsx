@@ -4,7 +4,7 @@ import { ALL } from "dns"
 import { useEffect, useState } from "react"
 import { findChangedItem, parseBN, safeToBn } from "@/util"
 import { Slider } from "@nextui-org/slider"
-import { BN_ZERO, bnToBn, BN } from "@polkadot/util"
+import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay } from "@/config/chains"
@@ -15,16 +15,19 @@ import {
 } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
 import { Track, useTracks } from "@/hooks/use-tracks"
+import { useVotingFor } from "@/hooks/use-voting-for"
 import { sendDelegateTx } from "@/app/txs/txs"
 
 import { AmountInput } from "../AmountInput"
 import { AvailableBalance } from "../AvailableBalance"
+import { TrackSelect } from "../TrackSelect"
 import TrackSelector from "../TrackSelector"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Option } from "../ui/multiple-selector"
 import { Switch } from "../ui/switch"
+import { DelegationInfo } from "./delegation-info"
 
 // const ALL_TRACKS_ID = 9999
 // const ALL_TRACKS_OPTION = {
@@ -60,6 +63,9 @@ export default function FormDelegate() {
     isSuccess: isAccountBalanceSuccess,
   } = useAccountBalances()
 
+  const { data: votingFor, isLoading: isVotingForLoading } = useVotingFor()
+  console.log("votingForForm", votingFor)
+
   const { data: trackOptions, isLoading: allTracksLoading } = useTracks()
   const ALL_TRACKS = trackOptions
 
@@ -84,7 +90,6 @@ export default function FormDelegate() {
       ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
 
-
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 
   const delegateToTheKus = async (e: any) => {
@@ -105,11 +110,11 @@ export default function FormDelegate() {
     )
   }
 
-  const effectiveVotes =
-    isNaN(amount) ? 0 :
-    conviction !== 0
-      ? (amount * conviction).toFixed(2)
-      : (amount * 0.1).toFixed(2)
+  const effectiveVotes = isNaN(amount)
+    ? 0
+    : conviction !== 0
+    ? (amount * conviction).toFixed(2)
+    : (amount * 0.1).toFixed(2)
 
   const marks = [
     {
@@ -155,8 +160,8 @@ export default function FormDelegate() {
   }
 
   return (
-    <form className="flex w-full max-w-xl flex-col gap-5">
-      <div className="flex flex-col gap-2">
+    <form className="flex w-full max-w-xl flex-col gap-5 relative">
+      {/* <div className="flex flex-col gap-2">
         <div className="flex items-center space-x-2">
           <Switch
             checked={isAllSelected}
@@ -179,10 +184,13 @@ export default function FormDelegate() {
             onChange={setTracks}
           />
         )}
-      </div>
+      </div> */}
+
+      <TrackSelect className="w-full" />
 
       <div className="flex w-full max-w-full flex-row gap-3">
         <AmountInput
+          info="staked"
           label="Delegation Amount"
           value={amount.toString()}
           onChange={(e) => {
@@ -221,11 +229,17 @@ export default function FormDelegate() {
           }}
         />
       </div>
+      <DelegationInfo value={votingFor} className="-mb-3" />
       <div className="flex w-full items-end gap-2">
         <Button
           className="w-full"
           onClick={delegateToTheKus}
-          disabled={!isAccountBalanceSuccess || allTracksLoading || amount === 0}
+          disabled={
+            !isAccountBalanceSuccess ||
+            allTracksLoading ||
+            isVotingForLoading ||
+            amount === 0
+          }
         >
           Delegate {effectiveVotes} {effectiveVotes !== "1" ? "Votes" : "Vote"}
         </Button>
