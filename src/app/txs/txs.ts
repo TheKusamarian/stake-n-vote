@@ -1,9 +1,12 @@
 import { ApiPromise } from "@polkadot/api"
-import { Signer } from "@polkadot/types/types/extrinsic"
+import { SubmittableExtrinsic } from "@polkadot/api/types"
+import { ISubmittableResult, Signer } from "@polkadot/types/types/extrinsic"
 import { BN } from "@polkadot/util"
 import { SubstrateChain } from "@scio-labs/use-inkathon"
 import { ToastType } from "react-hot-toast"
 import { toast } from "sonner"
+
+import { votingForType } from "@/hooks/use-voting-for"
 
 import { DEFAULT_TOAST, sendAndFinalize } from "./send-and-finalize"
 
@@ -15,17 +18,41 @@ export async function sendDelegateTx(
   tracks: string[] = ["0"],
   target: string,
   conviction: number,
-  value: BN
+  value: BN,
+  votingFor: votingForType | undefined
 ) {
-  if (tracks.length === 0 || !api || !signer || !address) {
+  if (tracks.length === 0 || !api || !signer || !address || !votingFor) {
     return
   }
+
+  const removeVoteTxs = Array.from(tracks).reduce((acc, track) => {
+    const votes = votingFor[track]?.casting || []
+    const removeVotes = votes.map((vote) =>
+      api?.tx.convictionVoting.removeVote(track, vote)
+    )
+    return [...acc, ...removeVotes]
+  }, [] as SubmittableExtrinsic<"promise", ISubmittableResult>[])
+
+  const undelegateTxs = Array.from(tracks).reduce((acc, track) => {
+    const delegations = votingFor[track]?.delegating
+
+    if (!delegations) {
+      return acc
+    }
+
+    const undelegate = api?.tx.convictionVoting.undelegate(track)
+    return [...acc, undelegate]
+  }, [] as SubmittableExtrinsic<"promise", ISubmittableResult>[])
 
   const txs = Array.from(tracks).map((track) =>
     api?.tx.convictionVoting.delegate(track, target, conviction, value)
   )
 
-  const tx = api?.tx.utility.batchAll(txs)
+  const tx = api?.tx.utility.batchAll([
+    ...removeVoteTxs,
+    ...undelegateTxs,
+    ...txs,
+  ])
 
   const res = await sendAndFinalize({
     api,

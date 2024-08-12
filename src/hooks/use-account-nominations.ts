@@ -18,7 +18,6 @@ export function useAccountNominators() {
     async () => {
       // Fetch staking information
       const stakingInfo = await api?.query.staking.nominators(userAddress)
-      // console.log('stakingInfo', stakingInfo?.toJSON())
 
       if (!stakingInfo || stakingInfo.isNone) {
         return []

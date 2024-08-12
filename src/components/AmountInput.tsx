@@ -1,5 +1,6 @@
 "use client"
 
+import { safeToBn } from "@/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { Input } from "@/components/ui/input"
@@ -9,10 +10,6 @@ import { cn } from "../lib/utils"
 import AvailableBalance from "./AvailableBalance"
 import { StakedBalance } from "./StakedBalance"
 
-import { safeToBn } from "@/util"
-
-const MAX_ALLOWED_AMOUNT = 999999999
-
 export function AmountInput({
   children,
   className,
@@ -20,7 +17,7 @@ export function AmountInput({
   onChange,
   value,
   info = "available",
-  max = MAX_ALLOWED_AMOUNT,
+  max = 999999999,
   ...rest
 }: {
   children?: React.ReactNode
@@ -37,17 +34,15 @@ export function AmountInput({
 
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
+    const inputValue = e.target.value
 
-    if (parseFloat(e.target.value) >= MAX_ALLOWED_AMOUNT) {
-      e.target.value = MAX_ALLOWED_AMOUNT.toString();
-      onChange(e);
+    if (parseFloat(e.target.value) >= max) {
+      e.target.value = max.toFixed(2)
+      onChange(e)
       return
     }
 
-    const inputValueBN = safeToBn(inputValue);
-    e.target.value = inputValueBN.toString();
-    onChange(e);
+    onChange(e)
   }
 
   return (
@@ -67,7 +62,7 @@ export function AmountInput({
             type="number"
             min={0}
             step={0.01}
-            className="text-black"
+            className="text-black hover:bg-accent"
             onChange={handleInputChange}
             value={value}
             placeholder="Enter amount"

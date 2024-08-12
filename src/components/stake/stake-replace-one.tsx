@@ -33,7 +33,6 @@ export function ReplaceOneWithKus({
   const [selected, setSelected] = useState<string | undefined>()
 
   const { data: identities } = useIdentities(nominators)
-  console.log("in modal: identities", identities)
 
   const nominate = async (targets: string[]) => {
     const tx = await nominateTx(

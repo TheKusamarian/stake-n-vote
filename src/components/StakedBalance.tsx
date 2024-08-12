@@ -35,8 +35,6 @@ export function StakedBalance({ children, className, label, params }: Props) {
     activeChain?.tokenSymbol
   )
 
-  console.log("sss", stakingInfo?.withValidator?.toString())
-
   return (
     <span className={cn("text-xs", className)}>
       {formattedBalance

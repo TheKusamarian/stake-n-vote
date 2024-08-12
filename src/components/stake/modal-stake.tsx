@@ -81,14 +81,9 @@ export function ModalStake() {
     nominators?.includes(kusValidator) ||
     stakingInfo?.poolId === CHAIN_CONFIG["Polkadot"].poolId
 
-  console.log("stakingWithKus", stakingWithKus)
-
   return (
     <Dialog open={isStakingModalOpen} onOpenChange={setIsStakingModalOpen}>
-      <DialogContent
-        className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50 text-sm"
-        isLoading={false}
-      >
+      <DialogContent className="sm:max-w-[600px] border-4 border-primary-500 bg-gradient-to-br from-primary-500/50 to-teal-500/50 text-sm">
         {isLoading && (
           <div className="inset-0 bg-white/80 absolute flex justify-center items-center z-10">
             <Loader />

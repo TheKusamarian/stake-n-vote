@@ -159,3 +159,17 @@
 
     @apply absolute left-[-450%] top-[-450%] h-[1000%] w-[1000%] animate-border-spin content-[''] rounded-xl;
   }
+
+
+  .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+    @apply animate-pulse;
+    box-shadow: 0 0 0 4px #e60079aa !important;
+  }
+
+  .rc-slider-mark-text {
+    color: #777 !important;
+  }
+
+  .rc-slider-mark-text-active {
+    color: #000 !important;
+  }

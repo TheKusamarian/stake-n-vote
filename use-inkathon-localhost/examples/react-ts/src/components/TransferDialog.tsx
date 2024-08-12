@@ -69,7 +69,6 @@ function TransferDialogForm({ onCloseDialog }: TransferDialogFormProps) {
 
       // Perform transfer
       await transferBalance(api, activeAccount.address, transferAddress, amount)
-      console.log(`Successfully transferred ${amountFormatted} to ${transferAddress}.`)
       onCloseDialog()
     } catch (e) {
       console.error(e)

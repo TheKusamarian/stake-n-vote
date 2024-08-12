@@ -14,20 +14,17 @@ import {
   POLKADOT_DELEGATOR,
 } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
+import { useMaxDelegation } from "@/hooks/use-max-delegation"
 import { Track, useTracks } from "@/hooks/use-tracks"
 import { useVotingFor } from "@/hooks/use-voting-for"
 import { sendDelegateTx } from "@/app/txs/txs"
 
 import { AmountInput } from "../AmountInput"
-import { AvailableBalance } from "../AvailableBalance"
-import { TrackSelect } from "../TrackSelect"
-import TrackSelector from "../TrackSelector"
+import { ConvictionSlider } from "../conviction-slider"
+import { TrackSelect } from "../track-select"
 import { Button } from "../ui/button"
-import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import { Option } from "../ui/multiple-selector"
-import { Switch } from "../ui/switch"
-import { DelegationInfo } from "./delegation-info"
+import { DelegationVoteInfo } from "./delegation-vote-info"
 
 // const ALL_TRACKS_ID = 9999
 // const ALL_TRACKS_OPTION = {
@@ -64,33 +61,34 @@ export default function FormDelegate() {
   } = useAccountBalances()
 
   const { data: votingFor, isLoading: isVotingForLoading } = useVotingFor()
-  console.log("votingForForm", votingFor)
 
   const { data: trackOptions, isLoading: allTracksLoading } = useTracks()
   const ALL_TRACKS = trackOptions
 
   const [amount, setAmount] = useState(1)
-  const [tracks, setTracks] = useState(ALL_TRACKS)
+  const [tracks, setTracks] = useState<string[]>(
+    trackOptions?.map((t) => t.value) || []
+  )
   const [isAllSelected, setIsAllSelected] = useState(true)
 
   useEffect(() => {
-    setTracks(trackOptions || [])
+    setTracks(trackOptions?.map((t) => t.value) || [])
   }, [trackOptions])
 
   const { activeAccount, activeSigner, activeChain, api } = useInkathon()
   const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"]
 
-  const { tokenSymbol, tokenDecimals } = activeChainConfig
+  const { tokenDecimals } = activeChainConfig
 
   const [conviction, setConviction] = useState<number>(
-    activeChain === kusamaRelay ? 1 : 3
+    activeChain === kusamaRelay ? 3 : 1
   )
   const delegateBalance =
     !isNaN(amount) && amount !== 0
       ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
 
-  const { freeBalance } = accountBalance || { freeBalance: "0" }
+  const { data: maxDelegation } = useMaxDelegation()
 
   const delegateToTheKus = async (e: any) => {
     e.preventDefault()
@@ -103,10 +101,11 @@ export default function FormDelegate() {
       activeSigner,
       activeChain,
       activeAccount?.address,
-      tracks?.map((track) => track.value),
+      tracks,
       target,
       conviction,
-      delegateBalance
+      delegateBalance,
+      votingFor
     )
   }
 
@@ -116,78 +115,33 @@ export default function FormDelegate() {
     ? (amount * conviction).toFixed(2)
     : (amount * 0.1).toFixed(2)
 
-  const marks = [
-    {
-      value: 0,
-      label: "0.1x",
-      description: "No lockup",
-    },
-    {
-      value: 1,
-      label: "1x",
-      description: "Locked for 7 days",
-    },
-    {
-      value: 2,
-      label: "2x",
-      description: "Locked for 14 days",
-    },
-    {
-      value: 3,
-      label: "3x",
-      description: "Locked for 28 days",
-    },
-    {
-      value: 4,
-      label: "4x",
-      description: "Locked for 56 days",
-    },
-    {
-      value: 5,
-      label: "5x",
-      description: "Locked for 112 days",
-    },
-    {
-      value: 6,
-      label: "6x",
-      description: "Locked for 224 days",
-    },
-  ]
-
   const delegateMax = (e: any) => {
     e.preventDefault()
-    setAmount(parseBN(freeBalance?.toString(), tokenDecimals))
+    setAmount(
+      parseFloat(parseBN(maxDelegation || "0", tokenDecimals).toFixed(2))
+    )
+  }
+
+  const delegateStaked = (e: any) => {
+    e.preventDefault()
+    setAmount(
+      parseFloat(
+        parseBN(
+          accountBalance?.stakedBalance || BN_ZERO,
+          tokenDecimals
+        ).toFixed(2)
+      )
+    )
   }
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5 relative">
-      {/* <div className="flex flex-col gap-2">
-        <div className="flex items-center space-x-2">
-          <Switch
-            checked={isAllSelected}
-            onCheckedChange={(val) => {
-              if (val) {
-                setTracks(ALL_TRACKS)
-              }
-              setIsAllSelected(val)
-            }}
-          />
-          <Label htmlFor="airplane-mode" className="font-bold">
-            Delegate Votes for all Governance Tracks
-          </Label>
-        </div>
-
-        {!isAllSelected && (
-          <TrackSelector
-            options={trackOptions || []}
-            value={tracks || []}
-            onChange={setTracks}
-          />
-        )}
-      </div> */}
-
-      <TrackSelect className="w-full" />
-
+      <div>
+        <Label htmlFor="airplane-mode" className="font-bold">
+          Governance Tracks
+        </Label>
+        <TrackSelect className="w-full" values={tracks} onChange={setTracks} />
+      </div>
       <div className="flex w-full max-w-full flex-row gap-3">
         <AmountInput
           info="staked"
@@ -196,40 +150,38 @@ export default function FormDelegate() {
           onChange={(e) => {
             setAmount(parseFloat(e.target.value))
           }}
+          max={parseBN(maxDelegation || "0", tokenDecimals)}
         >
+          <Button
+            onClick={delegateStaked}
+            variant="outline"
+            className="h-10 border-2 flex-0 bg-default-100 hover:bg-accent hover:shadow-md md:mr-1 mb-1 md:mb-0 text-xs"
+            disabled={
+              !isAccountBalanceSuccess ||
+              accountBalance.stakedBalance.eq(BN_ZERO)
+            }
+          >
+            Delegate Staked
+          </Button>
           <Button
             onClick={delegateMax}
             variant="outline"
-            className="h-10 border-2 flex-0 bg-default-100 hover:bg-pink-200"
+            className="h-10 border-2 flex-0 bg-default-100 hover:bg-accent hover:shadow-md text-xs"
             disabled={!isAccountBalanceSuccess}
           >
             Delegate Max
           </Button>
         </AmountInput>
       </div>
-      <div className="flex w-full max-w-full flex-col gap-6">
-        <Slider
-          label="Conviction"
-          color="danger"
-          step={1}
-          maxValue={6}
-          showOutline={true}
-          showSteps={true}
-          marks={marks}
-          //   defaultValue={1}
-          value={conviction}
-          onChange={(value) => setConviction(value as number)}
-          getValue={(conviction) =>
-            `${marks[conviction as number].description}`
-          }
-          className="max-w-full font-bold"
-          classNames={{
-            track: "bg-default-100 font-normal",
-            value: "font-normal",
-          }}
-        />
-      </div>
-      <DelegationInfo value={votingFor} className="-mb-3" />
+      <ConvictionSlider
+        value={conviction}
+        onChange={(value) => setConviction(value as number)}
+      />
+      <DelegationVoteInfo
+        value={votingFor}
+        className="-mb-3 mt-4"
+        selectedTracks={tracks}
+      />
       <div className="flex w-full items-end gap-2">
         <Button
           className="w-full"
@@ -238,6 +190,7 @@ export default function FormDelegate() {
             !isAccountBalanceSuccess ||
             allTracksLoading ||
             isVotingForLoading ||
+            !amount ||
             amount === 0
           }
         >

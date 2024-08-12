@@ -48,7 +48,7 @@ function useAccountBalances() {
       : undefined
 
   return useQuery<Balances, Error>(
-    ["accountBalances", activeChain],
+    ["accountBalances", activeChain, activeAccount?.address],
     () => fetchBalances(api, userAddress),
     {
       enabled: !!api && !!userAddress, // Only run if an address is provided

@@ -18,8 +18,6 @@ export function useVotingFor(): UseQueryResult<votingForType> {
   return useQuery<votingForType>({
     queryKey: ["votingFor", activeChain?.name, activeAccount?.address],
     queryFn: async (): Promise<votingForType> => {
-      console.log("bbb", activeAccount?.address)
-
       // Fetch staking information
       const votingFor = await api?.query.convictionVoting.votingFor.entries(
         activeAccount?.address
