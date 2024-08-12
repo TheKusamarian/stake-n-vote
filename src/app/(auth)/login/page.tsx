@@ -1,7 +1,7 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 
-import { Button } from "@/components/button"
+import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { SlimLayout } from "@/components/slim-layout"
 
@@ -46,7 +46,7 @@ export default function Login() {
           required
         /> */}
         <div>
-          <Button type="submit" variant="solid" color="blue" className="w-full">
+          <Button type="submit" color="blue" className="w-full">
             <span>
               Sign in <span aria-hidden="true">&rarr;</span>
             </span>

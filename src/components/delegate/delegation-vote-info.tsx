@@ -1,6 +1,5 @@
 import { votingForType } from "@/hooks/use-voting-for"
-
-import { Information } from "../information"
+import { Information } from "@/components/information"
 
 export function DelegationVoteInfo({
   value,

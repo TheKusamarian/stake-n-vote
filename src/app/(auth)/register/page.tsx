@@ -1,7 +1,7 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 
-import { Button } from "@/components/button"
+import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { SlimLayout } from "@/components/slim-layout"
 
@@ -75,7 +75,7 @@ export default function Register() {
           <option>The “Never Use This” podcast</option>
         </SelectField> */}
         <div className="col-span-full">
-          <Button type="submit" variant="solid" color="blue" className="w-full">
+          <Button type="submit" color="blue" className="w-full">
             <span>
               Sign up <span aria-hidden="true">&rarr;</span>
             </span>
