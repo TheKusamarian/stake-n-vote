@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import type { SubmittableExtrinsic } from "@polkadot/api/types"
+import { BN } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 type Params = any[]
@@ -9,9 +10,9 @@ type Params = any[]
 export function useTransactionFee(
   extrinsic: SubmittableExtrinsic<"promise"> | undefined,
   params: Params = []
-): string | undefined {
+): BN | undefined {
   const { api } = useInkathon()
-  const [fee, setFee] = useState<string | undefined>(undefined)
+  const [fee, setFee] = useState<BN | undefined>(undefined)
 
   useEffect(() => {
     let isMounted = true
@@ -21,7 +22,7 @@ export function useTransactionFee(
         try {
           const info = await extrinsic.paymentInfo(params[0])
           if (isMounted) {
-            setFee(info.partialFee.toString())
+            setFee(info.partialFee)
           }
         } catch (error) {
           console.error(error)

@@ -10,9 +10,9 @@ import { votingForType } from "@/hooks/use-voting-for"
 
 import { DEFAULT_TOAST, sendAndFinalize } from "./send-and-finalize"
 
-export async function sendDelegateTx(
+export function delegateTxs(
   api: ApiPromise | undefined,
-  signer: any,
+  signer: Signer | undefined,
   activeChain: SubstrateChain | undefined,
   address: string | undefined,
   tracks: string[] = ["0"],
@@ -44,19 +44,48 @@ export async function sendDelegateTx(
     return [...acc, undelegate]
   }, [] as SubmittableExtrinsic<"promise", ISubmittableResult>[])
 
-  const txs = Array.from(tracks).map((track) =>
+  const delegateTxs = Array.from(tracks).map((track) =>
     api?.tx.convictionVoting.delegate(track, target, conviction, value)
   )
 
   const tx = api?.tx.utility.batchAll([
     ...removeVoteTxs,
     ...undelegateTxs,
-    ...txs,
+    ...delegateTxs,
   ])
+
+  return tx
+}
+
+export async function sendDelegateTx(
+  api: ApiPromise | undefined,
+  signer: any,
+  activeChain: SubstrateChain | undefined,
+  address: string | undefined,
+  tracks: string[] = ["0"],
+  target: string,
+  conviction: number,
+  value: BN,
+  votingFor: votingForType | undefined
+) {
+  if (tracks.length === 0 || !api || !signer || !address || !votingFor) {
+    return
+  }
+
+  const tx = delegateTxs(
+    api,
+    signer,
+    activeChain,
+    address,
+    tracks,
+    target,
+    conviction,
+    value,
+    votingFor
+  )
 
   const res = await sendAndFinalize({
     api,
-
     tx,
     signer,
     address,
