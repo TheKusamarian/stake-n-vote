@@ -8,8 +8,8 @@ import { Dialog, Popover, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 
+import { FooterLinks } from "./_footer"
 import { ConnectButton } from "./connect-button"
-import { FooterLinks } from "./footer"
 
 function MobileNavLink({
   href,

@@ -3,10 +3,10 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
+import { Footer } from "@/components/_footer"
+import { Header } from "@/components/_header"
+import { Hero } from "@/components/_hero"
 import { CallToAction } from "@/components/call-to-action"
-import { Footer } from "@/components/footer"
-import { Header } from "@/components/header"
-import { Hero } from "@/components/hero"
 
 // Dynamically import non-critical components
 const PrimaryFeatures = dynamic(() => import("@/components/primary-featurs"), {
