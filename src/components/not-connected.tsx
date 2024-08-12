@@ -1,5 +1,3 @@
-import { ConnectButton } from "./ConnectButton"
-
 export function NotConnected() {
   return (
     <>

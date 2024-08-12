@@ -2,8 +2,8 @@ import Image from "next/image"
 import Link from "next/link"
 import logo from "@/images/logos/kusamarian.png"
 
-import { Button } from "@/components/Button"
-import { Container } from "@/components/Container"
+import { Button } from "@/components/button"
+import { Container } from "@/components/container"
 
 export default function NotFound() {
   return (

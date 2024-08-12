@@ -2,14 +2,11 @@
 
 import { useState } from "react"
 import { parseBN } from "@/util"
-import { BN_ZERO, bnToBn,  BN } from "@polkadot/util"
+import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay } from "@/config/chains"
-import {
-  CHAIN_CONFIG,
-
-} from "@/config/config"
+import { CHAIN_CONFIG } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
 import { useCall } from "@/hooks/use-call"
 import { useExistentialDeposit } from "@/hooks/use-existential-deposit"
@@ -19,7 +16,7 @@ import useStakingInfo, {
 } from "@/hooks/use-staking-info"
 import { stakeMoreTx, unstakeTx } from "@/app/txs/txs"
 
-import { AmountInput } from "../AmountInput"
+import { AmountInput } from "../amount-input"
 import { Button } from "../ui/button"
 
 export type State = {
@@ -61,7 +58,7 @@ export default function FormAddStake({
 
   const stakeBalance =
     !isNaN(amount) && amount !== 0
-    ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
+      ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 

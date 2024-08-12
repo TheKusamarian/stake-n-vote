@@ -7,7 +7,7 @@ import { ParallaxProvider } from "react-scroll-parallax"
 import { polkadotRelay } from "@/config/chains"
 import { supportedWallets } from "@/config/wallets"
 
-import ErrorBoundary from "../components/ErrorBoundary"
+import ErrorBoundary from "../components/error-boundary"
 import { AppProvider } from "./app-provider"
 
 export function Providers({ children }: { children: React.ReactNode }) {

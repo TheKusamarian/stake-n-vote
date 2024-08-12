@@ -4,7 +4,6 @@ import { encodeAddress } from "@polkadot/keyring"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
 
-// Custom hook
 export function useAccountNominators() {
   const { api, activeChain, activeAccount } = useInkathon()
 

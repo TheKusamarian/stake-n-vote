@@ -1,13 +1,12 @@
-import Link from 'next/link'
+import { type Metadata } from "next"
+import Link from "next/link"
 
-import { Button } from '@/components/Button'
-import { SelectField, TextField } from '@/components/Fields'
-import { Logo } from '@/components/Logo'
-import { SlimLayout } from '@/components/SlimLayout'
-import { type Metadata } from 'next'
+import { Button } from "@/components/button"
+import { Logo } from "@/components/logo"
+import { SlimLayout } from "@/components/slim-layout"
 
 export const metadata: Metadata = {
-  title: 'Sign Up',
+  title: "Sign Up",
 }
 
 export default function Register() {
@@ -22,20 +21,20 @@ export default function Register() {
         Get started for free
       </h2>
       <p className="mt-2 text-sm text-gray-700">
-        Already registered?{' '}
+        Already registered?{" "}
         <Link
           href="/login"
           className="font-medium text-blue-600 hover:underline"
         >
           Sign in
-        </Link>{' '}
+        </Link>{" "}
         to your account.
       </p>
       <form
         action="#"
         className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2"
       >
-        <TextField
+        {/* <TextField
           label="First name"
           name="first_name"
           type="text"
@@ -64,8 +63,8 @@ export default function Register() {
           type="password"
           autoComplete="new-password"
           required
-        />
-        <SelectField
+        /> */}
+        {/* <SelectField
           className="col-span-full"
           label="How did you hear about us?"
           name="referral_source"
@@ -74,7 +73,7 @@ export default function Register() {
           <option>Super Bowl commercial</option>
           <option>Our route 34 city bus ad</option>
           <option>The “Never Use This” podcast</option>
-        </SelectField>
+        </SelectField> */}
         <div className="col-span-full">
           <Button type="submit" variant="solid" color="blue" className="w-full">
             <span>

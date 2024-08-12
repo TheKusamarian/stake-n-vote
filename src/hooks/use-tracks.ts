@@ -10,14 +10,12 @@ export interface Track {
   label: string
 }
 
-// Custom hook
 export function useTracks() {
   const { api, activeChain } = useInkathon()
 
   return useQuery<Option[] | undefined>(
     ["tracks", activeChain?.name],
     async () => {
-      // Fetch staking information
       const tracks = await api?.consts.referenda.tracks
       return tracks?.map(([trackId, data]) => {
         return {

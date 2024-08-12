@@ -5,11 +5,11 @@ import Image from "next/image"
 import Link from "next/link"
 import logo from "@/images/logos/kusamarian.png"
 import { Dialog, Popover, Transition } from "@headlessui/react"
-import { Bars3Icon, WalletIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 
-import { ConnectButton } from "./ConnectButton"
-import { FooterLinks } from "./Footer"
+import { ConnectButton } from "./connect-button"
+import { FooterLinks } from "./footer"
 
 function MobileNavLink({
   href,

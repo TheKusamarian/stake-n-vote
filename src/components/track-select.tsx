@@ -1,7 +1,3 @@
-import { info } from "console"
-import { format } from "url"
-import { useState } from "react"
-
 import { useTracks } from "@/hooks/use-tracks"
 import { useVotingFor } from "@/hooks/use-voting-for"
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useEffect, useState } from "react"
+import { FC, useState } from "react"
 import Link from "next/link"
 import { WalletIcon } from "@heroicons/react/24/outline"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
@@ -8,13 +8,12 @@ import Identicon from "@polkadot/react-identicon"
 import { encodeAddress } from "@polkadot/util-crypto"
 import {
   SubstrateWalletPlatform,
-  allSubstrateWallets,
   isWalletInstalled,
   useInkathon,
 } from "@scio-labs/use-inkathon"
 import UseCases from "@w3f/polkadot-icons/keyline/UseCases"
 import ls from "localstorage-slim"
-import { ArrowUpRight, CheckCircle, ChevronDown } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 
 import { supportedWallets } from "@/config/wallets"
 import { cn } from "@/lib/utils"
@@ -46,7 +45,6 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     isConnecting,
     activeAccount,
     accounts,
-    activeExtension,
     setActiveAccount,
   } = useInkathon()
 

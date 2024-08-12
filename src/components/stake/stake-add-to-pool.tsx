@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { bondAndNominateTx, joinPool, nominateTx } from "@/app/txs/txs"
 
-import { AmountInput } from "../AmountInput"
+import { AmountInput } from "../amount-input"
 
 export function MaybeAddToPool({
   minNominatorBond,

@@ -1,11 +1,6 @@
-import { useInkathon } from "@scio-labs/use-inkathon"
-import { UseQueryResult } from "react-query"
-
-import { CHAIN_CONFIG } from "@/config/config"
-import { useTracks } from "@/hooks/use-tracks"
 import { votingForType } from "@/hooks/use-voting-for"
 
-import { Information } from "../Information"
+import { Information } from "../information"
 
 export function DelegationVoteInfo({
   value,

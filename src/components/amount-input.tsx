@@ -1,14 +1,13 @@
 "use client"
 
-import { safeToBn } from "@/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { cn } from "../lib/utils"
-import AvailableBalance from "./AvailableBalance"
-import { StakedBalance } from "./StakedBalance"
+import AvailableBalance from "./available-balance"
+import { StakedBalance } from "./staked-balance"
 
 export function AmountInput({
   children,
@@ -25,7 +24,7 @@ export function AmountInput({
   label: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   value: string
-  info?: "available" | "staked"
+  info?: "available" | "staked" | string
   max?: number
 }) {
   const { activeChain, activeAccount } = useInkathon()
@@ -34,10 +33,8 @@ export function AmountInput({
 
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value
-
     if (parseFloat(e.target.value) >= max) {
-      e.target.value = max.toFixed(2)
+      e.target.value = Math.max(max, 0).toFixed(2)
       onChange(e)
       return
     }
@@ -81,6 +78,9 @@ export function AmountInput({
               params={activeAccount?.address}
               className="ml-0.5"
             />
+          )}
+          {info !== "available" && info !== "staked" && (
+            <span className="ml-0.5 text-xs h-6">{info}</span>
           )}
         </div>
         <span className="flex h-10 w-12 items-center px-2 text-sm font-bold">

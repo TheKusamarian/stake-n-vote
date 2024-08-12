@@ -99,7 +99,9 @@ const SelectBox = React.forwardRef<HTMLInputElement, SelectBoxProps>(
           <Button
             variant="outline"
             role="combobox"
-            className="w-full justify-between bg-white h-10"
+            className={cn("w-full justify-between bg-white h-10 font-normal", {
+              "text-muted-foreground": value?.length === 0,
+            })}
           >
             {placeholder ?? "Select..."}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

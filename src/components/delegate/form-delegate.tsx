@@ -1,12 +1,8 @@
 "use client"
 
-import { ALL } from "dns"
 import { useEffect, useMemo, useState } from "react"
-import { findChangedItem, parseBN, safeToBn } from "@/util"
-import { Slider } from "@nextui-org/slider"
-import { SubmittableExtrinsic } from "@polkadot/api/types"
-import { ISubmittableResult } from "@polkadot/types/types"
-import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
+import { parseBN } from "@/util"
+import { BN, BN_ZERO } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay } from "@/config/chains"
@@ -18,11 +14,11 @@ import {
 import useAccountBalances from "@/hooks/use-account-balance"
 import { useTransactionFee } from "@/hooks/use-fees"
 import { useMaxDelegation } from "@/hooks/use-max-delegation"
-import { Track, useTracks } from "@/hooks/use-tracks"
+import { useTracks } from "@/hooks/use-tracks"
 import { useVotingFor } from "@/hooks/use-voting-for"
 import { delegateTxs, sendDelegateTx } from "@/app/txs/txs"
 
-import { AmountInput } from "../AmountInput"
+import { AmountInput } from "../amount-input"
 import { ConvictionSlider } from "../conviction-slider"
 import { TrackSelect } from "../track-select"
 import { Button } from "../ui/button"
@@ -48,43 +44,32 @@ export function submitDelegation(prevState: State, formData: FormData) {
 }
 
 export default function FormDelegate() {
-  const {
-    data: accountBalance,
-    isLoading: isAccountBalanceLoading,
-    isFetching: isAccountBalanceFetching,
-    isSuccess: isAccountBalanceSuccess,
-  } = useAccountBalances()
-
+  const { data: accountBalance, isSuccess: isAccountBalanceSuccess } =
+    useAccountBalances()
   const { data: votingFor, isLoading: isVotingForLoading } = useVotingFor()
   const { data: trackOptions, isLoading: allTracksLoading } = useTracks()
+  const { activeAccount, activeSigner, activeChain, api } = useInkathon()
+  const { data: maxDelegation } = useMaxDelegation()
 
-  const [amount, setAmount] = useState(1)
+  const [amount, setAmount] = useState(0)
   const [isMaxAmount, setIsMaxAmount] = useState(false) // Track if the amount was set via "Delegate Max"
   const [tracks, setTracks] = useState<string[]>(
     trackOptions?.map((t) => t.value) || []
   )
+  const [conviction, setConviction] = useState<number>(
+    activeChain === kusamaRelay ? 3 : 1
+  )
 
-  useEffect(() => {
-    setTracks(trackOptions?.map((t) => t.value) || [])
-  }, [trackOptions])
-
-  const { activeAccount, activeSigner, activeChain, api } = useInkathon()
   const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"]
   const target =
     activeChain === kusamaRelay ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR
 
   const { tokenDecimals } = activeChainConfig
 
-  const [conviction, setConviction] = useState<number>(
-    activeChain === kusamaRelay ? 3 : 1
-  )
-
   const delegateBalance =
     !isNaN(amount) && amount !== 0
       ? new BN(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
       : BN_ZERO
-
-  const { data: maxDelegation } = useMaxDelegation()
 
   const tx = useMemo(() => {
     return delegateTxs(
@@ -112,19 +97,29 @@ export default function FormDelegate() {
 
   const txFees = useTransactionFee(tx, [activeAccount?.address])
 
+  const effectiveVotes = isNaN(amount)
+    ? 0
+    : conviction !== 0
+    ? (amount * conviction).toFixed(2)
+    : (amount * 0.1).toFixed(2)
+
   const maxAmount = useMemo(() => {
     if (!maxDelegation || !txFees) return amount
     return parseFloat(
       parseBN(maxDelegation.sub(txFees), tokenDecimals).toFixed(2)
     )
-  }, [maxDelegation, txFees])
+  }, [maxDelegation, txFees, amount, tokenDecimals])
 
   useEffect(() => {
-    // Adjust the amount whenever the maxAmount changes and the user had set the max amount
-    if (isMaxAmount && amount !== maxAmount) {
+    setTracks(trackOptions?.map((t) => t.value) || [])
+  }, [trackOptions])
+
+  useEffect(() => {
+    if (isMaxAmount) {
+      console.log("Setting amount to max", maxAmount)
       setAmount(maxAmount)
     }
-  }, [maxAmount, isMaxAmount]) // Watching for changes in maxAmount and isMaxAmount
+  }, [tracks, maxAmount, isMaxAmount, amount])
 
   const delegateToTheKus = async (e: any) => {
     e.preventDefault()
@@ -132,7 +127,7 @@ export default function FormDelegate() {
     const target =
       activeChain === kusamaRelay ? KUSAMA_DELEGATOR : POLKADOT_DELEGATOR
 
-    const tx = await sendDelegateTx(
+    await sendDelegateTx(
       api,
       activeSigner,
       activeChain,
@@ -145,12 +140,6 @@ export default function FormDelegate() {
     )
   }
 
-  const effectiveVotes = isNaN(amount)
-    ? 0
-    : conviction !== 0
-    ? (amount * conviction).toFixed(2)
-    : (amount * 0.1).toFixed(2)
-
   const delegateMax = (e: any) => {
     e.preventDefault()
     setAmount(maxAmount)
@@ -162,7 +151,7 @@ export default function FormDelegate() {
     setAmount(
       parseFloat(
         parseBN(
-          accountBalance?.stakedBalance || BN_ZERO,
+          (accountBalance?.stakedBalance || BN_ZERO).sub(txFees || BN_ZERO),
           tokenDecimals
         ).toFixed(2)
       )
@@ -175,21 +164,55 @@ export default function FormDelegate() {
     setIsMaxAmount(false) // Manually setting an amount, so no longer the max
   }
 
+  const handleTracksChange = (newTracks: string[]) => {
+    setTracks(newTracks)
+
+    if (isMaxAmount) {
+      setAmount(maxAmount) // Update the amount if it was set to the max and tracks have changed
+    }
+  }
+
+  const isDisabled =
+    !isAccountBalanceSuccess ||
+    allTracksLoading ||
+    isVotingForLoading ||
+    !amount ||
+    amount <= 0 ||
+    tracks.length === 0 ||
+    accountBalance?.freeBalance.lte(BN_ZERO)
+
+  const errorMessage = accountBalance?.freeBalance.lte(BN_ZERO)
+    ? `Insufficient balance to pay the fees of ${parseBN(
+        txFees || BN_ZERO,
+        activeChainConfig.tokenDecimals
+      ).toFixed(4)} ${activeChainConfig.tokenSymbol}`
+    : tracks.length === 0
+    ? "Please select at least 1 track"
+    : amount <= 0 || isNaN(amount)
+    ? "Please enter a valid amount"
+    : ""
+
   return (
     <form className="flex w-full max-w-xl flex-col gap-5 relative">
       <div>
         <Label htmlFor="airplane-mode" className="font-bold">
           Governance Tracks
         </Label>
-        <TrackSelect className="w-full" values={tracks} onChange={setTracks} />
+        <TrackSelect
+          className="w-full"
+          values={tracks}
+          onChange={handleTracksChange}
+        />
       </div>
       <div className="flex w-full max-w-full flex-row gap-3">
         <AmountInput
-          info="staked"
+          info={`${Math.max(0, maxAmount).toFixed(2)} ${
+            activeChainConfig.tokenSymbol
+          } available`}
           label="Delegation Amount"
           value={amount.toString()}
           onChange={handleAmountChange}
-          max={parseBN(maxDelegation || "0", tokenDecimals)}
+          max={maxAmount}
         >
           <Button
             onClick={delegateStaked}
@@ -206,36 +229,39 @@ export default function FormDelegate() {
             onClick={delegateMax}
             variant="outline"
             className="h-10 border-2 flex-0 bg-default-100 hover:bg-accent hover:shadow-md text-xs"
-            disabled={!isAccountBalanceSuccess}
+            disabled={!isAccountBalanceSuccess || maxAmount < 0}
           >
             Delegate Max
           </Button>
         </AmountInput>
       </div>
       <ConvictionSlider
+        className="mb-6"
         value={conviction}
         onChange={(value) => setConviction(value as number)}
       />
       <DelegationVoteInfo
         value={votingFor}
-        className="-mb-3 mt-4"
+        className="-mb-3"
         selectedTracks={tracks}
       />
-      <div className="flex w-full items-end gap-2">
+      <div className="flex w-full items-start gap-1 flex-col">
         <Button
           className="w-full"
           onClick={delegateToTheKus}
-          disabled={
-            !isAccountBalanceSuccess ||
-            allTracksLoading ||
-            isVotingForLoading ||
-            !amount ||
-            amount === 0 ||
-            tracks.length === 0
-          }
+          disabled={isDisabled}
         >
           Delegate {effectiveVotes} {effectiveVotes !== "1" ? "Votes" : "Vote"}
         </Button>
+        {txFees && !isDisabled && (
+          <span className="text-xs pl-0.5">
+            Estimated Fees: {parseBN(txFees, activeChainConfig.tokenDecimals)}{" "}
+            {activeChainConfig.tokenSymbol}
+          </span>
+        )}
+        {errorMessage && (
+          <span className="text-xs pl-0.5">⚠️ {errorMessage}</span>
+        )}
       </div>
     </form>
   )

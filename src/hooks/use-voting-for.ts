@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
 import { PalletConvictionVotingVoteVoting } from "@polkadot/types/lookup"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { UseQueryResult, useQuery } from "react-query"
@@ -18,7 +17,6 @@ export function useVotingFor(): UseQueryResult<votingForType> {
   return useQuery<votingForType>({
     queryKey: ["votingFor", activeChain?.name, activeAccount?.address],
     queryFn: async (): Promise<votingForType> => {
-      // Fetch staking information
       const votingFor = await api?.query.convictionVoting.votingFor.entries(
         activeAccount?.address
       )

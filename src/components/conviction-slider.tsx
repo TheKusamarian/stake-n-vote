@@ -1,16 +1,17 @@
 import Slider from "rc-slider"
 
 import "rc-slider/assets/index.css"
-import { info } from "console"
-
+import { cn } from "../lib/utils"
 import { Label } from "./ui/label"
 
 export function ConvictionSlider({
   value,
   onChange,
+  className,
 }: {
   value: number
   onChange: (value: number | number[]) => void
+  className?: string
 }) {
   const marks = {
     0: "0.1x",
@@ -33,7 +34,7 @@ export function ConvictionSlider({
   }
 
   return (
-    <div className="w-full px-2 mb-2 flex flex-col gap-2">
+    <div className={cn("w-full px-2 mb-2 flex flex-col gap-2", className)}>
       <div className="flex w-full justify-between">
         <Label className="font-bold -ml-1">Conviction</Label>
         <span className="text-xs">{info[value] || ""}</span>
