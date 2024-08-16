@@ -8,6 +8,8 @@ import { Dialog, Popover, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 
+import { useApp } from "@/app/app-provider"
+
 import { ConnectButton } from "./connect-button"
 import { FooterLinks } from "./footer"
 
@@ -100,6 +102,9 @@ function MobileNavigation() {
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { isStakingModalOpen, isDelegateModalOpen, connectDropdownOpen } =
+    useApp()
+
   const navigation = [
     { name: "Stake & Delegate", href: "#stake-and-delegate" },
     { name: "Ser", href: "#the-kus" },
@@ -145,7 +150,11 @@ export function Header() {
           />
         </a>
         <div className="flex flex-1 justify-end">
-          <ConnectButton />
+          <ConnectButton
+            isDropdownOpen={
+              !isStakingModalOpen && !isDelegateModalOpen && connectDropdownOpen
+            }
+          />
         </div>
       </nav>
       <div className="h-[1px] w-full bg-gradient-to-r from-primary-500/30 to-teal-500/30"></div>

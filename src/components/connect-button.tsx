@@ -35,9 +35,15 @@ import { Button, buttonVariants } from "./ui/button"
 
 export interface ConnectButtonProps {
   size?: "default" | "sm" | "lg" | "icon" | null | undefined
+  className?: string
+  isDropdownOpen?: boolean
 }
 
-export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
+export const ConnectButton: FC<ConnectButtonProps> = ({
+  size,
+  className,
+  isDropdownOpen,
+}) => {
   const {
     activeChain,
     connect,
@@ -53,6 +59,8 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
     setActiveExtension,
     connectDropdownOpen,
     setConnectDropdownOpen,
+    isStakingModalOpen,
+    isDelegateModalOpen,
   } = useApp()
 
   const { data: stakingInfo, isLoading, error } = useStakingInfo()
@@ -74,7 +82,7 @@ export const ConnectButton: FC<ConnectButtonProps> = ({ size }) => {
   if (!activeAccount) {
     return (
       <DropdownMenu
-        open={connectDropdownOpen}
+        open={isDropdownOpen ?? connectDropdownOpen}
         onOpenChange={(open) => {
           open && ls.set("userWantsConnection", true)
           setConnectDropdownOpen?.(open)

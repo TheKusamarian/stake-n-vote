@@ -1,11 +1,12 @@
+import { ConnectButton } from "./connect-button"
+
 export function NotConnected() {
   return (
-    <>
-      <p className="text-lg">⚡️ You are not connected</p>
-      <p>
-        Please click Connect in the top right corner to connect your wallet or
-        to download a supported wallet extension.
-      </p>
-    </>
+    <div className="text-sm text-center">
+      <p>⚡️ You are not connected. Please connect your account below</p>
+      <div className="w-full flex justify-center mt-4">
+        <ConnectButton />
+      </div>
+    </div>
   )
 }

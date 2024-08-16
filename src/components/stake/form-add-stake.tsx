@@ -67,11 +67,12 @@ export default function FormAddStake({
 
   const stakingWithValidator = !stakingInfo?.withValidator?.eq(BN_ZERO)
 
-  const stakeFee = useTransactionFee(api?.tx.staking.bondExtra(stakeBalance), [
-    activeAccount?.address,
-  ])
+  const { data: stakeFee } = useTransactionFee(
+    api?.tx.staking.bondExtra(stakeBalance),
+    [activeAccount?.address]
+  )
 
-  const bondMoreFee = useTransactionFee(
+  const { data: bondMoreFee } = useTransactionFee(
     api?.tx.nominationPools.bondExtra({ FreeBalance: stakeBalance }),
     [activeAccount?.address]
   )

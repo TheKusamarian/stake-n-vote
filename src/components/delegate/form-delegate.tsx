@@ -49,7 +49,8 @@ export default function FormDelegate() {
   const { data: votingFor, isLoading: isVotingForLoading } = useVotingFor()
   const { data: trackOptions, isLoading: allTracksLoading } = useTracks()
   const { activeAccount, activeSigner, activeChain, api } = useInkathon()
-  const { data: maxDelegation } = useMaxDelegation()
+  const { data: maxDelegation, isLoading: isMaxDelegationLoading } =
+    useMaxDelegation()
 
   const [amount, setAmount] = useState(0)
   const [isMaxAmount, setIsMaxAmount] = useState(false) // Track if the amount was set via "Delegate Max"
@@ -95,7 +96,9 @@ export default function FormDelegate() {
     votingFor,
   ])
 
-  const txFees = useTransactionFee(tx, [activeAccount?.address])
+  const { data: txFees } = useTransactionFee(tx, [activeAccount?.address])
+
+  console.log("aaa", maxDelegation?.toString(), txFees?.toString())
 
   const effectiveVotes = isNaN(amount)
     ? 0
@@ -103,23 +106,28 @@ export default function FormDelegate() {
     ? (amount * conviction).toFixed(2)
     : (amount * 0.1).toFixed(2)
 
-  const maxAmount = useMemo(() => {
-    if (!maxDelegation || !txFees) return amount
-    return parseFloat(
-      parseBN(maxDelegation.sub(txFees), tokenDecimals).toFixed(2)
-    )
-  }, [maxDelegation, txFees, amount, tokenDecimals])
+  const maxAmount =
+    isMaxDelegationLoading || !maxDelegation || !txFees
+      ? amount
+      : parseFloat(parseBN(maxDelegation.sub(txFees), tokenDecimals).toFixed(2))
 
   useEffect(() => {
     setTracks(trackOptions?.map((t) => t.value) || [])
   }, [trackOptions])
 
   useEffect(() => {
-    if (isMaxAmount) {
-      console.log("Setting amount to max", maxAmount)
+    if (isMaxAmount && !isMaxDelegationLoading && maxDelegation && txFees) {
       setAmount(maxAmount)
     }
-  }, [tracks, maxAmount, isMaxAmount, amount])
+  }, [
+    tracks,
+    maxAmount,
+    isMaxAmount,
+    amount,
+    isMaxDelegationLoading,
+    maxDelegation,
+    txFees,
+  ])
 
   const delegateToTheKus = async (e: any) => {
     e.preventDefault()
@@ -191,6 +199,8 @@ export default function FormDelegate() {
     : amount <= 0 || isNaN(amount)
     ? "Please enter a valid amount"
     : ""
+
+  console.log("maxDelegation", maxDelegation?.toNumber())
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5 relative">

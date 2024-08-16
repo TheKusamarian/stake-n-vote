@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
+import logo from "@/images/logos/kusamarian.png"
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid"
 import { useInkathon } from "@scio-labs/use-inkathon"
 
@@ -14,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { useApp } from "@/app/app-provider"
 
+import { AccountConnecting } from "../account-connecting"
 import ErrorBoundary from "../error-boundary"
 import { NotConnected } from "../not-connected"
 import {
@@ -26,7 +29,8 @@ import FormDelegate from "./form-delegate"
 
 export function ModalDelegate() {
   const { isDelegateModalOpen, setIsDelegateModalOpen } = useApp()
-  const { activeChain, activeAccount } = useInkathon()
+  const { activeChain, activeAccount, isConnecting, isInitializing } =
+    useInkathon()
   const [isTooltipOpen, setIsTooltipOpen] = useState(false)
 
   return (
@@ -50,6 +54,8 @@ export function ModalDelegate() {
                     onMouseLeave={() => setIsTooltipOpen(false)}
                     onFocus={() => setIsTooltipOpen(true)}
                     onClick={() => setIsTooltipOpen(true)}
+                    tabIndex={-1}
+                    autoFocus={false}
                   >
                     <span className="flex items-center">
                       {/* @ts-ignore */}
@@ -84,7 +90,13 @@ export function ModalDelegate() {
           </DialogHeader>
           <div className="grid gap-4 pb-4">
             <div className="flex flex-1 flex-col">
-              {!activeAccount ? <NotConnected /> : <FormDelegate />}
+              {isConnecting || isInitializing ? (
+                <AccountConnecting />
+              ) : activeAccount ? (
+                <FormDelegate />
+              ) : (
+                <NotConnected />
+              )}
             </div>
           </div>
           <DialogFooter className="flex-row justify-center sm:justify-center text-center">

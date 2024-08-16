@@ -6,8 +6,9 @@ import { useQuery } from "react-query"
 import useAccountBalances from "./use-account-balance"
 
 export function useMaxDelegation() {
-  const { activeAccount, activeChain, api } = useInkathon()
-  const { data: balances } = useAccountBalances()
+  const { activeAccount, activeChain, api, isConnected } = useInkathon()
+  const { data: balances, isLoading: isAccountBalancesLoading } =
+    useAccountBalances()
 
   return useQuery({
     queryKey: ["maxDelegation", activeChain?.name, activeAccount?.address],
@@ -27,6 +28,11 @@ export function useMaxDelegation() {
 
       return available
     },
-    enabled: !!api,
+    enabled:
+      !!api &&
+      !!activeAccount &&
+      !!activeChain &&
+      isConnected &&
+      !isAccountBalancesLoading,
   })
 }
