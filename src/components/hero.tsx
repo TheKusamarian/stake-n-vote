@@ -47,27 +47,27 @@ export function Hero({ video }: { video: any }) {
             The Kus
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            The #1 news resource on DOT. Daily news, insights & interviews with
+            The #1 news resource on Polkadot. Daily news, insights & interviews with
             the top minds in the Polkadot ecosystem.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Stake with us to earn{" "}
-            <span className="font-extrabold">~16.5% APY</span> with native
+            DOT/KSM rewards with native
             staking - safe & secure!
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Your DOT vote matters! Delegate your vote to The Kus and shape
+            Your vote matters! Delegate your vote to The Kus and shape
             Polkadot&apos;s future!
           </p>
           <div className="mt-4 flex items-center gap-x-6">
             <div className="h-24 lg:h-48 group w-full">
               <Link href="#stake-and-delegate">
                 <Button
-                  className="h-auto w-full p-4 flex flex-col"
+                  className="h-auto w-full p-4 flex flex-col animateOutline"
                   // onClick={() => setIsStakingModalOpen(true)}
                 >
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-center inner">
                     <Stake
                       stroke="#fff"
                       className="mr-2 inline-block"

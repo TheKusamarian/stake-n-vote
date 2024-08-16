@@ -91,6 +91,39 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return () => clearTimeout(timer) // Cleanup to avoid memory leaks
   }, [isEffectTrue])
 
+  // Effect to open the correct modal based on URL hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+
+      if (hash === "#stake") {
+        setIsStakingModalOpen(true)
+      } else if (hash === "#delegate") {
+        setIsDelegateModalOpen(true)
+      } else if (hash === "#increase-stake") {
+        setIsChangeStakeModalOpen(true, "increase")
+      } else if (hash === "#decrease-stake") {
+        setIsChangeStakeModalOpen(true, "decrease")
+      } else {
+        // Close all modals if hash is unrecognized
+        setIsStakingModalOpen(false)
+        setIsDelegateModalOpen(false)
+        setIsChangeStakeModalOpen(false, "increase") // Default type
+      }
+    }
+
+    // Call handler on hash change
+    window.addEventListener("hashchange", handleHashChange)
+
+    // Call handler immediately to check if a hash is already present
+    handleHashChange()
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange)
+    }
+  }, [])
+
   return (
     <AppContext.Provider
       value={{

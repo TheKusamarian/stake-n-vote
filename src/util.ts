@@ -1,4 +1,4 @@
-import { BN, formatBalance, BN_ZERO, bnToBn } from "@polkadot/util"
+import { BN, BN_ZERO, bnToBn, formatBalance } from "@polkadot/util"
 
 export const trimAddress = (
   address: string | undefined,
@@ -51,10 +51,14 @@ export const humanReadableBalance = (
 
 export function safeToBn(value: number | string | BN): BN {
   try {
-    return bnToBn(value);
+    if (typeof value === "number" && !Number.isInteger(value)) {
+      // If the value is a float, convert it to a string to prevent precision loss
+      value = value.toFixed(2) // Convert to a string with 18 decimal places
+    }
+    return bnToBn(value)
   } catch (error) {
-    console.error("Conversion to BN failed", error);
-    return BN_ZERO;
+    console.error("Conversion to BN failed", error)
+    return BN_ZERO
   }
 }
 

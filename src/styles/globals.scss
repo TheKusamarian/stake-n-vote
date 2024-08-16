@@ -84,3 +84,104 @@
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
   }
+
+  .animateOutline {
+    border: none;
+    outline-width: 1px;
+    outline-color: #e60079;
+    outline-style: solid;
+    animation: animateOutline 3s infinite;
+
+    &:hover {
+      animation: animateOutlineAlt 3s infinite;
+    }
+  }
+  
+  @keyframes animateOutline {
+    0% {
+      outline-width: 1px;
+      outline-color: #e60079;
+    }
+  
+    50% {
+      outline-width: 7px;
+      outline-color: transparent;
+    }
+
+    100% {
+      outline-width: 1px;
+      outline-color: transparent;
+    }
+  }
+
+  @keyframes animateOutlineAlt {
+    0% {
+      outline-width: 1px;
+      outline-color: #14b8a6;
+    }
+  
+    50% {
+      outline-width: 7px;
+      outline-color: transparent;
+    }
+
+    100% {
+      outline-width: 1px;
+      outline-color: transparent;
+    }
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0);
+    }
+  
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animateOutline2 {
+    @apply relative overflow-hidden h-[60px];
+  }
+  
+  .animateOutline2 .inner {
+    @apply absolute left-[3px] top-[3px] h-[calc(100%-6px)] w-[calc(100%-6px)] rounded-lg bg-gradient-to-r to-teal-500 bg-[length:300%];
+  }
+
+  
+  .animateOutline2::before {
+    background: conic-gradient(
+      #f2f 0deg,
+      #000 0deg,
+      transparent 80deg
+    );
+
+    @apply absolute left-[-450%] top-[-450%] h-[1000%] w-[1000%] animate-border-spin content-[''] rounded-xl;
+  }
+
+
+  .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+    @apply animate-pulse;
+    box-shadow: 0 0 0 4px #e60079aa !important;
+  }
+
+  .rc-slider-mark-text {
+    color: #777 !important;
+    font-size: 14px !important;
+  }
+
+  .rc-slider-mark-text-active {
+    color: #000 !important;
+  }
+
+  .rc-slider-mark {
+    
+    > span:first-of-type {
+      margin-left: 7px;
+    }
+
+    > span:last-of-type {
+      margin-right: 7px;
+    }
+  }

@@ -3,13 +3,13 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
-import { CallToAction } from "@/components/CallToAction"
-import { Footer } from "@/components/Footer"
-import { Header } from "@/components/Header"
-import { Hero } from "@/components/Hero"
+import { CallToAction } from "@/components/call-to-action"
+import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
+import { Hero } from "@/components/hero"
 
 // Dynamically import non-critical components
-const PrimaryFeatures = dynamic(() => import("@/components/PrimaryFeatures"), {
+const PrimaryFeatures = dynamic(() => import("@/components/primary-featurs"), {
   suspense: true,
 })
 const SectionSpaceMonkeys = dynamic(

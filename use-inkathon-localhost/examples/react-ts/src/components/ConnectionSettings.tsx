@@ -17,7 +17,6 @@ export function ConnectionSettings() {
     const selectedWallet = (document.getElementById('select-wallet') as HTMLSelectElement)?.value
     const substrateChain = getSubstrateChain(selectedNetwork)
     const substrateWallet = getSubstrateWallet(selectedWallet)
-    console.log('Connection settings:', { substrateChain, substrateWallet })
 
     await connect?.(substrateChain, substrateWallet)
     setIsLoading(false)

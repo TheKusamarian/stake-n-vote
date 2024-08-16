@@ -4,7 +4,6 @@ import { encodeAddress } from "@polkadot/keyring"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
 
-// Custom hook
 export function useAccountNominators() {
   const { api, activeChain, activeAccount } = useInkathon()
 
@@ -18,7 +17,6 @@ export function useAccountNominators() {
     async () => {
       // Fetch staking information
       const stakingInfo = await api?.query.staking.nominators(userAddress)
-      // console.log('stakingInfo', stakingInfo?.toJSON())
 
       if (!stakingInfo || stakingInfo.isNone) {
         return []

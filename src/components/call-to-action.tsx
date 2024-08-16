@@ -1,9 +1,7 @@
-import Image from "next/image"
 import { XIcon, YoutubeIcon } from "@/icons"
-import backgroundImage from "@/images/background-call-to-action.jpg"
 
-import { Button } from "@/components/Button"
-import { Container } from "@/components/Container"
+import { Button } from "@/components/button"
+import { Container } from "@/components/container"
 
 export function CallToAction() {
   return (

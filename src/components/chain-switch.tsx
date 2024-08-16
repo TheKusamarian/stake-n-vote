@@ -6,7 +6,7 @@ import polkadotLogo from "@/images/polkadot.svg"
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 import { clsx } from "clsx"
 
-import { kusamaRelay, polkadotRelay, rocoRelay } from "@/config/chains"
+import { kusamaRelay, polkadotRelay } from "@/config/chains"
 
 export function ChainSwitch({
   className,

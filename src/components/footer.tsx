@@ -1,10 +1,7 @@
-import Image from "next/image"
 import Link from "next/link"
-import logo from "@/images/logos/kusamarian.png"
 
 import { config } from "@/config/site"
-import { Container } from "@/components/Container"
-import { NavLink } from "@/components/NavLink"
+import { Container } from "@/components/container"
 
 import { DiscordIcon, YoutubeIcon } from "../icons"
 

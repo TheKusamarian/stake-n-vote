@@ -4,10 +4,10 @@ import { useInkathon } from "@scio-labs/use-inkathon"
 import Stake from "@w3f/polkadot-icons/keyline/Stake"
 import Delegate from "@w3f/polkadot-icons/keyline/Vote"
 
-import { Container } from "@/components/Container"
+import { Container } from "@/components/container"
 import { useApp } from "@/app/app-provider"
 
-import { ChainSwitch } from "./ChainSwitch"
+import { ChainSwitch } from "./chain-switch"
 import { Button } from "./ui/button"
 
 export default function PrimaryFeatures() {
