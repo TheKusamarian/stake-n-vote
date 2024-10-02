@@ -34,6 +34,9 @@ export function ReplaceOneWithKus({
 
   const { data: identities } = useIdentities(nominators)
 
+  console.log("nominators", nominators)
+  console.log("identities", identities)
+
   const nominate = async (targets: string[]) => {
     const tx = await nominateTx(
       api,
@@ -74,6 +77,16 @@ export function ReplaceOneWithKus({
                   : trimAddress(address, 12)}{" "}
                 |
               </Label>
+              {identity?.identity?.web ? (
+                <Link
+                  href={identity.identity.web}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline pr-2"
+                >
+                  website ↗ |
+                </Link>
+              ) : null}
               <Link
                 href={`https://${activeChain?.network}.subscan.io/account/${address}`}
                 target="_blank"
