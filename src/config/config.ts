@@ -37,7 +37,7 @@ export const CHAIN_CONFIG: {
     maxNominators: 16,
     delegator: POLKADOT_DELEGATOR,
     validator: POLKADOT_VALIDATOR,
-    poolId: 12, //talisman pool,
+    poolId: 34, //subwallet pool,
     validator_set: [
       "13zRKESAgaKG4xyYrZnAA4Qdu1iVVMsrdiAnhnnnd4CB6TpU",
       "14hM4oLJCK6wtS7gNfwTDhthRjy5QJ1t3NAcoPjEepo9AH67",

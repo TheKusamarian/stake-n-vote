@@ -291,12 +291,16 @@ export function renderFooter({
         stakeAmount > 0 && (
           <>
             <span className="px-1">+</span>
-            <a href="https://talisman.xyz" target="_blank" rel="noreferrer">
+            <a
+              href="https://www.subwallet.app/"
+              target="_blank"
+              rel="noreferrer"
+            >
               <Image
-                src="talisman.svg"
-                alt="talisman nomination pool"
-                width={120}
-                height={35}
+                src="subwallet_287x287.png"
+                alt="subwallet nomination pool"
+                width={287}
+                height={287}
                 className="pl-2"
               />
             </a>
