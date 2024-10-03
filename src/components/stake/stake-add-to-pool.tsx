@@ -151,6 +151,7 @@ export function MaybeAddToPool({
             color="warning"
             radius="sm"
             placement="bottom"
+            className="bg-yellow-500 rounded-md text-xs text-center w-full"
           >
             <Button
               onClick={joinNominationPool}

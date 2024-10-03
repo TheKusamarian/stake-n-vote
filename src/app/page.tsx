@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
 import Head from "next/head"
+import Image from "next/image"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/call-to-action"

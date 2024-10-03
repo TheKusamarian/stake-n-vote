@@ -297,11 +297,11 @@ export function renderFooter({
               rel="noreferrer"
             >
               <Image
-                src="subwallet_287x287.png"
+                src="/subwallet_287x287.png"
                 alt="subwallet nomination pool"
+                className="h-10 w-10 pl-2"
                 width={287}
                 height={287}
-                className="pl-2"
               />
             </a>
           </>
