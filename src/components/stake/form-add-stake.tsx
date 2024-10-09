@@ -1,5 +1,6 @@
 "use client"
 
+import { parse } from "path"
 import { useState } from "react"
 import { parseBN } from "@/util"
 import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
@@ -11,6 +12,7 @@ import useAccountBalances from "@/hooks/use-account-balance"
 import { useCall } from "@/hooks/use-call"
 import { useExistentialDeposit } from "@/hooks/use-existential-deposit"
 import { useTransactionFee } from "@/hooks/use-fees"
+import { useMaxStaking } from "@/hooks/use-max-staking"
 import useStakingInfo, {
   useActiveAccountStakingInfo,
 } from "@/hooks/use-staking-info"
@@ -52,9 +54,13 @@ export default function FormAddStake({
 
   const { tokenDecimals, tokenSymbol } = activeChainConfig
 
+  const amountBN = bnToBn(amount).mul(new BN(10).pow(new BN(tokenDecimals)))
+
   const { data: stakingInfo } = useActiveAccountStakingInfo()
   const { data: existentialDeposit, isLoading: isEdLoading } =
     useExistentialDeposit()
+
+  const { data: maxStaking, isLoading: isMaxStakingLoading } = useMaxStaking()
 
   const stakeBalance =
     !isNaN(amount) && amount !== 0
@@ -63,7 +69,10 @@ export default function FormAddStake({
   const { freeBalance } = accountBalance || { freeBalance: "0" }
 
   const disabled =
-    !isAccountBalanceSuccess || isEdLoading || stakeBalance.isZero()
+    !isAccountBalanceSuccess ||
+    isEdLoading ||
+    stakeBalance.isZero() ||
+    amountBN.gt(bnToBn(freeBalance))
 
   const stakingWithValidator = !stakingInfo?.withValidator?.eq(BN_ZERO)
 
@@ -80,6 +89,8 @@ export default function FormAddStake({
   const stakeFeeValue = stakeFee
     ? parseBN(stakeFee?.toString(), tokenDecimals)
     : "?"
+
+  // console.log("aaa", maxDelegation?.toString(), txFees?.toString())
 
   const stakeMore = async (e: any) => {
     e.preventDefault()
@@ -167,17 +178,23 @@ export default function FormAddStake({
 
       const notSpendable = bnToBn(fees).add(existentialDeposit!)
 
-      const maxValue =
-        fees && bnToBn(freeBalance).gt(bnToBn(fees))
-          ? balance.sub(notSpendable)
-          : BN_ZERO
+      // const maxValue =
+      //   fees && bnToBn(freeBalance).gt(bnToBn(fees))
+      //     ? balance.sub(notSpendable)
+      //     : BN_ZERO
 
-      setAmount(parseBN(maxValue?.toString(), tokenDecimals))
+      setAmount(maxAmount)
     } else {
       const balance = bnToBn(stakingInfo?.amount)
       setAmount(parseBN(balance?.toString(), tokenDecimals))
     }
   }
+
+  const pointOne = bnToBn(1).mul(new BN(10).pow(new BN(tokenDecimals - 1)))
+  const maxAmount =
+    isMaxStakingLoading || !maxStaking
+      ? amount
+      : parseFloat(parseBN(maxStaking.sub(pointOne), tokenDecimals).toFixed(2))
 
   return (
     <form className="flex w-full max-w-xl flex-col gap-5">
@@ -186,7 +203,10 @@ export default function FormAddStake({
           label={`Amount to ${type === "increase" ? "stake" : "unstake"}`}
           value={amount.toString()}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
-          info={type === "increase" ? "available" : "staked"}
+          info={`${Math.max(0, maxAmount).toFixed(2)} ${
+            activeChainConfig.tokenSymbol
+          } available`}
+          max={maxAmount}
         >
           <Button
             onClick={stakeOrUnstakeMax}
@@ -207,11 +227,11 @@ export default function FormAddStake({
         <Button className="w-full" onClick={changeStake} disabled={disabled}>
           {type === "increase" ? (
             <>
-              Add {amount} {tokenSymbol} to your stake
+              Add {isNaN(amount) ? 0 : amount} {tokenSymbol} to your stake
             </>
           ) : (
             <>
-              Remove {amount} {tokenSymbol} from your stake
+              Remove {isNaN(amount) ? 0 : amount} {tokenSymbol} from your stake
             </>
           )}
         </Button>

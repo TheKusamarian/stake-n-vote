@@ -12,6 +12,7 @@ import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 import { kusamaRelay, polkadotRelay } from "@/config/chains"
 import { CHAIN_CONFIG } from "@/config/config"
 import useAccountBalances from "@/hooks/use-account-balance"
+import { useMaxStaking } from "@/hooks/use-max-staking"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -41,6 +42,9 @@ export function MaybeAddToPool({
   amountSmallerThanMinPoolJoinBond: boolean
 }) {
   const { activeAccount, activeChain, api } = useInkathon()
+  const activeChainConfig = CHAIN_CONFIG[activeChain?.network || "Polkadot"]
+
+  const { data: maxStaking, isLoading: isMaxStakingLoading } = useMaxStaking()
 
   const {
     data: accountBalance,
@@ -97,18 +101,18 @@ export function MaybeAddToPool({
   const stakeMax = (e: any) => {
     e.preventDefault()
 
-    let maxStake: BN
-    if (activeChain === polkadotRelay) {
-      if (freeBalance.gtn(Math.pow(10, tokenDecimals))) {
-        maxStake = freeBalance.sub(bnToBn(Math.pow(10, tokenDecimals)))
-      } else {
-        maxStake = BN_ZERO
-      }
-    } else {
-      maxStake = freeBalance
-    }
+    // let maxStake: BN
+    // if (activeChain === polkadotRelay) {
+    //   if (freeBalance.gtn(Math.pow(10, tokenDecimals))) {
+    //     maxStake = freeBalance.sub(bnToBn(Math.pow(10, tokenDecimals)))
+    //   } else {
+    //     maxStake = BN_ZERO
+    //   }
+    // } else {
+    //   maxStake = freeBalance
+    // }
 
-    setStakeAmount(parseBN(maxStake?.toString(), tokenDecimals))
+    setStakeAmount(maxAmount)
   }
 
   const humanReadableMinNominatorBond = parseBN(minNominatorBond, tokenDecimals)
@@ -120,6 +124,12 @@ export function MaybeAddToPool({
         stakeBalance.lt(minPoolJoinBond)
       : stakeBalance.lt(minNominatorBond) || stakeBalance.gt(freeBalance)
 
+  const pointOne = bnToBn(1).mul(new BN(10).pow(new BN(tokenDecimals - 1)))
+  const maxAmount =
+    isMaxStakingLoading || !maxStaking
+      ? stakeAmount || 0
+      : parseFloat(parseBN(maxStaking.sub(pointOne), tokenDecimals).toFixed(2))
+
   return (
     <form>
       <div className="flex items-end flex-wrap">
@@ -130,6 +140,10 @@ export function MaybeAddToPool({
             const stakeAmount = parseFloat(e.target.value)
             setStakeAmount(stakeAmount)
           }}
+          info={`${Math.max(0, maxAmount).toFixed(2)} ${
+            activeChainConfig.tokenSymbol
+          } available`}
+          max={maxAmount}
         >
           <Button
             onClick={stakeMax}
