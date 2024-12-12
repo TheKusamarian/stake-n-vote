@@ -98,8 +98,6 @@ export default function FormDelegate() {
 
   const { data: txFees } = useTransactionFee(tx, [activeAccount?.address])
 
-  console.log("aaa", maxDelegation?.toString(), txFees?.toString())
-
   const effectiveVotes = isNaN(amount)
     ? 0
     : conviction !== 0
