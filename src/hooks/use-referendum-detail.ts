@@ -17,13 +17,27 @@ interface VoterInfo {
 }
 
 interface SubsquareVote {
-  voter: string
-  decision: "aye" | "nay" | "abstain"
-  balance: {
-    aye: string
-    nay: string
-    abstain: string
+  referendumIndex: number
+  account: string
+  isDelegating: boolean
+  isStandard: boolean
+  isSplit: boolean
+  isSplitAbstain: boolean
+  balance: string
+  aye: boolean
+  conviction: number
+  votes: string
+  abstainBalance?: string
+  abstainVotes?: string
+  ayeBalance?: string
+  ayeVotes?: string
+  nayBalance?: string
+  nayVotes?: string
+  delegations: {
+    votes: string
+    capital: string
   }
+  queryAt: 23824700
 }
 
 interface ReferendumVotes {

@@ -3,9 +3,12 @@
 import { useState } from "react"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import { useInkathon } from "@scio-labs/use-inkathon"
+import { Loader2 } from "lucide-react"
 
 import { useReferendumDetail } from "@/hooks/use-referendum-detail"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -30,30 +33,84 @@ export function FormSendout({
 }: {
   referenda: { id: string; status: string }[]
 }) {
+  const mutatedReferenda = [...referenda, { id: "1303", status: "active" }]
+
+  const [txs, setTxs] = useState<any[]>([])
+  const [polkadotAssetHubApi, setPolkadotAssetHubApi] = useState<
+    ApiPromise | undefined
+  >(undefined)
   const [selectedReferendum, setSelectedReferendum] = useState<string | null>(
     "1303"
   )
 
+  const [collectionId, setCollectionId] = useState<string | undefined>("165")
+
+  const [progress, setProgress] = useState<"initial" | "checking" | "minting">(
+    "initial"
+  )
+
   const { activeAccount, activeSigner, activeChain, api } = useInkathon()
 
-  const { data: referendumDetail, isLoading: isReferendumDetailLoading } =
-    useReferendumDetail(selectedReferendum)
+  const {
+    data: referendumDetail,
+    isLoading: isReferendumDetailLoading,
+    isError: isReferendumDetailError,
+  } = useReferendumDetail(selectedReferendum)
+
+  const checkTxs = async () => {
+    if (!referendumDetail || !collectionId) {
+      console.error("No referendum detail or collection id")
+      return
+    }
+
+    const _polkadotAssetHubApi = new ApiPromise({
+      provider: new WsProvider("wss://rpc-asset-hub-polkadot.luckyfriday.io"),
+    })
+
+    await _polkadotAssetHubApi.isReady
+
+    setPolkadotAssetHubApi(_polkadotAssetHubApi)
+
+    if (!polkadotAssetHubApi) return
+
+    const _txs = []
+
+    const ipfsMetadataUrl =
+      "ipfs://ipfs/bafkreiejhrp7wqve2rhj75qdou2wumpqyskxhrs72v5ryxa5teekgmxy5m"
+
+    for (let i = 0; i < referendumDetail?.length; i++) {
+      const assetId = `${collectionId}${i.toString().padStart(4, "0")}`
+      _txs.push(
+        polkadotAssetHubApi.tx.nfts.mint(
+          collectionId,
+          assetId,
+          referendumDetail[i].account,
+          null
+        )
+      )
+
+      _txs.push(
+        polkadotAssetHubApi.tx.nfts.setMetadata(
+          collectionId,
+          assetId,
+          ipfsMetadataUrl
+        )
+      )
+    }
+
+    setTxs(_txs)
+
+    console.log("txs", txs)
+
+    setProgress("checking")
+  }
 
   const mintNfts = async () => {
-    if (!referendumDetail) return
+    if (!referendumDetail || !polkadotAssetHubApi) return
 
     console.log("minting nfts")
 
-    const polkadotAssetHubApi = new ApiPromise({
-      provider: new WsProvider("wss://rpc-asset-hub-kusama.luckyfriday.io"),
-    })
-
-    await polkadotAssetHubApi.isReady
-
     // nft mint collectionId, assetId, owner
-    const collectionId = "504"
-    const ipfsMetadataUrl =
-      "ipfs://ipfs/bafkreibb3lpjoy2bs6nmkt4zwfgj4ldmh4fholynx2euuagst3azb5vlom"
 
     // const txs = referendumDetail?.reduce((acc, vote, index) => {
     //   const assetId = `${collectionId}${index.toString().padStart(4, "0")}`
@@ -70,124 +127,166 @@ export function FormSendout({
     //   return acc
     // }, [])
 
-    const txs = []
-
-    for (let i = 0; i < referendumDetail?.length; i++) {
-      const assetId = `${collectionId}${i.toString().padStart(4, "0")}`
-      txs.push(
-        polkadotAssetHubApi.tx.nfts.mint(
-          collectionId,
-          assetId,
-          referendumDetail[i].voter,
-          null
-        )
-      )
-    }
-
-    console.log("txs", txs)
-
     const batchAll = polkadotAssetHubApi.tx.utility.batchAll(txs)
 
-    const res = await sendAndFinalize({
-      api: polkadotAssetHubApi,
-      tx: batchAll,
-      signer: activeSigner,
-      address: activeAccount?.address,
-      activeChain: activeChain,
-      toastConfig: {
-        ...DEFAULT_TOAST,
-        title: "Minting NFTs",
-        messages: {
-          ...DEFAULT_TOAST.messages,
-          success: "NFTs minted successfully",
+    try {
+      const res = await sendAndFinalize({
+        api: polkadotAssetHubApi,
+        tx: batchAll,
+        signer: activeSigner,
+        address: activeAccount?.address,
+        activeChain: activeChain,
+        toastConfig: {
+          ...DEFAULT_TOAST,
+          title: "Minting NFTs",
+          messages: {
+            ...DEFAULT_TOAST.messages,
+            success: "NFTs minted successfully",
+          },
         },
-      },
-    })
-
-    // nft.set metadata (collectionId, assetId, data (ipfs://ipfs/...))
-    await polkadotAssetHubApi.disconnect()
+      })
+    } catch (error) {
+      console.error("Error minting NFTs", error)
+    } finally {
+      setProgress("initial")
+      await polkadotAssetHubApi.disconnect()
+    }
   }
 
   return (
     <div className="flex flex-col gap-4">
       <b>Send NFTs to referendum participants</b>
-      <Select value={selectedReferendum} onValueChange={setSelectedReferendum}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select a referendum" />
-        </SelectTrigger>
-        <SelectContent>
-          {referenda
-            .sort((a, b) => Number(b.id) - Number(a.id))
-            .slice(0, 300)
-            .map((referendum) => (
-              <SelectItem key={referendum.id} value={referendum.id}>
-                {referendum.id}
-              </SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-col gap-2">
+        <Label>Referendum ID</Label>
+        <Select
+          value={selectedReferendum}
+          onValueChange={(value) => {
+            setSelectedReferendum(value)
+            setProgress("initial")
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a referendum" />
+          </SelectTrigger>
+          <SelectContent>
+            {mutatedReferenda
+              .sort((a, b) => Number(b.id) - Number(a.id))
+              .slice(0, 300)
+              .map((referendum) => (
+                <SelectItem key={referendum.id} value={referendum.id}>
+                  {referendum.id}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Mint to collection ID</Label>
+        <Input
+          value={collectionId}
+          onChange={(e) => setCollectionId(e.target.value)}
+          placeholder="Collection ID"
+        />
+      </div>
       <div className="referendum-info text-sm">
         <b>
           {" "}
           Voters on Referendum {selectedReferendum} ({referendumDetail?.length}{" "}
           voters)
         </b>
-        {isReferendumDetailLoading ? (
-          <Skeleton className="h-4 w-full" />
+        {isReferendumDetailError ? (
+          <div>Error loading referendum voters, try refreshing</div>
+        ) : isReferendumDetailLoading ? (
+          <div className="flex flex-row gap-2">
+            <Loader2 className="mr-2 animate-spin" /> Loading referendum{" "}
+            {selectedReferendum} voters from chain...
+          </div>
         ) : (
           <>
             <div className="h-[400px] overflow-y-auto">
-              <Table>
-                <TableCaption>
-                  Voters on Referendum {selectedReferendum} (
-                  {referendumDetail?.length} voters)
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Account</TableHead>
-                    <TableHead>Vote</TableHead>
-                    <TableHead>Votes</TableHead>
-                    <TableHead>isDelegating</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {referendumDetail?.map((vote) => {
-                    const voteDirection = vote.isSplit
-                      ? "Split"
-                      : vote.isSplitAbstain
-                      ? "Split Abstain"
-                      : !vote.aye
-                      ? "Nay"
-                      : "Aye"
+              {progress === "initial" && (
+                <Table>
+                  <TableCaption>
+                    Voters on referendum #{selectedReferendum} (
+                    {referendumDetail?.length} voters)
+                  </TableCaption>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Account</TableHead>
+                      <TableHead>Vote</TableHead>
+                      <TableHead>Votes</TableHead>
+                      <TableHead>isDelegating</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {referendumDetail?.map((vote) => {
+                      const voteDirection = vote.isSplit
+                        ? "Split"
+                        : vote.isSplitAbstain
+                        ? "Split Abstain"
+                        : !vote.aye
+                        ? "Nay"
+                        : "Aye"
 
-                    const votes = vote.isSplit
-                      ? Number(vote.ayeVotes) + Number(vote.nayVotes)
-                      : vote.isSplitAbstain
-                      ? Number(vote.ayeVotes) +
-                        Number(vote.nayVotes) +
-                        Number(vote.abstainVotes)
-                      : Number(vote.votes)
+                      const votes = vote.isSplit
+                        ? Number(vote.ayeVotes) + Number(vote.nayVotes)
+                        : vote.isSplitAbstain
+                        ? Number(vote.ayeVotes) +
+                          Number(vote.nayVotes) +
+                          Number(vote.abstainVotes)
+                        : Number(vote.votes)
 
-                    return (
-                      <TableRow key={vote.account}>
-                        <TableCell>{vote.account}</TableCell>
-                        <TableCell>{voteDirection}</TableCell>
-                        <TableCell>{votes}</TableCell>
-                        <TableCell>
-                          {vote.isDelegating ? "Yes" : "No"}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
+                      return (
+                        <TableRow key={vote.account}>
+                          <TableCell>{vote.account}</TableCell>
+                          <TableCell>{voteDirection}</TableCell>
+                          <TableCell>{votes}</TableCell>
+                          <TableCell>
+                            {vote.isDelegating ? "Yes" : "No"}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              )}
+
+              {progress === "checking" && (
+                <>
+                  <p>
+                    Please verify the following batch transaction containing{" "}
+                    {txs.length} transactions
+                  </p>
+                  <pre className="p-4 overflow-y-auto h-[400px] text-[10px] leading-none bg-gray-100 rounded-md">
+                    {JSON.stringify(
+                      txs.map((tx) => tx.method.toHuman()),
+                      null,
+                      2
+                    )}
+                  </pre>
+                </>
+              )}
             </div>
             {/* <pre>{JSON.stringify(referendumDetail, null, 2)}</pre> */}
           </>
         )}
       </div>
-      <Button disabled={!selectedReferendum} onClick={mintNfts}>
-        Send NFTs
+      {progress === "checking" && <div className="flex flex-col gap-2"></div>}
+      <Button
+        disabled={!selectedReferendum}
+        onClick={() => {
+          if (progress === "initial") {
+            checkTxs()
+          } else if (progress === "checking") {
+            mintNfts()
+          }
+        }}
+      >
+        {progress === "initial"
+          ? "Verify NFT Sendout"
+          : progress === "checking"
+          ? `Mint ${referendumDetail?.length} NFTs`
+          : "Minting..."}
       </Button>
     </div>
   )
