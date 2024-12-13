@@ -57,8 +57,8 @@ export default function RootLayout({
           gtag('config', 'G-7RG8GF0LMC');
         `}
         </Script>
+        <Toaster />
       </body>
-      <Toaster />
       <GoogleAnalytics gaId="G-7RG8GF0LMC" />
     </html>
   )

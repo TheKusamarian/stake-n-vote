@@ -106,10 +106,10 @@ export function Header() {
     useApp()
 
   const navigation = [
-    { name: "Stake & Delegate", href: "#stake-and-delegate" },
-    { name: "Ser", href: "#the-kus" },
-    { name: "Space Monkeys", href: "#space-monkeys" },
-    { name: "AAG", href: "#aag" },
+    { name: "Stake & Delegate", href: "/#stake-and-delegate" },
+    { name: "Ser", href: "/#the-kus" },
+    { name: "Space Monkeys", href: "/#space-monkeys" },
+    { name: "AAG", href: "/#aag" },
   ]
 
   return (
