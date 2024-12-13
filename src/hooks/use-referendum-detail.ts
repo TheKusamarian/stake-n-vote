@@ -16,7 +16,7 @@ interface VoterInfo {
   }
 }
 
-interface PolkassemblyVote {
+interface SubsquareVote {
   voter: string
   decision: "aye" | "nay" | "abstain"
   balance: {
@@ -24,10 +24,6 @@ interface PolkassemblyVote {
     nay: string
     abstain: string
   }
-  selfVotingPower: string
-  totalVotingPower: string
-  delegatedVotingPower: string
-  delegatedVotes: any[]
 }
 
 interface ReferendumVotes {
@@ -38,7 +34,7 @@ interface ReferendumVotes {
 export async function getReferendumVotes(referendumId: string) {
   const endpoint = `https://polkadot.subsquare.io/api/gov2/referenda/${referendumId}/votes`
   const response = await fetch(endpoint)
-  const data = await response.json()
+  const data = (await response.json()) as SubsquareVote[]
   return data
 }
 
@@ -226,7 +222,7 @@ export async function getReferendumVoters(api: ApiPromise) {
 }
 
 export function useReferendumDetail(referendumId: string | null) {
-  return useQuery<ReferendumVotes, Error>({
+  return useQuery<SubsquareVote[], Error>({
     queryKey: ["referendumDetail", referendumId],
     queryFn: () => getReferendumVotes(referendumId!),
     staleTime: 1000 * 60 * 60 * 24, // 24 hours

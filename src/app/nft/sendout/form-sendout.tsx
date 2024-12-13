@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { ApiPromise, WsProvider } from "@polkadot/api"
+import { useInkathon } from "@scio-labs/use-inkathon"
 
 import { useReferendumDetail } from "@/hooks/use-referendum-detail"
 import { Button } from "@/components/ui/button"
@@ -21,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DEFAULT_TOAST, sendAndFinalize } from "@/app/txs/send-and-finalize"
 
 export function FormSendout({
   referenda,
@@ -31,8 +34,79 @@ export function FormSendout({
     "1303"
   )
 
+  const { activeAccount, activeSigner, activeChain, api } = useInkathon()
+
   const { data: referendumDetail, isLoading: isReferendumDetailLoading } =
     useReferendumDetail(selectedReferendum)
+
+  const mintNfts = async () => {
+    if (!referendumDetail) return
+
+    console.log("minting nfts")
+
+    const polkadotAssetHubApi = new ApiPromise({
+      provider: new WsProvider("wss://rpc-asset-hub-kusama.luckyfriday.io"),
+    })
+
+    await polkadotAssetHubApi.isReady
+
+    // nft mint collectionId, assetId, owner
+    const collectionId = "504"
+    const ipfsMetadataUrl =
+      "ipfs://ipfs/bafkreibb3lpjoy2bs6nmkt4zwfgj4ldmh4fholynx2euuagst3azb5vlom"
+
+    // const txs = referendumDetail?.reduce((acc, vote, index) => {
+    //   const assetId = `${collectionId}${index.toString().padStart(4, "0")}`
+
+    //   acc.push(
+    //     polkadotAssetHubApi.tx.nfts.mint(
+    //       collectionId,
+    //       assetId,
+    //       vote.account,
+    //       ipfsMetadataUrl
+    //     )
+    //   )
+
+    //   return acc
+    // }, [])
+
+    const txs = []
+
+    for (let i = 0; i < referendumDetail?.length; i++) {
+      const assetId = `${collectionId}${i.toString().padStart(4, "0")}`
+      txs.push(
+        polkadotAssetHubApi.tx.nfts.mint(
+          collectionId,
+          assetId,
+          referendumDetail[i].voter,
+          null
+        )
+      )
+    }
+
+    console.log("txs", txs)
+
+    const batchAll = polkadotAssetHubApi.tx.utility.batchAll(txs)
+
+    const res = await sendAndFinalize({
+      api: polkadotAssetHubApi,
+      tx: batchAll,
+      signer: activeSigner,
+      address: activeAccount?.address,
+      activeChain: activeChain,
+      toastConfig: {
+        ...DEFAULT_TOAST,
+        title: "Minting NFTs",
+        messages: {
+          ...DEFAULT_TOAST.messages,
+          success: "NFTs minted successfully",
+        },
+      },
+    })
+
+    // nft.set metadata (collectionId, assetId, data (ipfs://ipfs/...))
+    await polkadotAssetHubApi.disconnect()
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -108,11 +182,13 @@ export function FormSendout({
                 </TableBody>
               </Table>
             </div>
-            <pre>{JSON.stringify(referendumDetail, null, 2)}</pre>
+            {/* <pre>{JSON.stringify(referendumDetail, null, 2)}</pre> */}
           </>
         )}
       </div>
-      <Button disabled={!selectedReferendum}>Send NFTs</Button>
+      <Button disabled={!selectedReferendum} onClick={mintNfts}>
+        Send NFTs
+      </Button>
     </div>
   )
 }
