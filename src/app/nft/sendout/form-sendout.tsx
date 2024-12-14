@@ -36,9 +36,14 @@ export function FormSendout({
   const mutatedReferenda = [...referenda, { id: "1303", status: "active" }]
 
   const [txs, setTxs] = useState<any[]>([])
-  const [polkadotAssetHubApi, setPolkadotAssetHubApi] = useState<
-    ApiPromise | undefined
-  >(undefined)
+
+  const [selectedNetwork, setSelectedNetwork] = useState<string | undefined>(
+    "polkadot"
+  )
+
+  const [assetHubApi, setAssetHubApi] = useState<ApiPromise | undefined>(
+    undefined
+  )
   const [selectedReferendum, setSelectedReferendum] = useState<
     string | undefined
   >("1303")
@@ -63,15 +68,22 @@ export function FormSendout({
       return
     }
 
-    const _polkadotAssetHubApi = new ApiPromise({
-      provider: new WsProvider("wss://rpc-asset-hub-polkadot.luckyfriday.io"),
+    const provider =
+      selectedNetwork === "polkadot"
+        ? "wss://rpc-asset-hub-polkadot.luckyfriday.io"
+        : selectedNetwork === "kusama"
+        ? "wss://rpc-asset-hub-kusama.luckyfriday.io"
+        : "wss://sys.ibp.network/asset-hub-paseo"
+
+    const _assetHubApi = new ApiPromise({
+      provider: new WsProvider(provider),
     })
 
-    await _polkadotAssetHubApi.isReady
+    await _assetHubApi.isReady
 
-    setPolkadotAssetHubApi(_polkadotAssetHubApi)
+    setAssetHubApi(_assetHubApi)
 
-    if (!polkadotAssetHubApi) return
+    if (!assetHubApi) return
 
     const _txs = []
 
@@ -81,7 +93,7 @@ export function FormSendout({
     for (let i = 0; i < referendumDetail?.length; i++) {
       const assetId = `${collectionId}${i.toString().padStart(4, "0")}`
       _txs.push(
-        polkadotAssetHubApi.tx.nfts.mint(
+        assetHubApi.tx.nfts.mint(
           collectionId,
           assetId,
           referendumDetail[i].account,
@@ -90,11 +102,7 @@ export function FormSendout({
       )
 
       _txs.push(
-        polkadotAssetHubApi.tx.nfts.setMetadata(
-          collectionId,
-          assetId,
-          ipfsMetadataUrl
-        )
+        assetHubApi.tx.nfts.setMetadata(collectionId, assetId, ipfsMetadataUrl)
       )
     }
 
@@ -106,7 +114,7 @@ export function FormSendout({
   }
 
   const mintNfts = async () => {
-    if (!referendumDetail || !polkadotAssetHubApi) return
+    if (!referendumDetail || !assetHubApi) return
 
     console.log("minting nfts")
 
@@ -127,11 +135,11 @@ export function FormSendout({
     //   return acc
     // }, [])
 
-    const batchAll = polkadotAssetHubApi.tx.utility.batchAll(txs)
+    const batchAll = assetHubApi.tx.utility.batchAll(txs)
 
     try {
       const res = await sendAndFinalize({
-        api: polkadotAssetHubApi,
+        api: assetHubApi,
         tx: batchAll,
         signer: activeSigner,
         address: activeAccount?.address,
@@ -149,7 +157,7 @@ export function FormSendout({
       console.error("Error minting NFTs", error)
     } finally {
       setProgress("initial")
-      await polkadotAssetHubApi.disconnect()
+      await assetHubApi.disconnect()
     }
   }
 
@@ -157,7 +165,7 @@ export function FormSendout({
     <div className="flex flex-col gap-4">
       <b>Send NFTs to referendum participants</b>
       <div className="flex flex-col gap-2">
-        <Label>Referendum ID</Label>
+        <Label>Polkadot Referendum ID</Label>
         <Select
           value={selectedReferendum}
           onValueChange={(value) => {
@@ -177,6 +185,25 @@ export function FormSendout({
                   {referendum.id}
                 </SelectItem>
               ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Network to mint NFTs on</Label>
+        <Select
+          value={selectedNetwork}
+          onValueChange={(value) => {
+            setSelectedNetwork(value)
+            setProgress("initial")
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a network" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="polkadot">Polkadot Asset Hub</SelectItem>
+            <SelectItem value="kusama">Kusama Asset Hub</SelectItem>
+            <SelectItem value="paseo">Paseo Asset Hub</SelectItem>
           </SelectContent>
         </Select>
       </div>
