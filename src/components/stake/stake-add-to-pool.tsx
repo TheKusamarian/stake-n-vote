@@ -2,11 +2,16 @@
 
 import { Dispatch, SetStateAction, useCallback, useState } from "react"
 import { parseBN, trimAddress } from "@/util"
-import { Tooltip } from "@nextui-org/tooltip"
 import { ApiPromise } from "@polkadot/api"
 import { Signer } from "@polkadot/api/types"
 import { InjectedAccount } from "@polkadot/extension-inject/types"
 import { BN, BN_ZERO, bnToBn } from "@polkadot/util"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip"
 import { SubstrateChain, useInkathon } from "@scio-labs/use-inkathon"
 
 import { kusamaRelay, polkadotRelay } from "@/config/chains"
@@ -158,24 +163,26 @@ export function MaybeAddToPool({
 
       {amountSmallerThanMinNominatorBond ? (
         <>
-          <Tooltip
-            content={`Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}
-                stake do not have voting power while in nomination pools`}
-            size="sm"
-            color="warning"
-            radius="sm"
-            placement="bottom"
-            className="bg-yellow-500 rounded-md text-xs text-center w-full"
-          >
-            <Button
-              onClick={joinNominationPool}
-              disabled={isDisabled}
-              size="lg"
-              className="mt-4 w-full"
-            >
-              Stake with Nomination Pool
-            </Button>
-          </Tooltip>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={joinNominationPool}
+                  disabled={isDisabled}
+                  size="lg"
+                  className="mt-4 w-full"
+                >
+                  Stake with Nomination Pool
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="bg-yellow-500 rounded-md text-xs text-center w-full">
+                <p>
+                  Stakes under ${humanReadableMinNominatorBond} ${tokenSymbol}
+                  stake do not have voting power while in nomination pools
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </>
       ) : (
         <Button
