@@ -2,14 +2,12 @@ import { getReferenda } from "@/actions/get-referenda"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import { FormSendout } from "@/app/nft/sendout/form-sendout"
 
-import { FormSendout } from "./form-sendout"
-
-const revalidate = 10800 // revalidate at most every 3 hours
+export const revalidate = 60 // revalidate at most every 60 seconds
 
 export default async function SendoutPage() {
   const referenda = await getReferenda()
-  console.log(referenda)
 
   return (
     <div>

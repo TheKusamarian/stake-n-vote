@@ -1,12 +1,14 @@
-"use server"
-
 import { ApiPromise, WsProvider } from "@polkadot/api"
 
 export async function getReferenda(): Promise<any> {
   try {
     // Connect to Polkadot node
-    const wsProvider = new WsProvider("wss://rpc.polkadot.io")
-    const api = await ApiPromise.create({ provider: wsProvider })
+    const provider = "wss://rpc.polkadot.io"
+
+    const api = new ApiPromise({
+      provider: new WsProvider(provider),
+    })
+    await api.isReady
 
     // Query all referendum info
     const referenda = await api.query.referenda.referendumInfoFor.entries()
