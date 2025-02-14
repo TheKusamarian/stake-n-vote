@@ -46,8 +46,9 @@ export function UploadIpfsImage({
         const res = await pinToPinata(formData)
 
         if (res?.data) {
-          setIpfsHash(res?.data.ipfsHash)
-          onImageSelected(res?.data.ipfsHash)
+          const ipfsHash = res?.data.ipfsHash
+          setIpfsHash(ipfsHash)
+          onImageSelected(`ipfs://ipfs/${ipfsHash}`)
         } else {
           console.error("Upload error:", res?.serverError)
           setError("Upload error: " + res?.serverError)
@@ -71,11 +72,10 @@ export function UploadIpfsImage({
 
   return (
     <div className="flex flex-col gap-2">
-      <Label>NFT Image</Label>
       <Card
         {...getRootProps()}
         className={cn(
-          "relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center p-4",
+          "relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center p-4",
           isDragActive && "border-primary",
           className
         )}
@@ -99,8 +99,8 @@ export function UploadIpfsImage({
         )}
 
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-            Loading...
+          <div className="absolute inset-0 flex items-center justify-center bg-background/80 text-muted-foreground text-sm">
+            📌 Pinning to IPFS...
           </div>
         )}
       </Card>

@@ -1,10 +1,15 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
+import { KusamaIcon, PolkadotIcon } from "@/icons"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Prefix } from "@kodadot1/uniquery"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 import { useInkathon } from "@scio-labs/use-inkathon"
-import { Loader2 } from "lucide-react"
+import { ClipboardCopy, ImageUp, Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 import { useNftApi } from "@/hooks/use-nft-api"
 import { useReferendumDetail } from "@/hooks/use-referendum-detail"
@@ -17,15 +22,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import {
   Table,
   TableBody,
@@ -35,44 +40,69 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DEFAULT_TOAST, sendAndFinalize } from "@/app/txs/send-and-finalize"
 
 import { InputNftMeta } from "./input-nft-meta"
+import { SelectAwardType } from "./select-award-type"
 import { SelectCollectionId } from "./select-collection-id"
 import { UploadIpfsImage } from "./select-ipfs-image"
 import { SelectNetwork } from "./select-network"
+import { SelectReferendum } from "./select-referendum"
+import { SelectSendoutNetwork } from "./select-sendout-network"
 
 export type Network = Prefix | "paseo"
 
+const formSchema = z.object({
+  network: z.enum(["polkadot", "kusama"]),
+  referendumId: z.string().min(1, "Please select a referendum"),
+  awardType: z.enum(["all", "aye", "nay"]),
+  sendoutNetwork: z.custom<Network>(),
+  collectionId: z.string().min(1, "Collection ID is required"),
+  nftMeta: z.object({
+    name: z.string().min(1, "Name is required"),
+    description: z.string().min(1, "Description is required"),
+    image: z.string().min(1, "Image is required"),
+  }),
+})
+
+type FormValues = z.infer<typeof formSchema>
+
 export function FormSendout({
+  chain,
   referenda,
 }: {
+  chain: "polkadot" | "kusama"
   referenda: { id: string; status: string }[]
 }) {
-  const mutatedReferenda = [...referenda]
   const [txs, setTxs] = useState<any[]>([])
-  const [selectedNetwork, setSelectedNetwork] = useState<Network>("ahp")
-  const [selectedReferendum, setSelectedReferendum] = useState<
-    string | undefined
-  >()
-
-  const [nftMeta, setNftMeta] = useState<{
-    name: string
-    description: string
-    image: string
-  }>({
-    name: "",
-    description: "",
-    image: "",
-  })
-
-  const [collectionId, setCollectionId] = useState<string | undefined>("165")
-
   const [progress, setProgress] = useState<
     "initial" | "checking" | "minting" | "loading"
   >("initial")
-
+  const router = useRouter()
   const { activeAccount, activeSigner, activeChain } = useInkathon()
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      network: chain,
+      awardType: "all",
+      sendoutNetwork: chain === "polkadot" ? "ahp" : "ahk",
+      collectionId: "",
+      nftMeta: {
+        name: "",
+        description: "",
+        image: "",
+      },
+    },
+  })
+
+  const { watch } = form
+  const selectedNetwork = watch("sendoutNetwork")
+  const selectedReferendum = watch("referendumId")
+  const whoToAward = watch("awardType")
+  const collectionId = watch("collectionId")
+
   const nftApi = useNftApi(selectedNetwork)
 
   const {
@@ -81,6 +111,13 @@ export function FormSendout({
     isError: isReferendumDetailError,
   } = useReferendumDetail(selectedReferendum)
 
+  const filterVoteInfo =
+    whoToAward === "all"
+      ? `${referendumDetail?.length}`
+      : whoToAward === "aye"
+      ? `${referendumDetail?.filter((vote) => vote.aye).length}`
+      : `${referendumDetail?.filter((vote) => !vote.aye).length}`
+
   const isSendoutDisabled =
     !referendumDetail?.length ||
     !collectionId ||
@@ -88,17 +125,6 @@ export function FormSendout({
     !activeAccount ||
     progress === "loading" ||
     selectedReferendum === undefined
-
-  console.log(
-    "isSendoutDisabled",
-    isSendoutDisabled,
-    referendumDetail,
-    collectionId,
-    nftApi,
-    activeAccount,
-    progress,
-    selectedReferendum
-  )
 
   const checkTxs = async () => {
     setProgress("loading")
@@ -138,6 +164,12 @@ export function FormSendout({
     }
   }
 
+  const copyCallData = () => {
+    if (!referendumDetail || !nftApi) return
+    const batchAll = nftApi.tx.utility.batchAll(txs)
+    navigator.clipboard.writeText(batchAll?.toHex() ?? "")
+  }
+
   const mintNfts = async () => {
     if (!referendumDetail || !nftApi) return
 
@@ -172,90 +204,192 @@ export function FormSendout({
   }
 
   return (
-    <Card className="w-full max-w-4xl mx-auto border-none">
-      <CardHeader>
-        <CardTitle className="text-5xl font-bold text-center text-clip bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
-          Send NFTs <br /> to Referendum Participants
-        </CardTitle>
-        <CardDescription className="text-center mb-4">
-          Follow the steps below to mint and send NFTs to referendum voters
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-8">
-        <div className="flex flex-col gap-2">
-          <Label>Polkadot Referendum ID</Label>
-          <Select
-            aria-describedby="referendum-description"
-            value={selectedReferendum}
-            onValueChange={(value) => {
-              setSelectedReferendum(value)
-              setProgress("initial")
-              setCollectionId(undefined)
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select a referendum" />
-            </SelectTrigger>
-            <SelectContent>
-              {mutatedReferenda
-                .sort((a, b) => Number(b.id) - Number(a.id))
-                .slice(0, 300)
-                .map((referendum) => (
-                  <SelectItem key={referendum.id} value={referendum.id}>
-                    {referendum.id}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-          <div className="flex flex-col md:flex-row gap-2 justify-between">
-            <p className="text-xs text-muted-foreground">
-              Select the referendum you want to reward
-            </p>
-            {referendumDetail && (
-              <p
-                id="referendum-description"
-                className="text-xs text-muted-foreground text-right"
+    <Form {...form} key={chain}>
+      <form onSubmit={form.handleSubmit(checkTxs)}>
+        <Card className="w-full max-w-4xl mx-auto border-none shadow-none">
+          <CardHeader>
+            <CardTitle className="text-5xl font-bold text-center text-clip bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+              Send NFTs <br /> to Referendum Participants
+            </CardTitle>
+            <CardDescription className="text-center mb-4">
+              Follow the steps below to mint and send NFTs to referendum voters
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="network"
+                render={({ field }) => (
+                  <FormItem>
+                    <SelectNetwork
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value)
+                        router.push(`/nft/sendout/${value}`)
+                        setProgress("initial")
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="referendumId"
+                render={({ field }) => (
+                  <FormItem>
+                    <SelectReferendum
+                      chain={chain}
+                      referenda={referenda}
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value)
+                        setProgress("initial")
+                        form.setValue("collectionId", "")
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="awardType"
+                render={({ field }) => (
+                  <FormItem>
+                    <SelectAwardType
+                      value={field.value}
+                      onChange={field.onChange}
+                      referendumDetail={referendumDetail}
+                      isLoading={isReferendumDetailLoading}
+                      filterVoteInfo={filterVoteInfo}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="sendoutNetwork"
+                render={({ field }) => (
+                  <FormItem>
+                    <SelectSendoutNetwork
+                      value={field.value}
+                      onChange={(network) => {
+                        field.onChange(network)
+                        setProgress("initial")
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="collectionId"
+                render={({ field }) => (
+                  <FormItem>
+                    <SelectCollectionId
+                      network={selectedNetwork}
+                      onChange={(value) => {
+                        field.onChange(value)
+                        setProgress("initial")
+                      }}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* NFT Metadata Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="nftMeta.image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>NFT Image</FormLabel>
+                    <FormControl>
+                      <UploadIpfsImage onImageSelected={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="nftMeta"
+                  render={({ field }) => (
+                    <InputNftMeta
+                      {...field.value}
+                      onChangeName={(name) =>
+                        form.setValue("nftMeta.name", name)
+                      }
+                      onChangeDescription={(description) =>
+                        form.setValue("nftMeta.description", description)
+                      }
+                      onChangeImage={(image) =>
+                        form.setValue("nftMeta.image", image)
+                      }
+                      previewData={{
+                        index: 123,
+                        refId: selectedReferendum ?? "1337",
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+          </CardContent>
+          <div className="flex flex-col md:flex-row gap-4">
+            {progress === "checking" && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={copyCallData}
+                  className="w-1/3"
+                >
+                  <ClipboardCopy className="mr-2 h-4 w-4" /> Copy Call Data
+                </Button>
+                <Button className="w-2/3" onClick={mintNfts}>
+                  <ImageUp className="mr-2 h-4 w-4" /> Mint {filterVoteInfo}{" "}
+                  NFTs
+                </Button>
+              </>
+            )}
+            {progress === "initial" && (
+              <Button
+                className="w-full"
+                disabled={isSendoutDisabled}
+                onClick={() => {
+                  if (progress === "initial") {
+                    checkTxs()
+                  }
+                }}
               >
-                {isReferendumDetailLoading
-                  ? "Loading..."
-                  : referendumDetail?.length}
-                {" voters on referendum "}
-                {selectedReferendum}
-              </p>
+                {!activeAccount ? (
+                  "Connect Wallet to Continue"
+                ) : progress === "loading" ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Preparing Transactions...
+                  </>
+                ) : progress === "initial" ? (
+                  "Verify NFT Sendout"
+                ) : (
+                  "Minting..."
+                )}
+              </Button>
             )}
           </div>
-        </div>
-
-        <SelectNetwork
-          value={selectedNetwork}
-          onChange={(network) => {
-            setSelectedNetwork(network)
-            setProgress("initial")
-          }}
-        />
-        <SelectCollectionId
-          network={selectedNetwork}
-          onChange={(collectionId) => setCollectionId(collectionId)}
-        />
-        <div className="grid grid-cols-2 gap-2">
-          <UploadIpfsImage onImageSelected={() => {}} />
-          <InputNftMeta
-            name={nftMeta.name}
-            description={nftMeta.description}
-            image={nftMeta.image}
-            onChangeName={(e) =>
-              setNftMeta({ ...nftMeta, name: e.target.value })
-            }
-            onChangeDescription={(e) =>
-              setNftMeta({ ...nftMeta, description: e.target.value })
-            }
-            onChangeImage={(e) =>
-              setNftMeta({ ...nftMeta, image: e.target.value })
-            }
-          />
-        </div>
-      </CardContent>
-      <CardFooter>
+        </Card>
+      </form>
+      {progress === "checking" && (
         <div className="referendum-info text-sm">
           <b>
             {" "}
@@ -339,33 +473,7 @@ export function FormSendout({
             </>
           )}
         </div>
-        {progress === "checking" && <div className="flex flex-col gap-2"></div>}
-        <Button
-          disabled={isSendoutDisabled}
-          onClick={() => {
-            if (progress === "initial") {
-              checkTxs()
-            } else if (progress === "checking") {
-              mintNfts()
-            }
-          }}
-        >
-          {!activeAccount ? (
-            "Connect Wallet to Continue"
-          ) : progress === "loading" ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Preparing Transactions...
-            </>
-          ) : progress === "initial" ? (
-            "Verify NFT Sendout"
-          ) : progress === "checking" ? (
-            `Mint ${referendumDetail?.length} NFTs`
-          ) : (
-            "Minting..."
-          )}
-        </Button>
-      </CardFooter>
-    </Card>
+      )}
+    </Form>
   )
 }

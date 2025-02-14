@@ -1,4 +1,6 @@
-import { useState } from "react"
+"use client"
+
+import { KusamaIcon, PolkadotIcon } from "@/icons"
 
 import { Label } from "@/components/ui/label"
 import {
@@ -9,41 +11,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Network } from "./form-sendout"
+interface SelectNetworkProps {
+  value: string
+  onChange: (value: "polkadot" | "kusama") => void
+}
 
-export function SelectNetwork({
-  value,
-  onChange,
-}: {
-  value: Network
-  onChange: (network: Network) => void
-}) {
+export function SelectNetwork({ value, onChange }: SelectNetworkProps) {
   return (
     <div className="flex flex-col gap-2">
-      <Label>Network to mint NFTs on</Label>
-      <Select
-        value={value}
-        onValueChange={(value) => {
-          onChange(value as Network)
-        }}
-      >
+      <Label>Network</Label>
+      <Select value={value} onValueChange={onChange}>
         <SelectTrigger>
           <SelectValue placeholder="Select a network" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="ahp">Polkadot Asset Hub</SelectItem>
-          <SelectItem value="ahk">Kusama Asset Hub</SelectItem>
-          <SelectItem value="paseo">Paseo Asset Hub</SelectItem>
+          <SelectItem value="polkadot">
+            <div className="flex items-center flex-row">
+              <PolkadotIcon className="w-4 h-4 mr-2" /> Polkadot
+            </div>
+          </SelectItem>
+          <SelectItem value="kusama">
+            <div className="flex items-center flex-row">
+              <KusamaIcon className="w-4 h-4 mr-2" /> Kusama
+            </div>
+          </SelectItem>
         </SelectContent>
       </Select>
-      <div className="flex flex-col md:flex-row gap-2 justify-between">
-        <p className="text-xs text-muted-foreground">
-          Select the network you want to mint the NFTs on
-        </p>
-        <p className="text-xs text-muted-foreground text-right">
-          Fee per NFT ~ 0.0001 DOT
-        </p>
-      </div>
     </div>
   )
 }

@@ -29,12 +29,17 @@ export function SelectCollectionId({
       ? "Polkadot Assethub"
       : "Paseo Assethub"
 
-  if (!isLoading && !error && (!collections || collections.length === 0)) {
+  if (
+    activeAccount &&
+    !isLoading &&
+    !error &&
+    (!collections || collections.length === 0)
+  ) {
     return (
       <div className="flex flex-col gap-2">
         <Label>Mint to collection</Label>
-        <div className="text-sm text-muted-foreground">
-          No collections found on {networkName}.{" "}
+        <div className="text-xs p-3 bg-gradient-to-r from-orange-300 to-yellow-300 rounded-lg">
+          ⚠️ No collections found on {networkName}.{" "}
           <a
             href={
               network === "paseo"
@@ -105,6 +110,10 @@ export function SelectCollectionId({
           ))}
         </SelectContent>
       </Select>
+      <p className="text-xs text-muted-foreground -mt-1">
+        Select the collection that will hold the NFTs you want to mint. The
+        collection must be created on the network you are using.
+      </p>
     </div>
   )
 }

@@ -1,9 +1,12 @@
 import { ApiPromise, WsProvider } from "@polkadot/api"
 
-export async function getReferenda(): Promise<any> {
+export async function getReferenda(chain: "polkadot" | "kusama" = "polkadot") {
   try {
-    // Connect to Polkadot node
-    const provider = "wss://rpc.polkadot.io"
+    // Connect to appropriate chain
+    const provider =
+      chain === "polkadot"
+        ? "wss://rpc.polkadot.io"
+        : "wss://kusama-rpc.polkadot.io"
 
     const api = new ApiPromise({
       provider: new WsProvider(provider),
@@ -26,7 +29,6 @@ export async function getReferenda(): Promise<any> {
         return {
           id: referendumId,
           status: status.type,
-          // You can add more fields here as needed
         }
       })
 
