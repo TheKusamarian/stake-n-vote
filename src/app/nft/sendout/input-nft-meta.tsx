@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
+import { resolvePlaceholders } from "./util"
+
 export interface InputNftMetaProps {
   name: string
   description: string
@@ -78,16 +80,11 @@ export function InputNftMeta({
     }
   }
 
-  // Function to resolve placeholders
-  function resolvePlaceholders(text: string) {
-    return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-      const value = previewData[key]
-      return value !== undefined ? String(value) : match
-    })
-  }
-
-  const namePreview = resolvePlaceholders(localState.name)
-  const descriptionPreview = resolvePlaceholders(localState.description)
+  const namePreview = resolvePlaceholders(localState.name, previewData)
+  const descriptionPreview = resolvePlaceholders(
+    localState.description,
+    previewData
+  )
 
   return (
     <div className="flex flex-col gap-4">
@@ -108,8 +105,7 @@ export function InputNftMeta({
           </TabsList>
         </div>
         <div className="text-xs text-muted-foreground font-semibold text-center">
-          Available placeholders: <code>{"{{index}}"}</code>,{" "}
-          <code>{"{{refId}}"}</code>
+          Available placeholders: <code>{"{{refId}}"}</code>
         </div>
         <TabsContent value="basic" className="pl-4">
           <div className="flex flex-col gap-4">

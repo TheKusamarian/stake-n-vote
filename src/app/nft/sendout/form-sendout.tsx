@@ -41,6 +41,7 @@ import { UploadIpfsImage } from "./select-ipfs-image"
 import { SelectNetwork } from "./select-network"
 import { SelectReferendum } from "./select-referendum"
 import { SelectSendoutNetwork } from "./select-sendout-network"
+import { resolvePlaceholders } from "./util"
 
 export type Network = Prefix | "paseo"
 
@@ -144,9 +145,9 @@ export function FormSendout() {
   const [txs, setTxs] = useState<any[]>([])
   const [progress, setProgress] = useState<
     | "step1_initial"
-    | "step2_checking"
-    | "pinning"
-    | "awaiting_signature"
+    | "step1_pinning"
+    | "step2_review"
+    | "step2_minting"
     | "success"
   >("step1_initial")
 
@@ -175,7 +176,9 @@ export function FormSendout() {
       !activeAccount ||
       !formValues.nftMeta.name ||
       !formValues.nftMeta.description ||
-      !formValues.referendumId
+      !formValues.referendumId ||
+      progress === "step1_pinning" ||
+      progress === "step2_minting"
     )
   }, [
     formValues.collectionId,
@@ -186,6 +189,7 @@ export function FormSendout() {
     nftApi,
     activeAccount,
     isReferendumDetailLoading,
+    progress,
   ])
 
   const [imageFile, setImageFile] = useState<File | null>(null)
@@ -193,6 +197,11 @@ export function FormSendout() {
     metadata: string
     image: string
   }>({ metadata: "", image: "" })
+
+  const [pinnedMetadata, setPinnedMetadata] = useState<{
+    ipfsHash: string
+    metadata: any
+  } | null>(null)
 
   const createTxs = async (metadataIpfsUrl: string) => {
     try {
@@ -205,7 +214,12 @@ export function FormSendout() {
       // Get current timestamp and use last 5 digits
       const timeComponent = Number(Date.now().toString().slice(-5))
 
-      for (let i = 0; i < referendumDetail?.length; i++) {
+      const filteredReferendumDetail = referendumDetail.filter((vote) => {
+        if (formValues.awardType === "all") return true
+        return formValues.awardType === "aye" ? vote.aye : !vote.aye
+      })
+
+      for (let i = 0; i < filteredReferendumDetail?.length; i++) {
         // Combine collection ID with time component and index
         // Format: <timestamp last 5 digits><index padded to 4>
         const assetId = `${timeComponent}${i.toString().padStart(4, "0")}`
@@ -214,7 +228,7 @@ export function FormSendout() {
           nftApi.tx.nfts.mint(
             formValues.collectionId,
             assetId,
-            referendumDetail[i].account,
+            filteredReferendumDetail[i].account,
             null
           )
         )
@@ -234,68 +248,62 @@ export function FormSendout() {
     }
   }
 
-  const handlePinAndMint = async () => {
+  const handlePinMetadata = async () => {
     try {
-      setProgress("pinning")
+      setProgress("step1_pinning")
 
-      if (!ipfsHashes.metadata) {
-        // Create and pin metadata
-        const metadata = {
-          name: formValues.nftMeta.name,
-          description: formValues.nftMeta.description,
-          image: `ipfs://ipfs/${ipfsHashes.image}`,
-        }
-        const metadataBlob = new Blob([JSON.stringify(metadata)], {
-          type: "application/json",
-        })
-        const metadataFormData = new FormData()
-        metadataFormData.append("file", metadataBlob, "metadata.json")
-
-        const metadataRes = await pinToPinata(metadataFormData)
-        if (!metadataRes?.data?.ipfsHash)
-          throw new Error("Failed to pin metadata")
-
-        // Update form with the final IPFS hash for metadata
-        form.setValue(
-          "nftMeta.image",
-          `ipfs://ipfs/${metadataRes.data.ipfsHash}`
-        )
-
-        setIpfsHashes({
-          ...ipfsHashes,
-          metadata: metadataRes.data.ipfsHash,
-        })
-
-        setProgress("awaiting_signature")
-        await mintNfts(metadataRes.data?.ipfsHash)
-      } else {
-        setProgress("awaiting_signature")
-        await mintNfts(ipfsHashes.metadata)
+      // Create metadata object
+      const metadata = {
+        name: resolvePlaceholders(formValues.nftMeta.name, {
+          refId: formValues.referendumId,
+        }),
+        description: resolvePlaceholders(formValues.nftMeta.description, {
+          refId: formValues.referendumId,
+        }),
+        image: ipfsHashes.image,
       }
+
+      // Pin metadata to IPFS
+      const metadataBlob = new Blob([JSON.stringify(metadata)], {
+        type: "application/json",
+      })
+      const metadataFormData = new FormData()
+      metadataFormData.append(
+        "file",
+        metadataBlob,
+        `metadata-${formValues.referendumId}-${activeAccount?.address}.json`
+      )
+
+      const metadataRes = await pinToPinata(metadataFormData)
+      if (!metadataRes?.data?.ipfsHash)
+        throw new Error("Failed to pin metadata")
+
+      // Store pinned metadata
+      setPinnedMetadata({
+        ipfsHash: metadataRes.data.ipfsHash,
+        metadata,
+      })
+
+      // Create transactions with pinned metadata
+      const newTxs = await createTxs(`ipfs://ipfs/${metadataRes.data.ipfsHash}`)
+      setTxs(newTxs)
+
+      setProgress("step2_review")
     } catch (error) {
-      console.error("Failed to pin files:", error)
-      setProgress("step2_checking")
-      toast.error("Failed to pin files to IPFS. Please try again.")
-    } finally {
-      setProgress("step2_checking")
+      console.error("Failed to pin metadata:", error)
+      toast.error("Failed to pin metadata to IPFS. Please try again.")
+      setProgress("step1_initial")
     }
   }
 
-  const copyCallData = () => {
-    if (!referendumDetail || !nftApi) return
-    const batchAll = nftApi.tx.utility.batchAll(txs)
-    navigator.clipboard.writeText(batchAll?.toHex() ?? "")
-    toast.success("Call data copied to clipboard")
-  }
-
-  const mintNfts = async (metadataIpfsUrl: string) => {
-    if (!referendumDetail || !nftApi) return
-
-    const txs = await createTxs(metadataIpfsUrl)
-
-    const batchAll = nftApi.tx.utility.batchAll(txs)
+  const handleMintNfts = async () => {
+    if (!pinnedMetadata || !nftApi) return
 
     try {
+      setProgress("step2_minting")
+
+      const batchAll = nftApi.tx.utility.batchAll(txs)
+
       const res = await sendAndFinalize({
         api: nftApi,
         tx: batchAll,
@@ -317,20 +325,29 @@ export function FormSendout() {
           },
         },
       })
+
       if (res.status === "success") {
         setProgress("success")
       }
     } catch (error) {
-      console.error("Error minting NFTs", error)
+      console.error("Error minting NFTs:", error)
+      setProgress("step2_review")
+      toast.error("Failed to mint NFTs. Please try again.")
     }
+  }
+
+  const copyCallData = () => {
+    if (!referendumDetail || !nftApi || !txs.length) return
+    const batchAll = nftApi.tx.utility.batchAll(txs)
+    navigator.clipboard.writeText(batchAll?.toHex() ?? "")
+    toast.success("Call data copied to clipboard")
   }
 
   const submitForm = async () => {
     if (progress === "step1_initial") {
-      setProgress("step2_checking")
-    } else if (progress === "step2_checking") {
-      console.log("handlePinAndMint")
-      await handlePinAndMint()
+      await handlePinMetadata()
+    } else if (progress === "step2_review") {
+      await handleMintNfts()
     }
   }
 
@@ -349,7 +366,7 @@ export function FormSendout() {
             </CardDescription>
           </CardHeader>
 
-          {progress === "step1_initial" && (
+          {(progress === "step1_initial" || progress === "step1_pinning") && (
             <CardContent className="flex flex-col gap-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
@@ -488,7 +505,6 @@ export function FormSendout() {
                           })
                         }}
                         previewData={{
-                          index: 123,
                           refId: formValues.referendumId ?? "1337",
                         }}
                       />
@@ -499,9 +515,7 @@ export function FormSendout() {
             </CardContent>
           )}
 
-          {["step2_checking", "pinning", "awaiting_signature"].includes(
-            progress
-          ) && (
+          {["step2_review", "step2_minting"].includes(progress) && (
             <CardContent>
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold">
@@ -523,7 +537,17 @@ export function FormSendout() {
                   <dt>Referendum:</dt>
                   <dd>#{formValues.referendumId}</dd>
                   <dt>Award Type:</dt>
-                  <dd>{filterVoteInfo} addresses</dd>
+                  <dd>
+                    Send out to{" "}
+                    <b>
+                      {formValues.awardType === "all"
+                        ? "all"
+                        : formValues.awardType === "aye"
+                        ? "aye"
+                        : "nay"}
+                    </b>{" "}
+                    Voters ({filterVoteInfo} addresses)
+                  </dd>
                   <dt>Mint Network:</dt>
                   <dd>{formValues.sendoutNetwork}</dd>
                   <dt>Collection ID:</dt>
@@ -537,16 +561,11 @@ export function FormSendout() {
                   </h4>
                 </div>
               </div>
-              <pre className="p-4 bg-gray-100 rounded-md text-[9px] overflow-auto max-h-[200px]">
-                {JSON.stringify(formValues, null, 2)}
-              </pre>
             </CardContent>
           )}
 
           <CardFooter className="flex flex-col md:flex-row gap-4">
-            {["step2_checking", "pinning", "awaiting_signature"].includes(
-              progress
-            ) && (
+            {["step2_review", "step2_minting"].includes(progress) && (
               <>
                 <Button
                   type="button"
@@ -561,45 +580,31 @@ export function FormSendout() {
                   variant="outline"
                   onClick={copyCallData}
                   className="w-full md:w-1/4"
+                  disabled={!txs.length}
                 >
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Call Data
                 </Button>
                 <Button
                   className="w-full md:w-2/4"
-                  onClick={handlePinAndMint}
-                  disabled={progress === "pinning"}
+                  onClick={handleMintNfts}
+                  disabled={!txs.length}
                   type="submit"
                 >
-                  {progress === "pinning" ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Pinning to IPFS...
-                    </>
-                  ) : progress === "awaiting_signature" ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Awaiting Signature...
-                    </>
-                  ) : (
-                    <>
-                      <ImageUp className="mr-2 h-4 w-4" />
-                      Confirm and Mint {filterVoteInfo} NFTs
-                    </>
-                  )}
+                  <ImageUp className="mr-2 h-4 w-4" />
+                  Mint {filterVoteInfo} NFTs
                 </Button>
               </>
             )}
 
-            {progress === "step1_initial" && (
+            {["step1_initial", "step1_pinning"].includes(progress) && (
               <Button
                 className="w-full"
                 disabled={isSendoutDisabled}
                 type="submit"
+                isLoading={progress === "step1_pinning"}
               >
-                {!activeAccount
-                  ? "Connect Wallet to Continue"
-                  : "Review Transaction Details"}
+                Pin Metadata and Continue
               </Button>
             )}
           </CardFooter>

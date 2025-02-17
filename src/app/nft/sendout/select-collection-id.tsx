@@ -83,31 +83,34 @@ export function SelectCollectionId({
           />
         </SelectTrigger>
         <SelectContent>
-          {collections?.map((collection) => (
-            <SelectItem key={collection.id} value={collection.id}>
-              <div className="flex flex-row gap-2 items-center">
-                {collection.image && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={collection.image.replace(
-                      "ipfs://",
-                      "https://ipfs.io/ipfs/"
-                    )}
-                    alt={collection.name}
-                    className="h-8 w-8 object-cover"
-                  />
-                )}
-                <div>
-                  <span className="font-medium">id:</span> {collection.id}
-                </div>
-                {collection.name && (
+          {collections
+            ?.sort((a, b) => b.id.localeCompare(a.id))
+            .map((collection) => (
+              <SelectItem key={collection.id} value={collection.id}>
+                <div className="flex flex-row gap-2 items-center">
+                  {collection.image && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={collection.image.replace(
+                        "ipfs://",
+                        "https://ipfs.io/ipfs/"
+                      )}
+                      alt={collection.name}
+                      className="h-8 w-8 object-cover"
+                    />
+                  )}
                   <div>
-                    <span className="font-medium">name:</span> {collection.name}
+                    <span className="font-medium">id:</span> {collection.id}
                   </div>
-                )}
-              </div>
-            </SelectItem>
-          ))}
+                  {collection.name && (
+                    <div>
+                      <span className="font-medium">name:</span>{" "}
+                      {collection.name}
+                    </div>
+                  )}
+                </div>
+              </SelectItem>
+            ))}
         </SelectContent>
       </Select>
       <p className="text-xs text-muted-foreground -mt-1">

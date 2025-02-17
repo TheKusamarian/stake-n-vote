@@ -43,9 +43,10 @@ export function useCollections(network: Network) {
           activeAccount.address
         )
         const result = collections.map(([key, value]) => {
+          const [issuer, id] = key.toHuman() as [string, string]
           return {
-            id: key.toHuman() as [string, string][1],
-            issuer: key.toHuman() as [string, string][0],
+            id,
+            issuer,
           }
         })
         console.log("result", result)
