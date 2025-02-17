@@ -36,16 +36,11 @@ export async function generateStaticParams() {
 }
 
 export default async function SendoutPage({ params }: Props) {
-  const chain = params.chain.toLowerCase()
-  if (!isValidChain(chain)) return notFound()
-
-  const referenda = await getReferenda(chain)
-
   return (
     <div>
       <Header />
       <main className="min-h-screen my-28">
-        <FormSendout chain={chain} referenda={referenda.data || []} />
+        <FormSendout />
       </main>
       <Footer />
     </div>

@@ -8,7 +8,6 @@ import { useNftApi } from "@/hooks/use-nft-api"
 import { Network } from "@/app/nft/sendout/form-sendout"
 
 export function useCollections(network: Network) {
-  console.log("useCollections", network)
   const { activeAccount } = useInkathon()
   const nftApi = useNftApi(network)
 
@@ -36,27 +35,21 @@ export function useCollections(network: Network) {
 
       if (client) {
         const collectionsQuery = client.collectionListByIssuer(encodedAddress)
-        const result = await (
-          await client.fetch(collectionsQuery)
-        ).data?.collections
-        return result || []
+        const result = await await client.fetch(collectionsQuery)
+        return result.data?.collections || []
       } else {
         console.log("usecollection api", nftApi)
         const collections = await nftApi?.query.nfts.collectionAccount.entries(
           activeAccount.address
         )
-        console.log(
-          "paseo collections",
-          collections.map(([entry]) => ({
-            id: entry[0],
-            issuer: entry[1],
-          }))
-        )
-
-        return collections.map(([entry]) => ({
-          id: entry[0],
-          issuer: entry[1],
-        }))
+        const result = collections.map(([key, value]) => {
+          return {
+            id: key.toHuman() as [string, string][1],
+            issuer: key.toHuman() as [string, string][0],
+          }
+        })
+        console.log("result", result)
+        return result
       }
     },
     enabled: !!activeAccount?.address && !!nftApi,

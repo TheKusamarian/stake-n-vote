@@ -9,51 +9,69 @@ export interface InputNftMetaProps {
   name: string
   description: string
   image: string
-  onChangeName: (newValue: string) => void
-  onChangeDescription: (newValue: string) => void
-  onChangeImage: (newValue: string) => void
-  previewData?: {
-    index?: number
-    refId?: string
-    [key: string]: string | number | undefined
-  }
+  onChange: (values: {
+    name: string
+    description: string
+    image: string
+  }) => void
+  previewData?: Record<string, any>
 }
 
 export function InputNftMeta({
-  name,
-  description,
-  image,
-  onChangeName,
-  onChangeDescription,
-  onChangeImage,
+  name: initialName,
+  description: initialDescription,
+  image: initialImage,
+  onChange,
   previewData = {},
 }: InputNftMetaProps) {
   const [activeTab, setActiveTab] = useState<"basic" | "advanced">("basic")
+  const [localState, setLocalState] = useState({
+    name: initialName,
+    description: initialDescription,
+    image: initialImage,
+  })
   const [jsonValue, setJsonValue] = useState<string>(
-    JSON.stringify({ name, description, image }, null, 2)
+    JSON.stringify(localState, null, 2)
   )
   const [jsonError, setJsonError] = useState<string>("")
 
-  // Update JSON value when props change
+  // Update local state when props change, but preserve existing values
+  useEffect(() => {
+    setLocalState((prevState) => ({
+      ...prevState,
+      name: initialName,
+      description: initialDescription,
+      image: initialImage || prevState.image, // Preserve image if new value is empty
+    }))
+  }, [initialName, initialDescription, initialImage])
+
+  // Update JSON when local state changes and in advanced mode
   useEffect(() => {
     if (activeTab === "advanced") {
-      const newJsonValue = JSON.stringify({ name, description, image }, null, 2)
-      if (newJsonValue !== jsonValue) {
-        setJsonValue(newJsonValue)
-      }
+      setJsonValue(JSON.stringify(localState, null, 2))
     }
-  }, [name, description, image, activeTab, jsonValue])
+  }, [localState, activeTab])
 
-  // Handle JSON changes in advanced mode
+  const handleStateChange = (
+    key: "name" | "description" | "image",
+    value: string
+  ) => {
+    const newState = { ...localState, [key]: value }
+    setLocalState(newState)
+    onChange(newState)
+  }
+
   const handleJsonChange = (value: string) => {
     setJsonValue(value)
     try {
       const parsed = JSON.parse(value)
-      // Ensure we only update if the values are different
-      if (parsed.name !== name) onChangeName(parsed.name ?? "")
-      if (parsed.description !== description)
-        onChangeDescription(parsed.description ?? "")
-      if (parsed.image !== image) onChangeImage(parsed.image ?? "")
+      const newState = {
+        name: parsed.name ?? localState.name,
+        description: parsed.description ?? localState.description,
+        image: parsed.image ?? localState.image,
+      }
+      setLocalState(newState)
+      onChange(newState)
       setJsonError("")
     } catch (err) {
       setJsonError("Invalid JSON")
@@ -68,9 +86,8 @@ export function InputNftMeta({
     })
   }
 
-  // Preview values
-  const namePreview = resolvePlaceholders(name)
-  const descriptionPreview = resolvePlaceholders(description)
+  const namePreview = resolvePlaceholders(localState.name)
+  const descriptionPreview = resolvePlaceholders(localState.description)
 
   return (
     <div className="flex flex-col gap-4">
@@ -101,11 +118,12 @@ export function InputNftMeta({
                 <Label className="text-xs">Name</Label>
               </div>
               <Input
-                value={name}
-                onChange={(e) => onChangeName(e.target.value)}
+                value={localState.name}
+                onChange={(e) => handleStateChange("name", e.target.value)}
                 placeholder="NFT Name"
+                maxLength={100}
               />
-              {namePreview !== name && (
+              {namePreview !== localState.name && (
                 <div className="text-xs text-muted-foreground mt-1">
                   Preview: {namePreview}
                 </div>
@@ -114,11 +132,14 @@ export function InputNftMeta({
             <div>
               <Label className="text-xs">Description</Label>
               <Textarea
-                value={description}
-                onChange={(e) => onChangeDescription(e.target.value)}
+                value={localState.description}
+                onChange={(e) =>
+                  handleStateChange("description", e.target.value)
+                }
                 placeholder="NFT Description"
+                maxLength={500}
               />
-              {descriptionPreview !== description && (
+              {descriptionPreview !== localState.description && (
                 <div className="text-xs text-muted-foreground mt-1">
                   Preview: {descriptionPreview}
                 </div>

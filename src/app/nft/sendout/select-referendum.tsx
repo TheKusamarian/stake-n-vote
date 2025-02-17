@@ -11,7 +11,7 @@ import {
 
 interface SelectReferendumProps {
   chain: "polkadot" | "kusama"
-  referenda: { id: string; status: string }[]
+  referenda: { id: string; status: string }[] | undefined
   value: string | undefined
   onChange: (value: string) => void
 }
@@ -35,16 +35,18 @@ export function SelectReferendum({
         <SelectTrigger>
           <SelectValue placeholder="Select a referendum" />
         </SelectTrigger>
-        <SelectContent>
-          {referenda
-            .sort((a, b) => Number(b.id) - Number(a.id))
-            .slice(0, 300)
-            .map((referendum) => (
-              <SelectItem key={referendum.id} value={referendum.id}>
-                {referendum.id}
-              </SelectItem>
-            ))}
-        </SelectContent>
+        {referenda && (
+          <SelectContent>
+            {referenda
+              .sort((a, b) => Number(b.id) - Number(a.id))
+              .slice(0, 300)
+              .map((referendum) => (
+                <SelectItem key={referendum.id} value={referendum.id}>
+                  {referendum.id}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        )}
       </Select>
     </div>
   )

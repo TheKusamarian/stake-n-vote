@@ -83,7 +83,7 @@ export function UploadIpfsImage({
         <input {...getInputProps()} />
 
         {preview ? (
-          <div className="relative h-full w-full">
+          <div className="relative h-[280px] w-full">
             <Image
               src={preview}
               alt="Preview"

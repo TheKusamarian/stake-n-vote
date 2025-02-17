@@ -27,6 +27,17 @@ export const kusamaRelay: SubstrateChainExtended = {
   explorerUrls: { [SubstrateExplorer.Subscan]: "https://kusama.subscan.io" },
 }
 
+export const paseo: SubstrateChainExtended = {
+  network: "Paseo",
+  name: "Paseo",
+  rpcUrls: ["wss://paseo-rpc.polkadot.io"],
+  ss58Prefix: 2,
+  testnet: false,
+  tokenSymbol: "PAS",
+  tokenDecimals: 18,
+  explorerUrls: { [SubstrateExplorer.Subscan]: "https://paseo.subscan.io" },
+}
+
 export const rocoRelay: SubstrateChainExtended = {
   network: "Rococo",
   name: "Rococo Relay Chain",

@@ -43,6 +43,7 @@ export async function sendAndFinalize(config: {
   address: string | undefined
   toastConfig?: ToastType
   activeChain?: SubstrateChain | undefined
+  explorerUrl?: string | undefined
   statusCb?: Callback<ISubmittableResult>
   cb?: (res: any) => void
 }): Promise<SendAndFinalizeResult> {
@@ -55,6 +56,7 @@ export async function sendAndFinalize(config: {
     cb,
     statusCb,
     activeChain,
+    explorerUrl,
   } = config
 
   if (!api || !signer || !address || !tx || !activeChain) {
@@ -103,13 +105,17 @@ export async function sendAndFinalize(config: {
                 id: toastId,
                 action: {
                   label: "View Tx",
-                  onClick: () =>
+                  onClick: (e) => {
+                    e.preventDefault()
                     window
                       .open(
-                        `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
+                        explorerUrl
+                          ? `${explorerUrl}/extrinsic/${txHash}`
+                          : `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
                         "_blank"
                       )
-                      ?.focus(),
+                      ?.focus()
+                  },
                 },
               })
             }
@@ -122,13 +128,17 @@ export async function sendAndFinalize(config: {
                 duration: undefined,
                 action: {
                   label: "View Tx",
-                  onClick: () =>
+                  onClick: (e) => {
+                    e.preventDefault()
                     window
                       .open(
-                        `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
+                        explorerUrl
+                          ? `${explorerUrl}/extrinsic/${txHash}`
+                          : `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
                         "_blank"
                       )
-                      ?.focus(),
+                      ?.focus()
+                  },
                 },
               })
             }
@@ -174,13 +184,17 @@ export async function sendAndFinalize(config: {
                   duration: 4000,
                   action: {
                     label: "View Tx",
-                    onClick: () =>
+                    onClick: (e) => {
+                      e.preventDefault()
                       window
                         .open(
-                          `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
+                          explorerUrl
+                            ? `${explorerUrl}/extrinsic/${txHash}`
+                            : `${activeChain?.explorerUrls?.subscan}/extrinsic/${txHash}`,
                           "_blank"
                         )
-                        ?.focus(),
+                        ?.focus()
+                    },
                   },
                 })
               }
@@ -198,7 +212,7 @@ export async function sendAndFinalize(config: {
         }
       )
     } catch (e: any) {
-      console.error("Error while transferring balance:", e)
+      console.error("Error while sending and finalizing:", e)
       const errorRes: SendAndFinalizeResult = {
         message: e.message,
         status: "error",
@@ -206,7 +220,7 @@ export async function sendAndFinalize(config: {
       reject(errorRes)
     }
   }).catch((e) => {
-    console.error("Error while transferring balance:", e)
+    console.error("Error while sending and finalizing:", e)
     toast.error(messages.error, {
       // @ts-ignore
       description: e.message,
