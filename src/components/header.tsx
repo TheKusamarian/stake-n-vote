@@ -124,7 +124,7 @@ export function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8 backdrop-blur-lg lg:backdrop-blur-none"
         aria-label="Global"
       >
-        <Link href="/" className="mr-8 hover:animate-spin_right">
+        <Link href="/" className="mr-4 md:mr-8 hover:animate-spin_right">
           <span className="sr-only">The Kus</span>
           <Image
             src={logo}
@@ -186,14 +186,6 @@ export function Header() {
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                alt=""
-              />
-            </a>
             <div className="flex flex-1 justify-end">
               <a
                 href="#"
