@@ -84,10 +84,14 @@ export function SelectCollectionId({
         </SelectTrigger>
         <SelectContent>
           {collections
-            ?.sort((a, b) => b.id.localeCompare(a.id))
+            ?.sort((a, b) => parseInt(b.id) - parseInt(a.id))
             .map((collection) => (
-              <SelectItem key={collection.id} value={collection.id}>
-                <div className="flex flex-row gap-2 items-center">
+              <SelectItem
+                key={collection.id}
+                value={collection.id}
+                className="overflow-hidden"
+              >
+                <div className="flex flex-row gap-2 items-center overflow-hidden">
                   {collection.image && (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -95,8 +99,10 @@ export function SelectCollectionId({
                         "ipfs://",
                         "https://ipfs.io/ipfs/"
                       )}
-                      alt={collection.name}
+                      alt=""
                       className="h-8 w-8 object-cover"
+                      width={32}
+                      height={32}
                     />
                   )}
                   <div>
@@ -105,7 +111,7 @@ export function SelectCollectionId({
                   {collection.name && (
                     <div>
                       <span className="font-medium">name:</span>{" "}
-                      {collection.name}
+                      {collection.name.slice(0, 20)}...
                     </div>
                   )}
                 </div>

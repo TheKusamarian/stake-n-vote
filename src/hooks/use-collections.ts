@@ -31,7 +31,13 @@ export function useCollections(network: Network) {
     queryKey: ["collections", network, activeAccount?.address],
     queryFn: async () => {
       if (!activeAccount?.address || !nftApi) return []
-      const encodedAddress = encodeAddress(activeAccount.address, 0)
+
+      const properties = await nftApi.rpc.system.properties()
+      const ss58Prefix = properties.ss58Format.unwrapOr(0).toString()
+      const encodedAddress = encodeAddress(
+        activeAccount.address,
+        parseInt(ss58Prefix)
+      )
 
       if (client) {
         const collectionsQuery = client.collectionListByIssuer(encodedAddress)
@@ -46,6 +52,7 @@ export function useCollections(network: Network) {
             }[]
           }
         }
+        console.log("result", network, client, result)
         return result.data?.collections || []
       } else {
         console.log("usecollection api", nftApi)

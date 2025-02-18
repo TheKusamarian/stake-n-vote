@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Prefix } from "@kodadot1/uniquery"
 import { BN } from "@polkadot/util"
 import {
   ArrowRight,
@@ -14,9 +15,15 @@ import { Button } from "@/components/ui/button"
 export default function SuccessView({
   totalMinted,
   referendumId,
+  mintNetwork,
+  nftCollectionExplorerUrl,
+  resetForm,
 }: {
   totalMinted: string
   referendumId: string
+  mintNetwork: Prefix | "paseo"
+  nftCollectionExplorerUrl: string
+  resetForm: () => void
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50/50">
@@ -43,36 +50,57 @@ export default function SuccessView({
       </Alert>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Button
-          variant="outline"
-          className="h-20 text-center flex flex-col items-center p-4 group hover:border-pink-500 hover:shadow-lg transition-all duration-300"
-          onClick={() => {}}
+        <Link
+          href={nftCollectionExplorerUrl}
+          target="_blank"
+          className="w-full"
         >
-          <div className="font-semibold mb-1 flex items-center">
-            View NFTs
-            <ExternalLink className="w-4 h-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
-          </div>
-          <div className="text-sm text-gray-500">
-            Check out the minted collection
-          </div>
-        </Button>
+          <Button
+            variant="outline"
+            className="w-full h-20 text-center flex flex-col items-center p-4 group hover:border-pink-500 hover:shadow-lg transition-all duration-300"
+            onClick={() => {
+              window.open(nftCollectionExplorerUrl, "_blank")
+            }}
+          >
+            <div className="font-semibold mb-1 flex items-center">
+              View NFTs
+              <ExternalLink className="w-4 h-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="text-sm text-gray-500">
+              Check out the minted collection
+            </div>
+          </Button>
+        </Link>
 
         <Button
           variant="outline"
           className="h-20 text-center flex flex-col items-center p-4 group hover:border-purple-500 hover:shadow-lg transition-all duration-300"
-          onClick={() => {}}
+          onClick={() => {
+            const text = `I've just minted and distributed ${totalMinted} NFTs to voters of Referendum #${referendumId} via https://thekus.xyz/nft/sendout Check out the collection: ${nftCollectionExplorerUrl}`
+            window.open(
+              `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`,
+              "_blank"
+            )
+          }}
         >
           <div className="font-semibold mb-1 flex items-center">
             Share Results
             <Share className="w-4 h-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity" />
           </div>
-          <div className="text-sm text-gray-500">Share this distribution</div>
+          <div className="text-sm text-gray-500">
+            Share this distribution on X
+          </div>
         </Button>
       </div>
 
       <div className="mt-8 text-center w-full items-center flex justify-center">
         <Link href="/nft/sendout">
-          <Button className="hover:shadow-lg transition-all duration-300">
+          <Button
+            className="hover:shadow-lg transition-all duration-300"
+            onClick={() => {
+              resetForm()
+            }}
+          >
             Start New Sendout
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>

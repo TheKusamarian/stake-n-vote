@@ -171,6 +171,22 @@ export function FormSendout() {
     | "success"
   >("step1_initial")
 
+  const sendOutExplorerUrl = useMemo(() => {
+    return formValues.sendoutNetwork === "paseo"
+      ? "https://assethub-paseo.subscan.io/"
+      : formValues.network === "kusama"
+      ? "https://assethub-kusama.subscan.io/"
+      : "https://assethub-polkadot.subscan.io/"
+  }, [formValues.sendoutNetwork, formValues.network])
+
+  const nftCollectionExplorerUrl = useMemo(() => {
+    return formValues.sendoutNetwork === "paseo"
+      ? `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fsys.ibp.network%2Fasset-hub-paseo#/chainstate`
+      : formValues.network === "kusama"
+      ? `https://kodadot.xyz/ahk/collection/${formValues.collectionId}`
+      : `https://kodadot.xyz/ahp/collection/${formValues.collectionId}`
+  }, [formValues.sendoutNetwork, formValues.network, formValues.collectionId])
+
   const {
     data: referendumDetail,
     isLoading: isReferendumDetailLoading,
@@ -220,6 +236,25 @@ export function FormSendout() {
     ipfsHash: string
     metadata: any
   } | null>(null)
+
+  const resetForm = () => {
+    // Reset form to initial values
+    form.reset({
+      network: initialValues.network,
+      referendumId: initialValues.referendumId,
+      awardType: initialValues.awardType,
+      sendoutNetwork: initialValues.sendoutNetwork,
+      collectionId: initialValues.collectionId,
+      nftMeta: initialValues.nftMeta,
+    })
+
+    // Reset states
+    setProgress("step1_initial")
+    setTxs([])
+    setImageFile(null)
+    setIpfsHashes({ metadata: "", image: "" })
+    setPinnedMetadata(null)
+  }
 
   const createTxs = async (metadataIpfsUrl: string) => {
     try {
@@ -328,12 +363,7 @@ export function FormSendout() {
         signer: activeSigner,
         address: activeAccount?.address,
         activeChain: activeChain,
-        explorerUrl:
-          formValues.sendoutNetwork === "paseo"
-            ? "https://assethub-paseo.subscan.io/"
-            : formValues.network === "kusama"
-            ? "https://assethub-kusama.subscan.io/"
-            : "https://assethub-polkadot.subscan.io/",
+        explorerUrl: sendOutExplorerUrl,
         toastConfig: {
           ...DEFAULT_TOAST,
           title: "Minting NFTs",
@@ -590,7 +620,11 @@ export function FormSendout() {
                           Mint Network
                         </h3>
                         <p className="text-lg font-medium">
-                          {formValues.sendoutNetwork}
+                          {formValues.sendoutNetwork === "ahp"
+                            ? "Polkadot Asset Hub"
+                            : formValues.sendoutNetwork === "ahk"
+                            ? "Kusama Asset Hub"
+                            : "Paseo Asset Hub"}
                         </p>
                       </div>
                       <div>
@@ -610,12 +644,19 @@ export function FormSendout() {
                   <div className="flex items-start space-x-2">
                     <div className="flex-1 space-y-2">
                       <p className="text-sm">
-                        👀 Please verify the batch transactions before signing
-                        344 transactions
+                        👀 Please verify the batch transactions{" "}
+                        <b>before signing {txs.length} transactions</b>
                       </p>
                       <p className="text-sm">
-                        💰 Total cost: 0.0865848 DOT (includes metadata and NFT
-                        deposit fees)
+                        💰 Total cost:{" "}
+                        <b>
+                          {parseBN(
+                            totalFee.toString(),
+                            nftFees?.decimals ?? 12
+                          )}{" "}
+                          {nftFees?.token}
+                        </b>{" "}
+                        (includes metadata and NFT deposit fees)
                       </p>
                     </div>
                   </div>
@@ -628,6 +669,9 @@ export function FormSendout() {
             <SuccessView
               totalMinted={filterVoteInfo}
               referendumId={formValues.referendumId}
+              mintNetwork={formValues.sendoutNetwork}
+              nftCollectionExplorerUrl={nftCollectionExplorerUrl}
+              resetForm={resetForm}
             />
           )}
 
