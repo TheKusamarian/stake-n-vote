@@ -124,6 +124,14 @@ export function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-4 px-6 lg:px-8 backdrop-blur-lg lg:backdrop-blur-none"
         aria-label="Global"
       >
+        <Link href="/" className="mr-8 hover:animate-spin_right">
+          <span className="sr-only">The Kus</span>
+          <Image
+            src={logo}
+            alt="the kus"
+            className="inline-block w-auto h-10"
+          />
+        </Link>
         <div className="flex flex-1">
           <div className="hidden lg:flex lg:gap-x-8">
             {navigation.map((item) => (
@@ -131,7 +139,7 @@ export function Header() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "text-sm font-semibold leading-6 text-gray-900",
+                  "text-sm font-semibold leading-6 text-gray-900 hover:text-primary-500 transition-colors duration-300",
                   item.className
                 )}
               >
@@ -150,14 +158,6 @@ export function Header() {
             </button>
           </div>
         </div>
-        <a href="/" className="-m-1.5 p-1.5 hover:animate-spin_right">
-          <span className="sr-only">The Kus</span>
-          <Image
-            src={logo}
-            alt="the kus"
-            className="inline-block w-auto h-10"
-          />
-        </a>
         <div className="flex flex-1 justify-end">
           <ConnectButton
             isDropdownOpen={
