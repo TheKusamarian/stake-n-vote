@@ -631,7 +631,7 @@ export function FormSendout() {
             />
           )}
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-4 mt-4">
             {["step2_review", "step2_minting"].includes(progress) && (
               <>
                 <Button

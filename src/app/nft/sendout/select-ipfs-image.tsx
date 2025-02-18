@@ -103,23 +103,22 @@ export function UploadIpfsImage({
             📌 Pinning to IPFS...
           </div>
         )}
+        <div className="absolute bottom-2  bg-background/80 rounded-md flex items-center justify-center gap-2 text-muted-foreground text-xs -mt-1 text-center w-full h-8">
+          {ipfsHash && (
+            <>
+              <CheckCircle2 className="text-green-600 w-6 h-6" />
+              <Link
+                href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground px-2 py-1"
+              >
+                View on ipfs ↣
+              </Link>
+            </>
+          )}
+        </div>
       </Card>
-
-      <div className="flex items-center justify-center gap-2 text-muted-foreground text-xs -mt-1 text-center w-full h-8">
-        {ipfsHash && (
-          <>
-            <CheckCircle2 className="text-green-600 w-6 h-6" />
-            <Link
-              href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              View on ipfs ↣
-            </Link>
-          </>
-        )}
-      </div>
       {error && (
         <div className="mt-4 p-4 border border-red-500 rounded">
           <p className="text-red-600">{error}</p>
