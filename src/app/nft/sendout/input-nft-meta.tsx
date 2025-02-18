@@ -128,6 +128,7 @@ export function InputNftMeta({
             <div>
               <Label className="text-xs">Description</Label>
               <Textarea
+                className="min-h-[133px]"
                 value={localState.description}
                 onChange={(e) =>
                   handleStateChange("description", e.target.value)
@@ -146,8 +147,8 @@ export function InputNftMeta({
         <TabsContent value="advanced" className="pl-4">
           <div>
             <Label className="text-xs">Metadata JSON</Label>
-            <textarea
-              className="w-full min-h-[222px] mt-1.5 rounded-lg border border-input bg-background px-3 py-2 text-xs font-mono shadow-sm"
+            <Textarea
+              className="w-full min-h-[200px] mt-1.5 rounded-lg border border-input bg-background px-3 py-2 text-xs font-mono shadow-sm"
               value={jsonValue}
               onChange={(e) => handleJsonChange(e.target.value)}
               placeholder='{"name": "My NFT", "description": "NFT description", "image": "ipfs://..."}'

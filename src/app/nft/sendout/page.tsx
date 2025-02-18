@@ -1,6 +1,5 @@
-import { Metadata } from "next"
-import { notFound } from "next/navigation"
-import { getReferenda } from "@/actions/get-referenda"
+import { Suspense } from "react"
+import { Loader2 } from "lucide-react"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
@@ -13,7 +12,15 @@ export default async function SendoutPage() {
     <div>
       <Header />
       <main className="min-h-screen my-28">
-        <FormSendout />
+        <Suspense
+          fallback={
+            <div className="flex justify-center items-center min-h-[60vh]">
+              <Loader2 className="w-10 h-10 animate-spin" />
+            </div>
+          }
+        >
+          <FormSendout />
+        </Suspense>
       </main>
       <Footer />
     </div>

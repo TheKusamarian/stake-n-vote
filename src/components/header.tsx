@@ -8,6 +8,7 @@ import { Dialog, Popover, Transition } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"
 import clsx from "clsx"
 
+import { cn } from "@/lib/utils"
 import { useApp } from "@/app/app-provider"
 
 import { ConnectButton } from "./connect-button"
@@ -108,8 +109,13 @@ export function Header() {
   const navigation = [
     { name: "Stake & Delegate", href: "/#stake-and-delegate" },
     { name: "Ser", href: "/#the-kus" },
-    { name: "Space Monkeys", href: "/#space-monkeys" },
-    { name: "AAG", href: "/#aag" },
+    {
+      name: "Space Monkeys",
+      href: "/#space-monkeys",
+      className: "hidden xl:block",
+    },
+    { name: "AAG", href: "/#aag", className: "hidden xl:block" },
+    { name: "NFT Sendout", href: "/nft/sendout" },
   ]
 
   return (
@@ -119,12 +125,15 @@ export function Header() {
         aria-label="Global"
       >
         <div className="flex flex-1">
-          <div className="hidden lg:flex lg:gap-x-12">
+          <div className="hidden lg:flex lg:gap-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-900"
+                className={cn(
+                  "text-sm font-semibold leading-6 text-gray-900",
+                  item.className
+                )}
               >
                 {item.name}
               </Link>

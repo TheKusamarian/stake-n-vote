@@ -15,11 +15,9 @@ import {
 import { Network } from "./form-sendout"
 
 export function SelectSendoutNetwork({
-  refNetwork,
   value,
   onChange,
 }: {
-  refNetwork: "kusama" | "polkadot"
   value: Network
   onChange: (network: Network) => void
 }) {

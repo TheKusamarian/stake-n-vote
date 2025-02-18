@@ -35,7 +35,17 @@ export function useCollections(network: Network) {
 
       if (client) {
         const collectionsQuery = client.collectionListByIssuer(encodedAddress)
-        const result = await await client.fetch(collectionsQuery)
+        const result = (await client.fetch(collectionsQuery)) as {
+          data: {
+            collections: {
+              id: string
+              name?: string
+              issuer?: string
+              metadata?: string
+              image?: string
+            }[]
+          }
+        }
         return result.data?.collections || []
       } else {
         console.log("usecollection api", nftApi)

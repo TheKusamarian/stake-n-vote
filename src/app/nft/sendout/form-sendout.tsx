@@ -4,15 +4,19 @@ import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { pinToPinata } from "@/actions/pin-to-pinata"
 import { KusamaIcon, PolkadotIcon } from "@/icons"
+import { parseBN } from "@/util"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Prefix } from "@kodadot1/uniquery"
+import { BN } from "@polkadot/util"
 import { useInkathon } from "@scio-labs/use-inkathon"
 import { ArrowLeft, Clipboard, ImageUp, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
+import { useTransactionFee } from "@/hooks/use-fees"
 import { useNftApi } from "@/hooks/use-nft-api"
+import { useNftFees } from "@/hooks/use-nft-fees"
 import { useReferenda } from "@/hooks/use-referenda"
 import { useReferendumDetail } from "@/hooks/use-referendum-detail"
 import { Button } from "@/components/ui/button"
@@ -41,6 +45,7 @@ import { UploadIpfsImage } from "./select-ipfs-image"
 import { SelectNetwork } from "./select-network"
 import { SelectReferendum } from "./select-referendum"
 import { SelectSendoutNetwork } from "./select-sendout-network"
+import SuccessView from "./success-view"
 import { resolvePlaceholders } from "./util"
 
 export type Network = Prefix | "paseo"
@@ -143,6 +148,21 @@ export function FormSendout() {
   const { data: referenda, isLoading } = useReferenda(formValues.network)
 
   const [txs, setTxs] = useState<any[]>([])
+  const nftApi = useNftApi(formValues.sendoutNetwork)
+  const { data: txFees } = useTransactionFee(nftApi?.tx.utility.batchAll(txs), [
+    activeAccount?.address,
+  ])
+  const { data: nftFees } = useNftFees(formValues.sendoutNetwork)
+
+  const feePerNft = useMemo(() => {
+    if (!nftFees) return new BN(0)
+    return new BN(nftFees.depositMetadata).add(new BN(nftFees.depositNft))
+  }, [nftFees])
+
+  const totalFee = useMemo(() => {
+    return feePerNft.mul(new BN(txs.length))
+  }, [feePerNft, txs])
+
   const [progress, setProgress] = useState<
     | "step1_initial"
     | "step1_pinning"
@@ -150,8 +170,6 @@ export function FormSendout() {
     | "step2_minting"
     | "success"
   >("step1_initial")
-
-  const nftApi = useNftApi(formValues.sendoutNetwork)
 
   const {
     data: referendumDetail,
@@ -328,6 +346,9 @@ export function FormSendout() {
 
       if (res.status === "success") {
         setProgress("success")
+      } else {
+        setProgress("step2_review")
+        toast.error("Failed to mint NFTs. Please try again.")
       }
     } catch (error) {
       console.error("Error minting NFTs:", error)
@@ -354,20 +375,18 @@ export function FormSendout() {
   return (
     <Form {...form} key={formValues.network}>
       <form onSubmit={form.handleSubmit(submitForm)}>
-        <Card className="w-full max-w-4xl mx-auto border-none shadow-none">
-          <CardHeader>
-            <CardTitle className="text-5xl font-bold text-center text-clip bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
-              Send NFTs <br /> to Referendum Participants
-            </CardTitle>
-            <CardDescription className="text-center mb-4">
-              {progress === "step1_initial"
-                ? "Fill in the details below to prepare your NFT sendout"
-                : "Review the transaction details before proceeding"}
-            </CardDescription>
-          </CardHeader>
+        <div className="w-full max-w-4xl mx-auto border-none shadow-none px-4 sm:px-6 md:px-8">
+          <h1 className="text-5xl font-bold text-center text-clip bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+            Send NFTs <br /> to Referendum Participants
+          </h1>
+          <p className="text-center mb-12">
+            {progress === "step1_initial"
+              ? "Fill in the details below to prepare your NFT sendout"
+              : "Review the transaction details before proceeding"}
+          </p>
 
           {(progress === "step1_initial" || progress === "step1_pinning") && (
-            <CardContent className="flex flex-col gap-8">
+            <div className="flex flex-col gap-8">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
@@ -512,94 +531,145 @@ export function FormSendout() {
                   />
                 </div>
               </div>
-            </CardContent>
+            </div>
           )}
 
           {["step2_review", "step2_minting"].includes(progress) && (
-            <CardContent>
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">
-                  Review Your Selections:
-                </h3>
-                <dl className="grid grid-cols-2 gap-2">
-                  <dt>Network:</dt>
-                  <dd>
-                    {formValues.network === "polkadot" ? (
-                      <div className="flex items-center gap-2">
-                        <PolkadotIcon className="w-4 h-4" /> Polkadot
+            <>
+              <Card className="mb-4 hover:shadow-lg transition-all duration-300">
+                <CardHeader>
+                  <CardTitle>Review Your Selections</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Network
+                        </h3>
+                        <p className="text-lg font-medium flex items-center gap-2">
+                          {formValues.network === "polkadot" ? (
+                            <div className="flex items-center gap-2">
+                              <PolkadotIcon className="w-4 h-4" /> Polkadot
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <KusamaIcon className="w-4 h-4" /> Kusama
+                            </div>
+                          )}
+                        </p>
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <KusamaIcon className="w-4 h-4" /> Kusama
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Referendum
+                        </h3>
+                        <p className="text-lg font-medium">
+                          #{formValues.referendumId}
+                        </p>
                       </div>
-                    )}
-                  </dd>
-                  <dt>Referendum:</dt>
-                  <dd>#{formValues.referendumId}</dd>
-                  <dt>Award Type:</dt>
-                  <dd>
-                    Send out to{" "}
-                    <b>
-                      {formValues.awardType === "all"
-                        ? "all"
-                        : formValues.awardType === "aye"
-                        ? "aye"
-                        : "nay"}
-                    </b>{" "}
-                    Voters ({filterVoteInfo} addresses)
-                  </dd>
-                  <dt>Mint Network:</dt>
-                  <dd>{formValues.sendoutNetwork}</dd>
-                  <dt>Collection ID:</dt>
-                  <dd>{formValues.collectionId}</dd>
-                </dl>
-
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">
-                    Please verify the batch transaction in your wallet before
-                    signing {txs.length} transactions
-                  </h4>
-                </div>
-              </div>
-            </CardContent>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Award Type
+                        </h3>
+                        <p className="text-lg font-medium">
+                          Send out to{" "}
+                          <b>
+                            {formValues.awardType === "all"
+                              ? "all"
+                              : formValues.awardType === "aye"
+                              ? "aye"
+                              : "nay"}
+                          </b>{" "}
+                          Voters ({filterVoteInfo} addresses)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Mint Network
+                        </h3>
+                        <p className="text-lg font-medium">
+                          {formValues.sendoutNetwork}
+                        </p>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Collection ID
+                        </h3>
+                        <p className="text-lg font-medium">
+                          {formValues.collectionId}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="mb-8 bg-gradient-to-r from-pink-200 to-purple-200 hover:shadow-lg transition-all duration-300">
+                <CardContent className="p-4">
+                  <div className="flex items-start space-x-2">
+                    <div className="flex-1 space-y-2">
+                      <p className="text-sm">
+                        👀 Please verify the batch transactions before signing
+                        344 transactions
+                      </p>
+                      <p className="text-sm">
+                        💰 Total cost: 0.0865848 DOT (includes metadata and NFT
+                        deposit fees)
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
           )}
 
-          <CardFooter className="flex flex-col md:flex-row gap-4">
+          {progress === "success" && (
+            <SuccessView
+              totalMinted={filterVoteInfo}
+              referendumId={formValues.referendumId}
+            />
+          )}
+
+          <div className="flex flex-col md:flex-row gap-4">
             {["step2_review", "step2_minting"].includes(progress) && (
               <>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setProgress("step1_initial")}
-                  className="w-full md:w-1/4"
+                  className="w-full md:w-1/4 hover:shadow-lg transition-all duration-300"
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back to Edit
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={copyCallData}
-                  className="w-full md:w-1/4"
+                  className="w-full md:w-1/4 hover:shadow-lg transition-all duration-300"
                   disabled={!txs.length}
                 >
                   <Clipboard className="mr-2 h-4 w-4" />
                   Copy Call Data
                 </Button>
                 <Button
-                  className="w-full md:w-2/4"
+                  className="w-full md:w-2/4 hover:shadow-lg transition-all duration-300"
                   onClick={handleMintNfts}
-                  disabled={!txs.length}
+                  disabled={!txs.length || progress === "step2_minting"}
                   type="submit"
+                  isLoading={progress === "step2_minting"}
                 >
                   <ImageUp className="mr-2 h-4 w-4" />
-                  Mint {filterVoteInfo} NFTs
+                  {progress === "step2_minting"
+                    ? `Minting ${filterVoteInfo} NFTs...`
+                    : `Mint ${filterVoteInfo} NFTs`}
                 </Button>
               </>
             )}
 
             {["step1_initial", "step1_pinning"].includes(progress) && (
               <Button
-                className="w-full"
+                className="w-full hover:shadow-lg transition-all duration-300"
                 disabled={isSendoutDisabled}
                 type="submit"
                 isLoading={progress === "step1_pinning"}
@@ -607,8 +677,8 @@ export function FormSendout() {
                 Pin Metadata and Continue
               </Button>
             )}
-          </CardFooter>
-        </Card>
+          </div>
+        </div>
       </form>
     </Form>
   )
