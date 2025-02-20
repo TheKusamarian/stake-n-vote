@@ -115,7 +115,7 @@ export function Header() {
       className: "hidden xl:block",
     },
     { name: "AAG", href: "/#aag", className: "hidden xl:block" },
-    { name: "NFT Sendout", href: "/nft/sendout" },
+    // { name: "NFT Sendout", href: "/nft/sendout" },
   ]
 
   return (
