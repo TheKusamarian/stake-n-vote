@@ -133,7 +133,7 @@ export function Header() {
           />
         </Link>
         <div className="flex flex-1">
-          <div className="hidden lg:flex lg:gap-x-8">
+          <div className="hidden md:flex md:gap-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -147,7 +147,7 @@ export function Header() {
               </Link>
             ))}
           </div>
-          <div className="flex lg:hidden">
+          <div className="flex md:hidden">
             <button
               type="button"
               className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -158,7 +158,7 @@ export function Header() {
             </button>
           </div>
         </div>
-        <div className="flex flex-1 justify-end">
+        <div className="flex lg:flex-1 justify-end">
           <ConnectButton
             isDropdownOpen={
               !isStakingModalOpen && !isDelegateModalOpen && connectDropdownOpen
