@@ -28,6 +28,10 @@ export function useNftApi(network: Network) {
       setApi(_api)
     }
     initApi()
+
+    return () => {
+      api?.disconnect()
+    }
   }, [network])
 
   return api
