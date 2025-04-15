@@ -1,6 +1,8 @@
 import { useInkathon } from "@scio-labs/use-inkathon"
+import { PlusCircle } from "lucide-react"
 
 import { useCollections } from "@/hooks/use-collections"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -10,7 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { ButtonNewCollection } from "./button-new-collection"
 import { Network } from "./form-sendout"
+import { ModalNewCollection } from "./modal-new-collection"
 
 export function SelectCollectionId({
   network,
@@ -40,21 +44,8 @@ export function SelectCollectionId({
         <Label>Mint to collection</Label>
         <div className="text-xs p-3 bg-gradient-to-r from-orange-300 to-yellow-300 rounded-lg">
           ⚠️ No collections found on {networkName}.{" "}
-          <a
-            href={
-              network === "paseo"
-                ? "https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fasset-hub-paseo-rpc.dwellir.com#/extrinsics"
-                : "https://kodadot.xyz/create/collection"
-            }
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            {network === "paseo"
-              ? "Create a collection on Paseo Substrate Explorer (nfts → create)"
-              : `Create a new collection at KodaDot →`}
-          </a>
         </div>
+        <ButtonNewCollection network={network} />
       </div>
     )
   }
@@ -123,6 +114,7 @@ export function SelectCollectionId({
         Select the collection that will hold the NFTs you want to mint. The
         collection must be created on the network you are using.
       </p>
+      <ButtonNewCollection network={network} variant="outline" />
     </div>
   )
 }

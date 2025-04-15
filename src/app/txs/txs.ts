@@ -103,6 +103,31 @@ export async function sendDelegateTx(
   return res
 }
 
+export function createCollectionTx(
+  api: ApiPromise | undefined,
+  signer: any,
+  activeChain: SubstrateChain | undefined,
+  address: string | undefined
+) {
+  const admin = {
+    Id: address,
+  }
+  const config = {
+    max_supply: null,
+    mint_settings: {
+      default_item_settings: 0,
+      end_block: null,
+      mint_type: "Issuer",
+      price: null,
+      start_block: null,
+    },
+    settings: 0,
+  }
+
+  const tx = api?.tx.nfts.create(admin, config)
+  return tx
+}
+
 export async function nominateTx(
   api: ApiPromise | undefined,
   signer: any,
