@@ -108,13 +108,13 @@ export function Header() {
 
   const navigation = [
     { name: "Stake & Delegate", href: "/#stake-and-delegate" },
-    { name: "Ser", href: "/#the-kus" },
+    { name: "KusNews", href: "/#kus-news" },
     {
       name: "Space Monkeys",
       href: "/#space-monkeys",
-      className: "hidden xl:block",
+      className: "hidden md:block",
     },
-    { name: "AAG", href: "/#aag", className: "hidden xl:block" },
+    { name: "AAG", href: "/#aag", className: "hidden md:block" },
     // { name: "NFT Sendout", href: "/nft/sendout" },
   ]
 

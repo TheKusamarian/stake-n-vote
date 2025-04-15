@@ -47,14 +47,13 @@ export function Hero({ video }: { video: any }) {
             The Kus
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            The #1 news resource on Polkadot. Daily news, insights & interviews with
-            the top minds in the Polkadot ecosystem.
+            The #1 news resource on Polkadot. Daily news, insights & interviews
+            with the top minds in the Polkadot ecosystem.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-gray-600">
-            Stake with us to earn{" "}
-            DOT/KSM rewards with native
-            staking - safe & secure!
+            Stake with us to earn DOT/KSM rewards with native staking - safe &
+            secure!
           </p>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Your vote matters! Delegate your vote to The Kus and shape
@@ -98,7 +97,7 @@ export function Hero({ video }: { video: any }) {
                 The latest on Polkadot <span aria-hidden="true">↑</span>
               </div>
               <Button className="mt-4 bg-white" variant="outline">
-                <Link href="#the-kus">
+                <Link href="#kus-news">
                   👀 View even more <span aria-hidden="true"> ↓</span>
                 </Link>
               </Button>
