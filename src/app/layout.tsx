@@ -48,8 +48,11 @@ export default function RootLayout({
     >
       <body className="flex h-full flex-col">
         <Providers>{children}</Providers>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-7RG8GF0LMC" />
-        <Script id="google-analytics">
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-7RG8GF0LMC"
+        />
+        <Script strategy="afterInteractive" id="google-analytics">
           {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -59,7 +62,6 @@ export default function RootLayout({
         </Script>
         <Toaster />
       </body>
-      <GoogleAnalytics gaId="G-7RG8GF0LMC" />
     </html>
   )
 }
