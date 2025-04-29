@@ -1,13 +1,13 @@
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
 import Head from "next/head"
-import Image from "next/image"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/call-to-action"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
+import SectionWeb3Thinkers from "@/components/sections/section-web3-thinkers"
 
 // Dynamically import non-critical components
 const PrimaryFeatures = dynamic(() => import("@/components/primary-featurs"), {
@@ -46,6 +46,7 @@ export default async function Home() {
         <CallToAction />
         <SectionSpaceMonkeys />
         <SectionAAG />
+        <SectionWeb3Thinkers />
         {/* <Faqs /> */}
       </main>
       <Footer />
