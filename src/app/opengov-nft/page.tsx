@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
-import { FormSendout } from "@/app/nft/sendout/form-sendout"
+import { FormSendout } from "@/app/opengov-nft/form-sendout"
 
 export const revalidate = 60
 
