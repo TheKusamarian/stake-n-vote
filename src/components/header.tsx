@@ -115,7 +115,7 @@ export function Header() {
       className: "hidden md:block",
     },
     { name: "AAG", href: "/#aag", className: "hidden md:block" },
-    // { name: "OpenGov NFTs", href: "/opengov-nfts" },
+    { name: "OpenGov NFTs", href: "/opengov-nfts" },
   ]
 
   return (
@@ -139,7 +139,7 @@ export function Header() {
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  "text-sm font-semibold leading-6 text-gray-900 hover:text-primary-500 transition-colors duration-300",
+                  "text-sm font-semibold leading-6 text-gray-900 hover:text-primary-500 transition-colors duration-300 whitespace-nowrap",
                   item.className
                 )}
               >
