@@ -76,7 +76,7 @@ export default function SuccessView({
           variant="outline"
           className="h-20 text-center flex flex-col items-center p-4 group hover:border-purple-500 hover:shadow-lg transition-all duration-300"
           onClick={() => {
-            const text = `I've just minted and distributed ${totalMinted} NFTs to voters of Referendum #${referendumId} via https://thekus.xyz/nft/sendout Check out the collection: ${nftCollectionExplorerUrl}`
+            const text = `I've just minted and distributed ${totalMinted} NFTs to voters of Referendum #${referendumId} via https://thekus.xyz/opengov-nft Check out the collection: ${nftCollectionExplorerUrl}`
             window.open(
               `https://x.com/intent/tweet?text=${encodeURIComponent(text)}`,
               "_blank"
@@ -94,7 +94,7 @@ export default function SuccessView({
       </div>
 
       <div className="mt-8 text-center w-full items-center flex justify-center">
-        <Link href="/nft/sendout">
+        <Link href="/opengov-nft">
           <Button
             className="hover:shadow-lg transition-all duration-300"
             onClick={() => {
