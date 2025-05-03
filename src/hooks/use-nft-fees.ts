@@ -1,7 +1,7 @@
 import { ApiPromise } from "@polkadot/api"
 import { useQuery } from "react-query"
 
-import { Network } from "@/app/nft/sendout/form-sendout"
+import { Network } from "@/app/opengov-nft/form-sendout"
 
 import { useNftApi } from "./use-nft-api"
 
@@ -26,8 +26,6 @@ async function getNftFees(nftApi: ApiPromise) {
     nftApi.registry.chainDecimals,
     nftApi.registry.chainTokens,
   ])
-
-  console.log("aaa", depositMetadata, depositNft)
 
   return {
     depositMetadata: depositMetadata.toString(),
