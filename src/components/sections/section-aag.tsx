@@ -39,7 +39,7 @@ export default async function SectionAAG() {
   return (
     <section
       id="aag"
-      className="py-16 relative bg-[#ff2268] bg-[url('/aag.png')]"
+      className="py-20 relative bg-[#ff2268] bg-[url('/aag.png')]"
     >
       <div className="container mx-auto px-4 z-1 mb-10 relative">
         <h2 className="text-5xl font-bold text-center mb-4">

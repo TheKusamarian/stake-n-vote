@@ -20,7 +20,7 @@ export default async function SectionWeb3Thinkers() {
   const data = await fetchLatestVideos(OPEN_DEV_PLAYLIST_ID)
   return (
     <section
-      className="bg-gradient-to-br from-gray-900 via-gray-600 to-gray-900 py-16"
+      className="bg-gradient-to-br from-gray-900 via-gray-600 to-gray-900 py-20"
       id="open-dev"
     >
       <div className="container mx-auto px-4 mb-10">
