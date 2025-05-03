@@ -5,7 +5,7 @@ import { useInkathon } from "@scio-labs/use-inkathon"
 import { useQuery } from "react-query"
 
 import { useNftApi } from "@/hooks/use-nft-api"
-import { Network } from "@/app/opengov-nft/form-sendout"
+import { Network } from "@/app/opengov-nfts/form-sendout"
 
 export function useCollections(network: Network) {
   const { activeAccount } = useInkathon()

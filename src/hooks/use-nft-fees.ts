@@ -1,7 +1,7 @@
 import { ApiPromise } from "@polkadot/api"
 import { useQuery } from "react-query"
 
-import { Network } from "@/app/opengov-nft/form-sendout"
+import { Network } from "@/app/opengov-nfts/form-sendout"
 
 import { useNftApi } from "./use-nft-api"
 

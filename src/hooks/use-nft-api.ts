@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 
-import { Network } from "@/app/opengov-nft/form-sendout"
+import { Network } from "@/app/opengov-nfts/form-sendout"
 
 export async function getNftApi(network: Network) {
   const provider =
