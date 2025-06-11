@@ -1,6 +1,7 @@
 import { Suspense } from "react"
+import { type Metadata } from "next"
 import dynamic from "next/dynamic"
-import Head from "next/head"
+import Script from "next/script"
 
 import { fetchLatestVideos } from "@/lib/fetch-latest-videos"
 import { CallToAction } from "@/components/call-to-action"
@@ -25,17 +26,23 @@ export const revalidate = 10800 // revalidate at most every 3 hours
 
 const THE_KUS_PLAYLIST_ID = "PLtyd7v_I7PGlMekTepCvnf8WMKVR1nhLZ"
 
-export default async function Home() {
+export async function generateMetadata(): Promise<Metadata> {
   const data = await fetchLatestVideos(THE_KUS_PLAYLIST_ID)
   const lcpImageUrl = data?.videos?.[0]?.thumbnails?.maxres?.url
+  return {
+    other: lcpImageUrl
+      ? {
+          "preload-lcp-image": `<link rel=\"preload\" href=\"${lcpImageUrl}\" as=\"image\" type=\"image/jpeg\" />`,
+        }
+      : {},
+  }
+}
+
+export default async function Home() {
+  const data = await fetchLatestVideos(THE_KUS_PLAYLIST_ID)
 
   return (
     <>
-      <Head>
-        {lcpImageUrl && (
-          <link rel="preload" href={lcpImageUrl} as="image" type="image/jpeg" />
-        )}
-      </Head>
       <Header />
       <main>
         <Hero video={data?.videos?.[0]} />
@@ -50,6 +57,23 @@ export default async function Home() {
         {/* <Faqs /> */}
       </main>
       <Footer />
+      <Script id="adrsbl-pixel" strategy="afterInteractive">
+        {`
+!function(w, d){
+    w.__adrsbl = {
+        queue: [],
+        run: function(){
+            this.queue.push(arguments);
+        }
+    };
+    var s = d.createElement('script');
+    s.async = true;
+    s.src = 'https://tag.adrsbl.io/p.js?tid=a5cdcfe34baf4c25ab0e4974a4390210';
+    var b = d.getElementsByTagName('script')[0];
+    b.parentNode.insertBefore(s, b);
+}(window, document);
+        `}
+      </Script>
     </>
   )
 }
