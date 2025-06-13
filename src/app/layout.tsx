@@ -1,14 +1,14 @@
 import { Inter, Lexend } from "next/font/google"
-import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google"
 import clsx from "clsx"
 
 import "@/styles/globals.scss"
 import { type Metadata } from "next"
-import Script from "next/script"
 
 import { Providers } from "./providers"
 import "@polkadot/api-augment/kusama"
 import "@polkadot/api-augment/polkadot"
+import { GoogleTagManager } from "@next/third-parties/google"
+
 import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
@@ -46,20 +46,9 @@ export default function RootLayout({
         lexend.variable
       )}
     >
+      <GoogleTagManager gtmId="GTM-T286VVN3" />
       <body className="flex h-full flex-col">
         <Providers>{children}</Providers>
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-7RG8GF0LMC"
-        />
-        <Script strategy="afterInteractive" id="google-analytics">
-          {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-7RG8GF0LMC');
-        `}
-        </Script>
         <Toaster />
       </body>
     </html>
