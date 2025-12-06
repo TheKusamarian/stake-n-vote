@@ -11,9 +11,7 @@ import { Hero } from "@/components/hero"
 import SectionWeb3Thinkers from "@/components/sections/section-web3-thinkers"
 
 // Dynamically import non-critical components
-const PrimaryFeatures = dynamic(() => import("@/components/primary-featurs"), {
-  suspense: true,
-})
+const PrimaryFeatures = dynamic(() => import("@/components/primary-featurs"))
 const SectionSpaceMonkeys = dynamic(
   () => import("@/components/sections/section-space-monkeys")
 )
